@@ -4,7 +4,7 @@
   <title><![CDATA[My World]]></title>
   <link href="http://xiaobenmao.github.io/atom.xml" rel="self"/>
   <link href="http://xiaobenmao.github.io/"/>
-  <updated>2015-09-08T04:24:59+08:00</updated>
+  <updated>2015-09-08T04:41:57+08:00</updated>
   <id>http://xiaobenmao.github.io/</id>
   <author>
     <name><![CDATA[嗷大喵]]></name>
@@ -166,6 +166,1356 @@
 </span><span class='line'>    <span class="c1">// 注意：这个方法并不会马上调用drawRect,其实这个方法只是给当前控件添加刷新的标记，等下一次屏幕刷新的时候才会调用drawRect</span>
 </span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">setNeedsDisplay</span><span class="p">];</span>
 </span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Swift-闭包]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/09/01/swift-bi-bao/"/>
+    <updated>2015-09-01T09:50:57+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/09/01/swift-bi-bao</id>
+    <content type="html"><![CDATA[<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/**
+</span><span class='line'>
+</span><span class='line'>闭包(Closures):
+</span><span class='line'>闭包:是自包含的代码块,可以在代码中被传递和使用
+</span><span class='line'>闭包可以捕获和存储其所在上下文中任意常量和变量的引用,这就是所谓的闭包并包裹着这些常量和变量,俗称闭包.
+</span><span class='line'>闭包的几种形式:
+</span><span class='line'>1,“全局函数是一个有名字但不会捕获任何值的闭包
+</span><span class='line'>2,嵌套函数是一个有名字并可以捕获其封闭函数域内值的闭包
+</span><span class='line'>3,闭包表达式是一个利用轻量级语法所写的可以捕获其上下文中变量或常量值的匿名闭包”
+</span><span class='line'>闭包的常见优化场景:
+</span><span class='line'>1,“利用上下文推断参数和返回值类型
+</span><span class='line'>2,隐式返回单表达式闭包，即单表达式闭包可以省略return关键字
+</span><span class='line'>3,参数名称缩写
+</span><span class='line'>4,尾随（Trailing）闭包语法”
+</span><span class='line'>*/
+</span><span class='line'>
+</span><span class='line'>&lt;!--more--&gt;```
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>//: Playground - noun: a place where people can play</p>
+
+<p>import UIKit</p>
+
+<p>var str = &ldquo;Hello, playground&rdquo;</p>
+
+<p>/**
+sorted函数
+1,接收两个参数:
+1>已知类型的数组
+2>闭包函数,</p>
+
+<p>*/
+// sorted函数
+var strs = [&ldquo;dd&rdquo;, &ldquo;cc&rdquo;, &ldquo;aa&rdquo;, &ldquo;bb&rdquo;]</p>
+
+<p>func backwards(str1:String, str2:String)->Bool
+{
+    return str1 > str2
+}</p>
+
+<p>var sortFun = sorted(strs, backwards)</p>
+
+<p>/<em>*
+ 闭包表达式语法
+// 格式
+{ (parameters) -> returnType in
+    statements
+}
+1, 函数和返回值都在大括号之内
+2, in:该关键字表示闭包的参数和返回值类型定义已经完成,闭包函数体即将开始
+</em>/
+// 使用
+ sortFun = sorted(strs, { (str1:String, str2:String) -> Bool in
+    str1 > str2
+})</p>
+
+<p>/**
+根据上下文推断类型:
+    通过内联闭包表达式构造的闭包作为参数传递给函数时,都可以推断出闭包的参数和返回值类型,所以几乎不需要利用完整格式构造任何内联闭包</p>
+
+<p>*/
+sortFun = sorted(strs, {str1, str2 in return str1 > str2})</p>
+
+<p>/<em>*
+单表达式闭包隐式返回:
+    通过隐藏return 关键字来隐式返回单行表达式的结果
+</em>/</p>
+
+<p>sortFun = sorted(strs, {s1, s2 in s1 > s2})</p>
+
+<p>/<em>*
+参数名称缩写:
+    1,内联函数的参数名称可以缩写,使用比如:$0,$1顺序调用闭包参数
+    2,如果使用了参数名称缩写,可以省略参数的定义,因为名称缩写的类型会根据函数类型进行推断
+    3,in关键字也可以省略,闭包表达式完全由闭包函数体构成
+</em>/</p>
+
+<p>sortFun = sorted(strs, {$0 > $1})</p>
+
+<p>/<em>*
+运算符函数:
+    1,Swift的String类型定义了关于大于号(>)的字符串实现
+    2,&ldquo;>"作为一个函数接收两个String类型的参数,并返回Bool类型
+</em>/
+// 此处刚好满足&rdquo;>&ldquo;运算符的条件
+sortFun = sorted(strs, >);</p>
+
+<p>/<em>*
+尾随闭包
+    使用情况:如果需要将一个很长的闭包表达式作为最后一个参数传递给函数,可以使用尾随闭包来增强函数的可读性
+</em>/</p>
+
+<p>// 不使用尾随闭包
+func aFunc(closur:()->())
+{
+    // 函数体部分
+}</p>
+
+<p>// 只有一个闭包参数的尾随闭包
+aFunc({
+    // 闭包主体部分
+})</p>
+
+<p>// 有多个参数,且最后一个参数为闭包的的尾随闭包
+aFunc(){
+    // 闭包主体部分
+}</p>
+
+<p>// 如果函数只有闭包表达式一个参数,使用尾随闭包可以省略"()&ldquo;
+aFunc{</p>
+
+<p>}</p>
+
+<p>// 字符串数组的sorted排序可以简写
+sortFun = sorted(strs){
+    $0 > $1
+}</p>
+
+<p>/<em>*
+Swift的Array类型有一个map方法:
+    0,获取一个闭包表达式作为其唯一参数,并返回该元素所映射的值(可以是不同类型的值)
+    1,数组中的每一个值都会调用这个闭包
+    2,具体的映射方法和返回值类型由闭包来指定
+    3,当提供给数组闭包函数后,map方法将返回一个新的数组,数组中包含了与原数组&ndash;对应映射后的值
+</em>/</p>
+
+<p>/<em>*
+使用map的尾随闭包方法将Int型数组[123, 58, 79]转换为包含对应String类型的数组[&ldquo;OneTwoThree&rdquo;,&ldquo;ThreeFourTwo,"OneTwo&rdquo;&ldquo;]
+</em>/</p>
+
+<p>let digitNames = [
+    0 : &ldquo;Zero&rdquo;, 1 : &ldquo;Two&rdquo;, 3 : &ldquo;Three&rdquo;,4 : &ldquo;Four&rdquo;,5 : &ldquo;Five&rdquo;,
+    6 : &ldquo;Six&rdquo;, 7 : &ldquo;Seven&rdquo;, 8 : &ldquo;Eight&rdquo;,9 : &ldquo;Nine&rdquo;
+]</p>
+
+<p>let numbers = [123, 58, 79]</p>
+
+<p>let numbersToStrings = numbers.map{
+    (var number)-> String in</p>
+
+<pre><code>var outPut = ""
+
+while(number &gt; 0)
+{
+    // 个位
+    var num1 = number % 10
+    outPut += digitNames[num1]!
+    number /= 10
+}
+
+return outPut
+</code></pre>
+
+<p>}</p>
+
+<p>numbersToStrings</p>
+
+<p>/<em>*
+闭包表达式(Closure Expressions)
+</em>/</p>
+
+<p>```</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Swift-字符串]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/09/01/swift-zi-fu-chuan/"/>
+    <updated>2015-09-01T09:40:24+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/09/01/swift-zi-fu-chuan</id>
+    <content type="html"><![CDATA[<!--more-->
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+</pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="c1">//: Playground - noun: a place where people can play</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">import</span> <span class="n">UIKit</span>
+</span><span class='line'><span class="c1">// 在OC中定义字符串用 @&quot;&quot;. Swift中用&quot;&quot;</span>
+</span><span class='line'><span class="c1">// 注意点: OC中的字符串是NSString, Swift中的字符串是String</span>
+</span><span class='line'><span class="c1">//        OC中的字符串是一个对象, 继承于NSObjcte</span>
+</span><span class='line'><span class="c1">//        Swift中的字符串是一个结构体</span>
+</span><span class='line'><span class="c1">//        Swift中的字符串的性能比OC中的高</span>
+</span><span class='line'><span class="k">var</span> <span class="nl">str</span><span class="p">:</span> <span class="n">String</span> <span class="o">=</span> <span class="s">&quot;wq &quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 拼接</span>
+</span><span class='line'><span class="k">var</span> <span class="n">str2</span> <span class="o">=</span> <span class="s">&quot;cool&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">str</span> <span class="o">+=</span> <span class="n">str2</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 格式化</span>
+</span><span class='line'><span class="k">let</span> <span class="n">num</span> <span class="o">=</span> <span class="mi">30</span>
+</span><span class='line'><span class="k">let</span> <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;wq&quot;</span>
+</span><span class='line'><span class="c1">// 目标:  name = lnj , age = 30</span>
+</span><span class='line'><span class="c1">// 在Swift中可以使用 \()来拼接其它值</span>
+</span><span class='line'><span class="k">var</span> <span class="n">str3</span> <span class="o">=</span> <span class="s">&quot;name = \(name), age = \(num)&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 09: 08: 13</span>
+</span><span class='line'><span class="c1">// 注意: 所有的值都必须放到数组中, 哪怕只有一个值也需要放到数组中</span>
+</span><span class='line'><span class="k">var</span> <span class="n">str4</span> <span class="o">=</span> <span class="n">String</span><span class="p">(</span><span class="nl">format</span><span class="p">:</span> <span class="s">&quot;%02d: %02d: %02d&quot;</span><span class="p">,</span> <span class="nl">arguments</span><span class="p">:</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">13</span><span class="p">])</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 截取</span>
+</span><span class='line'><span class="c1">// 注意: 在Swift中, 如果需要截取字符串, 建议使用OC的字符串来截取, 因为Swift中String的字符串截取方法使用起来非常复杂和蛋疼</span>
+</span><span class='line'><span class="c1">// Swift中的字符串可以和OC中的字符串非常非常方便的进行转换</span>
+</span><span class='line'><span class="k">var</span> <span class="nl">str5</span><span class="p">:</span> <span class="bp">NSString</span> <span class="o">=</span> <span class="s">&quot;wq nb&quot;</span>
+</span><span class='line'><span class="k">var</span> <span class="n">str6</span> <span class="o">=</span> <span class="s">&quot;wq fc nb&quot;</span> <span class="kt">as</span> <span class="bp">NSString</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">var</span> <span class="n">subStr</span> <span class="o">=</span> <span class="n">str5</span><span class="p">.</span><span class="n">substringWithRange</span><span class="p">(</span><span class="n">NSMakeRange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Swift中的字符串是支持直接遍历的</span>
+</span><span class='line'><span class="k">var</span> <span class="n">str7</span> <span class="o">=</span> <span class="s">&quot;www.baidu.com&quot;</span>
+</span><span class='line'><span class="k">for</span> <span class="n">c</span> <span class="k">in</span> <span class="n">str7</span><span class="p">.</span><span class="n">characters</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Swift-字典]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/09/01/swift-zi-dian/"/>
+    <updated>2015-09-01T09:30:16+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/09/01/swift-zi-dian</id>
+    <content type="html"><![CDATA[<!--more-->
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+</pre></td><td class='code'><pre><code class='swift'><span class='line'><span class="c1">//: Playground - noun: a place where people can play</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">import</span> <span class="n">UIKit</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 创建字典</span>
+</span><span class='line'><span class="c1">// @{@&quot;key&quot;: &quot;value&quot;};</span>
+</span><span class='line'><span class="c1">// Swift中创建字典和创建数组一样, 用[]</span>
+</span><span class='line'><span class="c1">// [String : NSObject] 类型是以后做iOS开发中最常见的一种格式</span>
+</span><span class='line'><span class="k">let</span> <span class="n">dict</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;ls&quot;</span><span class="p">,</span> <span class="s">&quot;age&quot;</span><span class="o">:</span> <span class="mi">30</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 获取value</span>
+</span><span class='line'><span class="n">dict</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 遍历字典</span>
+</span><span class='line'><span class="k">for</span> <span class="n">key</span> <span class="k">in</span> <span class="n">dict</span><span class="p">.</span><span class="n">keys</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">print</span><span class="p">(</span><span class="n">dict</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 利用元祖类型遍历字典, 会自动将字典中的key赋值给元祖中的第一个变量, 将value赋值给元祖中的第二个变量</span>
+</span><span class='line'><span class="c1">// 注意: 第一个是key, 第二个value</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="n">kk</span><span class="p">,</span> <span class="n">vv</span><span class="p">)</span> <span class="k">in</span> <span class="n">dict</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">print</span><span class="p">(</span><span class="n">kk</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">print</span><span class="p">(</span><span class="n">vv</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// 新增key / value</span>
+</span><span class='line'><span class="c1">// 如果对应的key在字典中没有, 那么就会新增</span>
+</span><span class='line'><span class="k">var</span> <span class="n">dict2</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;ls&quot;</span><span class="p">,</span> <span class="s">&quot;age&quot;</span><span class="o">:</span> <span class="mi">30</span><span class="p">]</span>
+</span><span class='line'><span class="n">dict2</span><span class="p">[</span><span class="s">&quot;gender&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;man&quot;</span>
+</span><span class='line'><span class="n">dict2</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 更新key / value</span>
+</span><span class='line'><span class="c1">// 如果对应的key在字典中有, 那么就会更新</span>
+</span><span class='line'><span class="n">dict2</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;zs&quot;</span>
+</span><span class='line'><span class="n">dict2</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 删除</span>
+</span><span class='line'><span class="n">dict2</span><span class="p">.</span><span class="n">removeValueForKey</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="n">dict2</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 更新字典</span>
+</span><span class='line'><span class="n">dict2</span><span class="p">.</span><span class="n">updateValue</span><span class="p">(</span><span class="s">&quot;20&quot;</span><span class="p">,</span> <span class="nl">forKey</span><span class="p">:</span> <span class="s">&quot;age&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="n">dict2</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 合并字典</span>
+</span><span class='line'><span class="k">var</span> <span class="n">dict3</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;score&quot;</span><span class="o">:</span> <span class="mi">99</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="k">in</span> <span class="n">dict3</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">dict2</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="n">dict2</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Swift-函数]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/09/01/swift-han-shu/"/>
+    <updated>2015-09-01T09:20:31+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/09/01/swift-han-shu</id>
+    <content type="html"><![CDATA[<!--more-->
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+</pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="c1">//: Playground - noun: a place where people can play</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">import</span> <span class="n">UIKit</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/*</span>
+</span><span class='line'><span class="cm">Swift定义函数的格式:</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">语义: 将前面计算的结果返回给  -&gt; 返回值</span>
+</span><span class='line'><span class="cm">func 函数名称(参数列表) -&gt; 返回值</span>
+</span><span class='line'><span class="cm">{</span>
+</span><span class='line'><span class="cm">    执行代码</span>
+</span><span class='line'><span class="cm">}</span>
+</span><span class='line'><span class="cm">*/</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 没有返回值没有参数</span>
+</span><span class='line'><span class="c1">// 如果函数没有返回值, 就写Void</span>
+</span><span class='line'><span class="c1">// 如果函数没有返回值还可以简写</span>
+</span><span class='line'><span class="c1">// 1. () 替代 Void</span>
+</span><span class='line'><span class="c1">// 2. 可以省略 -&gt; ()  -&gt;Void</span>
+</span><span class='line'><span class="k">func</span> <span class="n">say</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Void</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">print</span><span class="p">(</span><span class="s">&quot;hello&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="n">say</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">func</span> <span class="n">say2</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">print</span><span class="p">(</span><span class="s">&quot;hello&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="n">say2</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">func</span> <span class="n">say3</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">print</span><span class="p">(</span><span class="s">&quot;hello&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="n">say3</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 有返回值没有参数</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">func</span> <span class="n">getNumber</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Int</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="mi">998</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="n">print</span><span class="p">(</span><span class="n">getNumber</span><span class="p">())</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 有参数没有返回值</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//- (void)sum:(int)a b:(int)b</span>
+</span><span class='line'><span class="c1">// Swift2.0中, 会自动将形参列表中的第二个参数开始的参数名称作为便签, 以便于提高阅读性</span>
+</span><span class='line'><span class="c1">// Swift2.0之前, 不会这样</span>
+</span><span class='line'><span class="k">func</span> <span class="n">sum</span><span class="p">(</span><span class="nl">a</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span> <span class="nl">b</span><span class="p">:</span> <span class="n">Int</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">print</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="n">sum</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="nl">b</span><span class="p">:</span> <span class="mi">20</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 添加标签, 添加外部参数</span>
+</span><span class='line'><span class="c1">// x/y称之为外部参数, a/b称之为内部参数</span>
+</span><span class='line'><span class="k">func</span> <span class="n">sum2</span><span class="p">(</span><span class="n">x</span> <span class="nl">a</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span><span class="n">y</span> <span class="nl">b</span><span class="p">:</span> <span class="n">Int</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">print</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="n">sum2</span><span class="p">(</span><span class="nl">x</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="nl">y</span><span class="p">:</span> <span class="mi">20</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Swift2.0之前的写法, 只要加上#那么a/b既是外部参数, 也是内部参数</span>
+</span><span class='line'><span class="c1">//func sum2(#a: Int,#b: Int)</span>
+</span><span class='line'><span class="c1">//{</span>
+</span><span class='line'><span class="c1">//    print(a + b)</span>
+</span><span class='line'><span class="c1">//}</span>
+</span><span class='line'><span class="c1">//sum2(a: 10, b: 20)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 有参数有返回值</span>
+</span><span class='line'><span class="k">func</span> <span class="n">sum4</span><span class="p">(</span><span class="nl">a</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span> <span class="nl">b</span><span class="p">:</span> <span class="n">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Int</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="n">print</span><span class="p">(</span><span class="n">sum4</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="nl">b</span><span class="p">:</span> <span class="mi">30</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Swift-数组]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/09/01/swift-shu-zu/"/>
+    <updated>2015-09-01T08:44:08+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/09/01/swift-shu-zu</id>
+    <content type="html"><![CDATA[<h1>数组</h1>
+
+<h2>简单体验</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='swift'><span class='line'><span class="k">let</span> <span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;zhangsan&quot;</span><span class="p">,</span> <span class="s">&quot;lisi&quot;</span><span class="p">]</span>
+</span><span class='line'><span class="n">print</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 遍历每一个元素</span>
+</span><span class='line'><span class="k">for</span> <span class="n">a</span> <span class="k">in</span> <span class="n">arr</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 像 OC 一样打印</span>
+</span><span class='line'><span class="n">print</span><span class="p">(</span><span class="n">arr</span> <span class="kt">as</span> <span class="bp">NSArray</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<!--more-->
+
+
+<h2>数组中保存的对象类型</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='swift'><span class='line'><span class="c1">// 数组中保存的都是字符串</span>
+</span><span class='line'><span class="k">let</span> <span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;zhangsan&quot;</span><span class="p">,</span> <span class="s">&quot;lisi&quot;</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 数组中保存的是 NSObject</span>
+</span><span class='line'><span class="k">let</span> <span class="n">arr1</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;zhangsan&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>阶段性小结
+
+<ul>
+<li>数组使用 [] 定义，这一点与 OC 相同</li>
+<li>如果初始化时，所有内容类型一致，则数组中保存的是该类型的内容</li>
+<li>如果初始化时，所有内容类型不一致，则数组中保存的是 <code>NSObject</code></li>
+</ul>
+</li>
+</ul>
+
+
+<h2>常见数组操作</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+</pre></td><td class='code'><pre><code class='swift'><span class='line'><span class="c1">// 定义只能保存字符串类型数组</span>
+</span><span class='line'><span class="k">var</span> <span class="nl">array</span><span class="p">:</span> <span class="p">[</span><span class="n">String</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 初始化数组</span>
+</span><span class='line'><span class="n">array</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;zhangsan&quot;</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 添加元素</span>
+</span><span class='line'><span class="n">array</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;lisi&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">print</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 删除元素</span>
+</span><span class='line'><span class="n">array</span><span class="p">.</span><span class="n">removeAtIndex</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'><span class="n">print</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 删除所有元素</span>
+</span><span class='line'><span class="c1">// 删除所有, 如果传入true代表删除之后需要保持数组现有的容量, 如果传入false代表不保持当前容量</span>
+</span><span class='line'><span class="n">array</span><span class="p">.</span><span class="n">removeAll</span><span class="p">(</span><span class="nl">keepCapacity</span><span class="p">:</span> <span class="nb">true</span><span class="p">)</span>
+</span><span class='line'><span class="n">print</span><span class="p">(</span><span class="n">array</span><span class="p">.</span><span class="n">capacity</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm">1,注意数组容量的变化</span>
+</span><span class='line'><span class="cm"> 1&gt;如果数组容量不够,则在当前基础上乘2</span>
+</span><span class='line'><span class="cm"> 2&gt;如果容量足够,继续添加数据,不足则重复那步骤:1&gt;</span>
+</span><span class='line'><span class="cm">*/</span>
+</span><span class='line'><span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mf">0.</span><span class="p">.</span><span class="o">&lt;</span><span class="mi">10</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">array</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;\(i)&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">print</span><span class="p">(</span><span class="s">&quot;\(array) --- \(array.capacity)&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> 实例化新的数组</span>
+</span><span class='line'><span class="cm"> 1,Swift中, 如果一个变量没有初始化是不能被使用的</span>
+</span><span class='line'><span class="cm"> 2, [[xx alloc]initWithXXX:]  &lt;==&gt;  (XXX:)</span>
+</span><span class='line'><span class="cm">       [[XX alloc]init] &lt;==&gt; ()</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">var</span> <span class="n">array2</span> <span class="o">=</span> <span class="p">[</span><span class="n">String</span><span class="p">]()</span>
+</span><span class='line'><span class="n">array2</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;1&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">var</span> <span class="nl">array3</span><span class="p">:[</span><span class="n">String</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;a&quot;</span><span class="p">,</span><span class="s">&quot;b&quot;</span><span class="p">]</span>
+</span><span class='line'><span class="n">array3</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;2&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 拼接数组</span>
+</span><span class='line'><span class="c1">// 注意点: 只有相同类型的数组才能进行合并</span>
+</span><span class='line'><span class="c1">// Swift是强语言, 不同数据类型不能进行运算</span>
+</span><span class='line'><span class="n">array</span> <span class="o">+=</span> <span class="n">array2</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">print</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 打印数组的长度</span>
+</span><span class='line'><span class="n">array2</span><span class="p">.</span><span class="n">count</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>阶段性小结
+
+<ul>
+<li>如果定义数组时指定了保存对象的类型，择不能向数组中添加其他类型的内容</li>
+<li>可以使用 <code>[String]()</code></li>
+<li><code>let</code> 定义的数组是<code>不可变的</code></li>
+<li><code>var</code> 定义的数组是<code>可变的</code></li>
+</ul>
+</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Swift-逻辑分支]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/09/01/swift-luo-ji-fen-zhi/"/>
+    <updated>2015-09-01T08:33:55+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/09/01/swift-luo-ji-fen-zhi</id>
+    <content type="html"><![CDATA[<h3>if语句</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='swift'><span class='line'><span class="k">let</span> <span class="n">num</span> <span class="o">=</span> <span class="mi">10</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="n">num</span> <span class="o">==</span> <span class="mi">10</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">print</span><span class="p">(</span><span class="s">&quot;OK&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//if num {</span>
+</span><span class='line'><span class="c1">//    print(&quot;OK&quot;)</span>
+</span><span class='line'><span class="c1">//}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>Swift中的if的使用方式"基本上"和OC一致
+
+<ul>
+<li><code>Swift</code> 中没有 C 语言中的<code>非零即真</code>概念,在Swift中, 条件只能放bool值, 取值只有两个ture/false,在C和OC中, 有一个概念非0即真</li>
+<li>在逻辑判断时必须显示地指明具体的判断条件</li>
+<li><code>if</code> 语句条件的 <code>()</code> 可以省略</li>
+<li>但是 <code>{}</code> 不能省略</li>
+</ul>
+</li>
+</ul>
+
+
+<!--more-->
+
+
+<h4>if..else语句</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="k">let</span> <span class="n">num</span>  <span class="o">=</span> <span class="mi">10</span>
+</span><span class='line'><span class="k">if</span> <span class="n">num</span> <span class="o">==</span> <span class="mi">5</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">print</span><span class="p">(</span><span class="s">&quot;5&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span><span class="k">else</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">print</span><span class="p">(</span><span class="s">&quot;10&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/*</span>
+</span><span class='line'><span class="cm">在OC中 if else 可以使用三目运算符来简写</span>
+</span><span class='line'><span class="cm">注意: 在做Swift开发中三目运算符用得非常非常多</span>
+</span><span class='line'><span class="cm">*/</span>
+</span><span class='line'><span class="k">let</span> <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="n">num</span> <span class="o">==</span> <span class="mi">5</span><span class="p">)</span> <span class="o">?</span> <span class="mi">5</span> <span class="o">:</span> <span class="mi">10</span>
+</span><span class='line'><span class="n">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>Swift中通常使用三目运算符代替if..else</li>
+<li>Swift中的 <code>三目</code> 运算保持了和 OC 一致的风格
+
+<h4>switch语句</h4></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='swift'><span class='line'><span class="k">switch</span> <span class="n">num</span><span class="p">{</span>
+</span><span class='line'>    <span class="k">case</span> <span class="mi">1</span><span class="o">:</span>
+</span><span class='line'>        <span class="n">print</span><span class="p">(</span><span class="s">&quot;1&quot;</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">let</span> <span class="n">value</span> <span class="o">=</span> <span class="mi">998</span>
+</span><span class='line'>    <span class="k">case</span> <span class="mi">5</span><span class="o">:</span>
+</span><span class='line'>        <span class="n">print</span><span class="p">(</span><span class="s">&quot;5&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">case</span> <span class="mi">10</span><span class="o">:</span>
+</span><span class='line'>        <span class="n">print</span><span class="p">(</span><span class="s">&quot;10&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">default</span><span class="o">:</span>
+</span><span class='line'>        <span class="n">print</span><span class="p">(</span><span class="s">&quot;other&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>Swift中的switch
+
+<ul>
+<li>后面的()可以省略</li>
+<li>OC中的switch如果没有break会穿透, 尽管后面不满足条件,也会执行
+
+<ul>
+<li>但是Swift中不会, Swift不会穿透</li>
+</ul>
+</li>
+<li>OC中如果要在case中间定义变量, 必须加上{}确定作用域,
+
+<ul>
+<li>而Swift中不用</li>
+</ul>
+</li>
+<li>OC中default的位置可以随便写, 只有所有case都不满足才会执行default
+
+<ul>
+<li>而Swift中的default只能放在最后</li>
+</ul>
+</li>
+<li>OC中的default可以省略,
+
+<ul>
+<li>Swift中"大部分"情况下不能省略</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<h3>for语句</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+</pre></td><td class='code'><pre><code class='swift'><span class='line'><span class="cm">/*</span>
+</span><span class='line'><span class="cm">普通for循环, 和OC中基本一致</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">*/</span>
+</span><span class='line'><span class="c1">// 0~9</span>
+</span><span class='line'><span class="k">for</span> <span class="k">var</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span><span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span><span class="n">i</span><span class="o">++</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Swift特色循环</span>
+</span><span class='line'><span class="c1">// 0..&lt;10 代表一个区间范围 从0开始到9, 包含头不包含尾</span>
+</span><span class='line'><span class="c1">// Swift1.0时 0..10</span>
+</span><span class='line'><span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mf">0.</span><span class="p">.</span><span class="o">&lt;</span><span class="mi">10</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// _ 代表忽略, 如果不关心某个参数, 就可以使用_</span>
+</span><span class='line'><span class="c1">// 在Swift开发中 _ 使用频率非常高</span>
+</span><span class='line'><span class="k">for</span> <span class="n">_</span> <span class="k">in</span> <span class="mf">0.</span><span class="p">.</span><span class="o">&lt;</span><span class="mi">10</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">print</span><span class="p">(</span><span class="s">&quot;lnj&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 0...10 代表一个区间范围 从0开始到10, 包含头又包含尾</span>
+</span><span class='line'><span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mf">0.</span><span class="p">.</span><span class="mf">.10</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>for语句总结
+
+<ul>
+<li>&ldquo;0..&lt;10"中的<code>..&lt;</code>代表左开右闭区间,取值从0到9,左右两个数字跟该符号之间不要有空格</li>
+<li>&ldquo;0&hellip;10"中的<code>...</code>代表闭区间,取值从0到10</li>
+<li>循环中<code>_</code>下划线代表不关心参数的具体值</li>
+</ul>
+</li>
+</ul>
+
+
+<h4>while和repeat&hellip;while语句</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='swift'><span class='line'><span class="cm">/*</span>
+</span><span class='line'><span class="cm">Swift中的while循环和OC中差不多, 而且在开发中很少使用while</span>
+</span><span class='line'><span class="cm">*/</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">var</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'><span class="k">while</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="mi">10</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">a</span><span class="o">++</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/*</span>
+</span><span class='line'><span class="cm">Swift升级到2.0之后, do while循环发生了很大的变化</span>
+</span><span class='line'><span class="cm">do while没有do了, 因为do被用作捕获异常了</span>
+</span><span class='line'><span class="cm">*/</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">var</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span class='line'><span class="n">repeat</span><span class="p">{</span>
+</span><span class='line'>    <span class="n">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">b</span><span class="o">++</span>
+</span><span class='line'><span class="p">}</span><span class="k">while</span> <span class="n">b</span><span class="o">&lt;</span><span class="mi">10</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+    - while和repeat&hellip;while之后的条件中的括号可以省略
+    - oc和c中的do&hellip;while在Swift中改为repeat&hellip;.while
+    - Swift中的do用作捕获异常</p>
+
+<h3>可选项<code>?</code>和<code>!</code></h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="k">let</span> <span class="n">url1</span> <span class="o">=</span> <span class="bp">NSURL</span><span class="p">(</span><span class="nl">string</span><span class="p">:</span> <span class="s">&quot;http://www.baidu.com/&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="n">url1</span> <span class="o">!=</span> <span class="nb">nil</span> <span class="p">{</span>
+</span><span class='line'>    <span class="bp">NSURLSession</span><span class="p">.</span><span class="n">sharedSession</span><span class="p">().</span><span class="n">dataTaskWithURL</span><span class="p">(</span><span class="n">url</span><span class="o">!</span><span class="p">,</span> <span class="nl">completionHandler</span><span class="p">:</span> <span class="p">{</span> <span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Void</span> <span class="k">in</span>
+</span><span class='line'>        <span class="n">print</span><span class="p">(</span><span class="bp">NSString</span><span class="p">(</span><span class="nl">data</span><span class="p">:</span> <span class="n">data</span><span class="o">!</span><span class="p">,</span> <span class="nl">encoding</span><span class="p">:</span> <span class="n">NSUTF8StringEncoding</span><span class="p">))</span>
+</span><span class='line'>    <span class="p">}).</span><span class="n">resume</span><span class="p">()</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>在 <code>Swift</code> 中，不是所有的对象实例化方法都会返回值，在实际开发中需要注意实例化函数的返回类型，例如<code>option</code>键+<code>点击NSURL的string方法</code>声明如下:</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='swift'><span class='line'><span class="n">convenience</span> <span class="k">init</span><span class="o">?</span><span class="p">(</span><span class="n">string</span> <span class="nl">URLString</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>如果有 <code>?</code> 表示改方法有可能无法实例化到正确的对象
+
+<ul>
+<li>这种函数返回的对象，被称为 <code>可选项</code>，即有可能有值，也有可能没有值</li>
+<li>实际开发时，需要针对这种对象加以<code>判断</code>，并且在分支内部使用 <code>!</code>，指明改对象确实是存在的</li>
+<li>相比在 <code>OC</code> 的开发，尤其在日常练习时，会给定一个能够运行的值，而在实际运行时，一旦条件不满足，会直接闪退，这样用户体验会非常不好</li>
+<li>使用可选类型需要注意, 如果直接打印可选了类型, 那么打印出来的值会被Optional包裹</li>
+</ul>
+</li>
+<li>! 代表告诉编译器, 可选类型中一定有值, 强制解析,如果可选类型中没有值, 而又进行了强制解析, 那么程序就会崩溃,因此提供可选绑定的方法改进:</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="k">if</span> <span class="k">let</span> <span class="n">url</span> <span class="o">=</span> <span class="bp">NSURL</span><span class="p">(</span><span class="nl">string</span><span class="p">:</span> <span class="s">&quot;http://baidu.com&quot;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="bp">NSURLSession</span><span class="p">.</span><span class="n">sharedSession</span><span class="p">().</span><span class="n">dataTaskWithURL</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="nl">completionHandler</span><span class="p">:</span> <span class="p">{</span> <span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Void</span> <span class="k">in</span>
+</span><span class='line'>        <span class="n">print</span><span class="p">(</span><span class="bp">NSString</span><span class="p">(</span><span class="nl">data</span><span class="p">:</span> <span class="n">data</span><span class="o">!</span><span class="p">,</span> <span class="nl">encoding</span><span class="p">:</span> <span class="n">NSUTF8StringEncoding</span><span class="p">))</span>
+</span><span class='line'>    <span class="p">}).</span><span class="n">resume</span><span class="p">()</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>阶段性小结</p>
+
+<ul>
+<li>使用 <code>if let 常量 = 可选构造函数</code> 的方式能够确保分支内部常量一定是有值的
+
+<ul>
+<li>如果<code>常量</code>有值才执行大括号内部的代码</li>
+<li>`常量只是用来表示</li>
+</ul>
+</li>
+<li>并且在分支内部不再需要使用 <code>!</code></li>
+<li>这是 <code>Swift</code> 代码中的一个非常重要的使用技巧</li>
+</ul>
+</li>
+<li><p>提示</p>
+
+<ul>
+<li>尽管 <code>Swift</code> 提供了类型校验的手段，但是要写出 <code>优雅</code> 的 Swift 代码，还是需要多加练习的，否则一不小心就会出现分支嵌套层次很深的代码</li>
+<li>有关 <code>?</code> 和 <code>!</code> 的选择，可以借助 Xcode 的辅助工具，但是强烈建议每次遇到提示时，要多加思考，反复揣摩</li>
+</ul>
+</li>
+</ul>
+
+
+<h4><code>??</code>的使用</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='swift'><span class='line'><span class="k">var</span> <span class="nl">name</span><span class="p">:</span> <span class="n">String</span><span class="o">?</span>
+</span><span class='line'><span class="n">print</span><span class="p">(</span><span class="n">name</span><span class="o">?</span><span class="p">.</span><span class="n">lengthOfBytesUsingEncoding</span><span class="p">(</span><span class="n">NSUTF8StringEncoding</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;lnj&quot;</span>
+</span><span class='line'><span class="n">print</span><span class="p">(</span><span class="n">name</span><span class="o">?</span><span class="p">.</span><span class="n">lengthOfBytesUsingEncoding</span><span class="p">(</span><span class="n">NSUTF8StringEncoding</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="n">l</span> <span class="o">=</span> <span class="mi">10</span>
+</span><span class='line'><span class="n">print</span><span class="p">(</span><span class="n">l</span> <span class="o">+</span> <span class="p">(</span><span class="n">name</span><span class="o">?</span><span class="p">.</span><span class="n">lengthOfBytesUsingEncoding</span><span class="p">(</span><span class="n">NSUTF8StringEncoding</span><span class="p">)</span> <span class="o">??</span> <span class="mi">0</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>阶段性小结
+
+<ul>
+<li><code>??</code> 是一个非常有用的操作符，能够快速对 <code>nil</code> 进行判断</li>
+<li>如果对象是 <code>nil</code>，则使用 <code>??</code> 后面的值代替前面的 <code>nil</code> 值参与计算</li>
+<li>在使用 <code>??</code> 时，整个部分需要使用 <code>()</code> 包装</li>
+<li>这一技巧在 <code>UITableView</code> 的数据源方法中尤为重要</li>
+</ul>
+</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Swift-初体验]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/09/01/swift-chu-ti-yan/"/>
+    <updated>2015-09-01T08:29:01+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/09/01/swift-chu-ti-yan</id>
+    <content type="html"><![CDATA[<h3>初体验</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='swift'><span class='line'><span class="k">import</span> <span class="n">UIKit</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/*</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">    创建对象：</span>
+</span><span class='line'><span class="cm">    OC： alloc / initWithXXX</span>
+</span><span class='line'><span class="cm">    Swift： （XXX：）</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">    调方法</span>
+</span><span class='line'><span class="cm">    OC [UIColor redColor];</span>
+</span><span class='line'><span class="cm">    Swift: UIColor.redColor()</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">    枚举：</span>
+</span><span class='line'><span class="cm">    OC： UIButtonTypeContactAdd</span>
+</span><span class='line'><span class="cm">    Swift: UIButtonType.ContactAdd</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">    创建结构体:</span>
+</span><span class='line'><span class="cm">    OC CGPointMake()</span>
+</span><span class='line'><span class="cm">    Swift : CGPoint()</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">*/</span>
+</span><span class='line'><span class="k">let</span> <span class="n">view</span> <span class="o">=</span> <span class="bp">UIView</span><span class="p">(</span><span class="nl">frame</span><span class="p">:</span> <span class="bp">CGRect</span><span class="p">(</span><span class="nl">x</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nl">y</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nl">width</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="nl">height</span><span class="p">:</span> <span class="mi">100</span><span class="p">))</span>
+</span><span class='line'><span class="n">view</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="bp">UIColor</span><span class="p">.</span><span class="n">redColor</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 枚举前面的枚举名称是可以省略的， 开发中一般不会省略</span>
+</span><span class='line'><span class="k">let</span>  <span class="n">btn</span> <span class="o">=</span> <span class="bp">UIButton</span><span class="p">(</span><span class="nl">type</span><span class="p">:</span> <span class="n">UIButtonType</span><span class="p">.</span><span class="n">ContactAdd</span><span class="p">)</span>
+</span><span class='line'><span class="n">btn</span><span class="p">.</span><span class="n">center</span> <span class="o">=</span> <span class="bp">CGPoint</span><span class="p">(</span><span class="nl">x</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="nl">y</span><span class="p">:</span> <span class="mi">50</span><span class="p">)</span>
+</span><span class='line'><span class="n">view</span><span class="p">.</span><span class="n">addSubview</span><span class="p">(</span><span class="n">btn</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<!--more-->
+
+
+<h3>常量和变量</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='swift'><span class='line'><span class="c1">//: Playground - noun: a place where people can play</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">import</span> <span class="n">UIKit</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/*</span>
+</span><span class='line'><span class="cm">Swift中定义常量和变量用let/var</span>
+</span><span class='line'><span class="cm">let 代表定义一个常量</span>
+</span><span class='line'><span class="cm">var 代表定义一个变量</span>
+</span><span class='line'><span class="cm">Swift中定义常量和变量不需要写数据类型, 编译器会根据我们后面数据的真实类型自动推断</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">Swift开发技巧: 在做Swift开发中, 我们需要经常使用option + click键来查看方法或者变量</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">int a = 10;</span>
+</span><span class='line'><span class="cm">let a = 10.1</span>
+</span><span class='line'><span class="cm">*/</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 常量</span>
+</span><span class='line'><span class="k">let</span> <span class="n">num</span> <span class="o">=</span> <span class="mf">10.1</span>
+</span><span class='line'><span class="c1">//num = 9.8 // 常量不能修改</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 变量</span>
+</span><span class='line'><span class="c1">// 注意点: Siwft开发中每一条语句后面可以不写分号, 但是写上也不会报错</span>
+</span><span class='line'><span class="c1">//        如果同一行有多条语句, 那么每条语句后面必须写上分号</span>
+</span><span class='line'><span class="k">var</span> <span class="n">value</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+</span><span class='line'><span class="n">value</span> <span class="o">=</span> <span class="mi">8</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 相当于OC中的NSLog</span>
+</span><span class='line'><span class="n">print</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>类型转换</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='swift'><span class='line'><span class="c1">//: Playground - noun: a place where people can play</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">import</span> <span class="n">UIKit</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/*</span>
+</span><span class='line'><span class="cm">Swift中不存在隐式类型转换, 所有的类型转换都必须是显示的</span>
+</span><span class='line'><span class="cm">*/</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="n">num1</span> <span class="o">=</span> <span class="mi">10</span>
+</span><span class='line'><span class="k">let</span> <span class="n">num2</span> <span class="o">=</span> <span class="mf">9.9</span>
+</span><span class='line'><span class="k">let</span> <span class="n">iSum</span> <span class="o">=</span> <span class="n">num1</span> <span class="o">+</span> <span class="n">Int</span><span class="p">(</span><span class="n">num2</span><span class="p">)</span>
+</span><span class='line'><span class="k">let</span> <span class="n">dSum</span> <span class="o">=</span> <span class="n">Double</span><span class="p">(</span><span class="n">num1</span><span class="p">)</span> <span class="o">+</span> <span class="n">num2</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Swift是强语言 / OC是弱语言</span>
+</span><span class='line'><span class="c1">//let num: Int = 10.1</span>
+</span><span class='line'><span class="k">let</span> <span class="nl">num3</span><span class="p">:</span> <span class="n">Int</span> <span class="o">=</span> <span class="mi">10</span>
+</span><span class='line'><span class="k">let</span> <span class="nl">num4</span><span class="p">:</span> <span class="n">Int</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mf">10.1</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -3578,1641 +4928,6 @@
 
 
 <p><img src="http://xiaobenmao.github.io/images/%E5%9B%BE%E7%89%87%E6%93%A6%E9%99%A4storyboard.png" alt="" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Quartz2d-截屏(指定控件)]]></title>
-    <link href="http://xiaobenmao.github.io/blog/2014/07/15/quartz2d-jie-ping-zhi-ding-kong-jian/"/>
-    <updated>2014-07-15T17:38:26+08:00</updated>
-    <id>http://xiaobenmao.github.io/blog/2014/07/15/quartz2d-jie-ping-zhi-ding-kong-jian</id>
-    <content type="html"><![CDATA[<!--more-->
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E6%88%AA%E5%8F%96%E5%B1%8F%E5%B9%95.png" alt="" /></p>
-
-<p><img src="http://xiaobenmao.github.io/images/%E6%88%AA%E5%B1%8F.png" alt="" /></p>
-
-<p><img src="http://xiaobenmao.github.io/images/%E6%88%AA%E5%B1%8F1.png" alt="" />
-- 为UIImage增加一个分类,返回截取指定控件的图片</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'>   <span class="cm">/*</span>
-</span><span class='line'><span class="cm">    *屏幕截图简介:</span>
-</span><span class='line'><span class="cm">    *屏幕截图:把屏幕的内容截屏生成一张新的图片</span>
-</span><span class='line'><span class="cm">    * 通常开发中，都是把控制器的内容截屏，生成新的图片</span>
-</span><span class='line'><span class="cm">    * 控制器怎么显示？根据view</span>
-</span><span class='line'><span class="cm">    * view怎么显示? 根据layer图层</span>
-</span><span class='line'><span class="cm">    * 把layer渲染到位图上下文</span>
-</span><span class='line'><span class="cm">    * 注意：图层只能用渲染，图片和文字可以用draw</span>
-</span><span class='line'><span class="cm">    * 渲染在哪?新的图片</span>
-</span><span class='line'><span class="cm">    * 开启图片上下文,和视图一样的尺寸</span>
-</span><span class='line'><span class="cm">    * 写入桌面</span>
-</span><span class='line'><span class="cm">    * 抽分类</span>
-</span><span class='line'><span class="cm">    */</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nl">renderInContext</span><span class="p">:</span><span class="err">把调用者控件的</span><span class="n">layer</span><span class="err">渲染到当前位图上下文</span><span class="n">ctx</span><span class="err">中</span><span class="p">,</span><span class="err">进行操作</span><span class="p">,</span><span class="err">可以获取图片</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="bp">UIImage</span> <span class="nl">(Image)</span>
-</span><span class='line'><span class="c1">// 控件截屏</span>
-</span><span class='line'><span class="p">+</span> <span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">imageWithCaputureView:</span><span class="p">(</span><span class="bp">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nv">view</span><span class="p">;</span>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#import &quot;UIImage+Image.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="bp">UIImage</span> <span class="nl">(Image)</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">+</span> <span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">imageWithCaputureView:</span><span class="p">(</span><span class="bp">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nv">view</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// 开启位图上下文</span>
-</span><span class='line'>    <span class="n">UIGraphicsBeginImageContextWithOptions</span><span class="p">(</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">,</span> <span class="nb">NO</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 获取上下文</span>
-</span><span class='line'>    <span class="n">CGContextRef</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">UIGraphicsGetCurrentContext</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 把控件上的图层渲染到上下文,layer只能渲染</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">view</span><span class="p">.</span><span class="n">layer</span> <span class="nl">renderInContext</span><span class="p">:</span><span class="n">ctx</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 生成一张图片</span>
-</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="n">UIGraphicsGetImageFromCurrentImageContext</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 关闭上下文</span>
-</span><span class='line'>    <span class="n">UIGraphicsEndImageContext</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="n">image</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 使用</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 生成一张新的图片</span>
-</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span>  <span class="p">[</span><span class="bp">UIImage</span> <span class="nl">imageWithCaputureView</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// image转data</span>
-</span><span class='line'>    <span class="c1">// compressionQuality： 图片质量 1:最高质量</span>
-</span><span class='line'>     <span class="bp">NSData</span> <span class="o">*</span><span class="n">data</span> <span class="o">=</span> <span class="n">UIImageJPEGRepresentation</span><span class="p">(</span><span class="n">image</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 将截屏保存在指定路径,桌面</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">data</span> <span class="nl">writeToFile</span><span class="p">:</span><span class="s">@&quot;/Users/mac/Desktop/view.png&quot;</span> <span class="nl">atomically</span><span class="p">:</span><span class="nb">YES</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Quartz2d-图片剪裁(带有边框)]]></title>
-    <link href="http://xiaobenmao.github.io/blog/2014/07/15/quartz2d-tu-pian-jian-cai-dai-you-bian-kuang/"/>
-    <updated>2014-07-15T13:36:47+08:00</updated>
-    <id>http://xiaobenmao.github.io/blog/2014/07/15/quartz2d-tu-pian-jian-cai-dai-you-bian-kuang</id>
-    <content type="html"><![CDATA[<!--more-->
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E5%9B%BE%E7%89%87%E5%89%AA%E8%A3%811.png" alt="" /></p>
-
-<p><img src="http://xiaobenmao.github.io/images/%E5%9B%BE%E7%89%87%E5%89%AA%E8%A3%812.png" alt="" /></p>
-
-<ul>
-<li>核心代码
-
-<ul>
-<li>使用路径剪裁:[path addClip];</li>
-<li>使用上下文剪裁:CGContextClip(ctx);</li>
-</ul>
-</li>
-</ul>
-
-
-<h3>使用路径剪裁</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cm">/*</span>
-</span><span class='line'><span class="cm">*    图片裁剪</span>
-</span><span class='line'><span class="cm">    * 分析思路：先设置裁剪区域，把图片画上去，超出裁剪区域的自动裁剪掉。</span>
-</span><span class='line'><span class="cm">    * 加载旧图片，根据旧图片，获取上下文尺寸。</span>
-</span><span class='line'><span class="cm">    * 上下文的尺寸 = 新图片的尺寸</span>
-</span><span class='line'><span class="cm">    * 开启一个多大的上下文?:和图片尺寸一样大，避免压缩图片。如果比图片尺寸小，会压缩图片。</span>
-</span><span class='line'><span class="cm">    * 设置裁剪区域：正切于图片的圆</span>
-</span><span class='line'><span class="cm">    * 绘制旧图片</span>
-</span><span class='line'><span class="cm">    * 获取新图片</span>
-</span><span class='line'><span class="cm">    * 关闭上下文</span>
-</span><span class='line'><span class="cm">*/</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E5%89%AA%E8%A3%81%E5%89%8D.png" alt="" /></p>
-
-<p><img src="http://xiaobenmao.github.io/images/%E5%89%AA%E8%A3%81%E5%90%8E.png" alt="" /></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">clipImage</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// 0.加载图片</span>
-</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="s">@&quot;阿狸头像&quot;</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 1.开启位图上下文，跟图片尺寸一样大</span>
-</span><span class='line'>    <span class="n">UIGraphicsBeginImageContextWithOptions</span><span class="p">(</span><span class="n">image</span><span class="p">.</span><span class="n">size</span><span class="p">,</span> <span class="nb">NO</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 2.设置圆形裁剪区域，正切与图片</span>
-</span><span class='line'>    <span class="c1">// 2.1创建圆形的路径</span>
-</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="nl">bezierPathWithOvalInRect</span><span class="p">:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">image</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">image</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">)];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 2.2把路径设置为裁剪区域</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="n">addClip</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 3.绘制图片</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">image</span> <span class="nl">drawAtPoint</span><span class="p">:</span><span class="n">CGPointZero</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 4.从上下文中获取图片</span>
-</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">clipImage</span> <span class="o">=</span> <span class="n">UIGraphicsGetImageFromCurrentImageContext</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 5.关闭上下文</span>
-</span><span class='line'>    <span class="n">UIGraphicsEndImageContext</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">_imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">clipImage</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>为UIImage添加一个分类,返回一个剪裁后带有指定颜色边框的图片</li>
-</ul>
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E5%89%AA%E8%A3%81%E5%B8%A6%E6%9C%89%E8%BE%B9%E6%A1%86%E5%88%86%E6%9E%90.png" alt="" /></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cm">/*</span>
-</span><span class='line'><span class="cm">*   带圆环裁剪:在裁剪的图片外边加个小圆环。</span>
-</span><span class='line'><span class="cm">    * 分析思路：先画一个大圆，在设置裁剪区域，把图片画上去，超出裁剪区域的自动裁剪掉。</span>
-</span><span class='line'><span class="cm">    * 加载旧图片，根据旧图片，获取上下文尺寸。</span>
-</span><span class='line'><span class="cm">    * 确定圆环宽度 borderW</span>
-</span><span class='line'><span class="cm">    * 上下文的尺寸 = 新图片的尺寸</span>
-</span><span class='line'><span class="cm">    * 确定新的上下文尺寸: newImageW : oldImageW + 2 * borderW  newImageH : oldImageH + 2 * borderW，</span>
-</span><span class='line'><span class="cm">    * 绘制大圆：</span>
-</span><span class='line'><span class="cm">        1.获取上下文 2.添加路径到上下文 3.设置大圆的颜色 = 圆环的颜色 4.渲染</span>
-</span><span class='line'><span class="cm">    * 设置裁剪区域,和图片尺寸一样大，只不过，x,y不一样，x=borderW,y=borderW.</span>
-</span><span class='line'><span class="cm">    * 绘制旧图片</span>
-</span><span class='line'><span class="cm">    * 获取新图片</span>
-</span><span class='line'><span class="cm">    * 关闭上下文</span>
-</span><span class='line'><span class="cm">    * 抽分类，3个参数，图片名称，圆环宽度，圆环颜色</span>
-</span><span class='line'><span class="cm">*/</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E5%89%AA%E8%A3%81%E5%B8%A6%E6%9C%89%E8%BE%B9%E6%A1%86.png" alt="" /></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="bp">UIImage</span> <span class="nl">(Image)</span>
-</span><span class='line'><span class="p">+</span> <span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">imageWithClipImage:</span><span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">image</span> <span class="nf">borderWidth:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">borderWidth</span> <span class="nf">borderColor:</span><span class="p">(</span><span class="bp">UIColor</span> <span class="o">*</span><span class="p">)</span><span class="nv">color</span><span class="p">;</span>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#import &quot;UIImage+Image.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="bp">UIImage</span> <span class="nl">(Image)</span>
-</span><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm"> *  带有外框的图片剪裁</span>
-</span><span class='line'><span class="cm"> *</span>
-</span><span class='line'><span class="cm"> *  @param image       所要剪裁的图片</span>
-</span><span class='line'><span class="cm"> *  @param borderWidth 边框宽度</span>
-</span><span class='line'><span class="cm"> *  @param color       边框宽度</span>
-</span><span class='line'><span class="cm"> *</span>
-</span><span class='line'><span class="cm"> *  @return 剪裁好的图片</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="p">+</span> <span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">imageWithClipImage:</span><span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">image</span> <span class="nf">borderWidth:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">borderWidth</span> <span class="nf">borderColor:</span><span class="p">(</span><span class="bp">UIColor</span> <span class="o">*</span><span class="p">)</span><span class="nv">color</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// 图片的宽度和高度</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">imageWH</span> <span class="o">=</span> <span class="n">image</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 设置圆环的宽度</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">border</span> <span class="o">=</span> <span class="n">borderWidth</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 圆形的宽度和高度</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">ovalWH</span> <span class="o">=</span> <span class="n">imageWH</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">border</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 1.开启上下文</span>
-</span><span class='line'>    <span class="n">UIGraphicsBeginImageContextWithOptions</span><span class="p">(</span><span class="n">CGSizeMake</span><span class="p">(</span><span class="n">ovalWH</span><span class="p">,</span> <span class="n">ovalWH</span><span class="p">),</span> <span class="nb">NO</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 2.画大圆</span>
-</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="nl">bezierPathWithOvalInRect</span><span class="p">:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ovalWH</span><span class="p">,</span> <span class="n">ovalWH</span><span class="p">)];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">color</span> <span class="n">set</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="n">fill</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 3.设置裁剪区域</span>
-</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">clipPath</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="nl">bezierPathWithOvalInRect</span><span class="p">:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="n">border</span><span class="p">,</span> <span class="n">border</span><span class="p">,</span> <span class="n">imageWH</span><span class="p">,</span> <span class="n">imageWH</span><span class="p">)];</span>
-</span><span class='line'>    <span class="c1">// 把路径设置为剪裁区域</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">clipPath</span> <span class="n">addClip</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 4.绘制图片,图片起始点是在上下文的位置</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">image</span> <span class="nl">drawAtPoint</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="n">border</span><span class="p">,</span> <span class="n">border</span><span class="p">)];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 5.获取图片</span>
-</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">clipImage</span> <span class="o">=</span> <span class="n">UIGraphicsGetImageFromCurrentImageContext</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 6.关闭上下文</span>
-</span><span class='line'>    <span class="n">UIGraphicsEndImageContext</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="n">clipImage</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 使用</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 图片裁剪：把正方形图片重新生产一张圆形的图片</span>
-</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIImage</span> <span class="nl">imageWithClipImage</span><span class="p">:[</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="s">@&quot;阿狸头像&quot;</span><span class="p">]</span> <span class="nl">borderWidth</span><span class="p">:</span><span class="mi">1</span> <span class="nl">borderColor</span><span class="p">:[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">]];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">_imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>使用上下文剪裁</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>      <span class="c1">//画圆，以便以后指定可以显示图片的范围</span>
-</span><span class='line'>      <span class="c1">//获取图形上下文</span>
-</span><span class='line'>      <span class="n">CGContextRef</span> <span class="n">ctx</span><span class="o">=</span><span class="n">UIGraphicsGetCurrentContext</span><span class="p">();</span>
-</span><span class='line'>      <span class="n">CGContextAddEllipseInRect</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">));</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="c1">//指定上下文中可以显示内容的范围就是圆的范围</span>
-</span><span class='line'>      <span class="n">CGContextClip</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
-</span><span class='line'>      <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image2</span><span class="o">=</span><span class="p">[</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="s">@&quot;me&quot;</span><span class="p">];</span>
-</span><span class='line'>      <span class="p">[</span><span class="n">image2</span> <span class="nl">drawAtPoint</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)];</span>
-</span><span class='line'> <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E5%89%AA%E8%A3%81storyboard.png" alt="" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Quartz2d-水印]]></title>
-    <link href="http://xiaobenmao.github.io/blog/2014/07/14/quartz2d-shui-yin/"/>
-    <updated>2014-07-14T11:56:32+08:00</updated>
-    <id>http://xiaobenmao.github.io/blog/2014/07/14/quartz2d-shui-yin</id>
-    <content type="html"><![CDATA[<!--more-->
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E6%B0%B4%E5%8D%B00.png" alt="" />
-- 水印需要绘制图片到新的图片上，因此需要用到位图上下文</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'>   <span class="cm">/*</span>
-</span><span class='line'><span class="cm">1&gt; 水印简介</span>
-</span><span class='line'><span class="cm">    *  图片水印作用：防止他人盗取图片，加一些Logo，生成一张新的图片。</span>
-</span><span class='line'><span class="cm">    *  怎么生成新的图片?和绘图一样的，需要拿到上下文做事情，这里也需要拿到上下文，生成一个新的图片。</span>
-</span><span class='line'><span class="cm">    *  什么上下文？位图上下文，在这个上下文画东西，就能输出到新的图片上。</span>
-</span><span class='line'><span class="cm">    *  怎么获取？之前用的都是图层上下文，系统会自动创建，但是我们位图上下文，需要我们手动创建</span>
-</span><span class='line'><span class="cm">    *  总结：只要不和view有关系的上下文，都需要我们手动创建。</span>
-</span><span class='line'><span class="cm">    *  在哪获取图像上下文，viewDidLoad, 不需要拿到系统创建的图层上下文，没必要在drawRect方法里写,直接viewDidLoad就行了。</span>
-</span><span class='line'><span class="cm">    *  怎么创建图像上下文了？之前说过跟上下文有关的以什么开头，UIGraphics</span>
-</span><span class='line'><span class="cm">    *  UIGraphicsBeginImageContextWithOptions:看注释,create bitmap，创建一个位图上下文,而且这种方法得到的图片最清晰。</span>
-</span><span class='line'><span class="cm">    *  解释参数（size:新图片尺寸 opaque: YES:不透明 NO:透明 scale:0.0 不伸缩）</span>
-</span><span class='line'><span class="cm">    *  绘制内容(图片，文字)</span>
-</span><span class='line'><span class="cm">    *  获取图片：把位图上下文的内容生成一个图片给你。</span>
-</span><span class='line'><span class="cm">    *  关闭上下文，不关闭一直占用着内存。</span>
-</span><span class='line'><span class="cm">    *  显示UIImageView上</span>
-</span><span class='line'><span class="cm">    *  保存图片，写到文件，UIImage不能写，需要转换成NSData二进制数据</span>
-</span><span class='line'><span class="cm">    *  UIImageJPEGRepresentation:可以设置图片质量</span>
-</span><span class='line'><span class="cm">    *  UIImagePNGRepresentation：把图片转换成png格式的二进制数据,png格式默认是最高清的。</span>
-</span><span class='line'><span class="cm">    *  写到桌面</span>
-</span><span class='line'><span class="cm">    */</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E6%B0%B4%E5%8D%B01.png" alt="" /></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 加载图片</span>
-</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="s">@&quot;小黄人&quot;</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="cm">/**</span>
-</span><span class='line'><span class="cm">     1,获取上下文，之前的上下文都是在view的drawRect方法中获取（跟View相关联的上下文layer上下文）</span>
-</span><span class='line'><span class="cm">     2,目前我们需要绘制图片到新的图片上，因此需要用到位图上下文</span>
-</span><span class='line'><span class="cm">     3,怎么获取位图上下文,注意位图上下文的获取方式跟layer上下文不一样。位图上下文需要我们手动创建。</span>
-</span><span class='line'><span class="cm">     4,开启一个位图上下文，注意位图上下文跟view无关联，所以不需要在drawRect.</span>
-</span><span class='line'><span class="cm">     5,开启一个位图上下文:UIGraphicsBeginImageContextWithOptions(CGSize size, BOOL opaque, CGFloat scale)</span>
-</span><span class='line'><span class="cm">     参数:</span>
-</span><span class='line'><span class="cm">        1&gt;size:位图上下文的尺寸（新图片的尺寸）</span>
-</span><span class='line'><span class="cm">        2&gt;opaque: 不透明度 YES：不透明 NO:透明，通常我们需要透明的上下文</span>
-</span><span class='line'><span class="cm">        3&gt;scale:通常不需要缩放上下文，取值为0，表示不缩放</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm">     */</span>
-</span><span class='line'>    <span class="n">UIGraphicsBeginImageContextWithOptions</span><span class="p">(</span><span class="n">image</span><span class="p">.</span><span class="n">size</span><span class="p">,</span> <span class="nb">NO</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">CGContextRef</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">UIGraphicsGetCurrentContext</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">CGContextSetRGBFillColor</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">);</span>
-</span><span class='line'>    <span class="c1">// 1.绘制原生的图片</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">image</span> <span class="nl">drawAtPoint</span><span class="p">:</span><span class="n">CGPointZero</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 2.给原生的图片添加文字</span>
-</span><span class='line'>    <span class="bp">NSString</span> <span class="o">*</span><span class="n">str</span> <span class="o">=</span> <span class="s">@&quot;MYCSDN&quot;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 创建字典属性</span>
-</span><span class='line'>    <span class="bp">NSMutableDictionary</span> <span class="o">*</span><span class="n">dict</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSMutableDictionary</span> <span class="n">dictionary</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">dict</span><span class="p">[</span><span class="n">NSForegroundColorAttributeName</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">dict</span><span class="p">[</span><span class="n">NSFontAttributeName</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIFont</span> <span class="nl">systemFontOfSize</span><span class="p">:</span><span class="mi">20</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">str</span> <span class="nl">drawAtPoint</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">528</span><span class="p">)</span> <span class="nl">withAttributes</span><span class="p">:</span><span class="n">dict</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 3.生成一张图片给我们,从上下文中获取图片</span>
-</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">imageWater</span> <span class="o">=</span> <span class="n">UIGraphicsGetImageFromCurrentImageContext</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">myImageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">imageWater</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E6%B0%B4%E5%8D%B01.png" alt="" />
-- 也可以在位图上下文里通过渲染上下文或者路径来画图形</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 加载图片</span>
-</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="s">@&quot;小黄人&quot;</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="cm">/**</span>
-</span><span class='line'><span class="cm">     1,获取上下文，之前的上下文都是在view的drawRect方法中获取（跟View相关联的上下文layer上下文）</span>
-</span><span class='line'><span class="cm">     2,目前我们需要绘制图片到新的图片上，因此需要用到位图上下文</span>
-</span><span class='line'><span class="cm">     3,怎么获取位图上下文,注意位图上下文的获取方式跟layer上下文不一样。位图上下文需要我们手动创建。</span>
-</span><span class='line'><span class="cm">     4,开启一个位图上下文，注意位图上下文跟view无关联，所以不需要在drawRect.</span>
-</span><span class='line'><span class="cm">     5,开启一个位图上下文:UIGraphicsBeginImageContextWithOptions(CGSize size, BOOL opaque, CGFloat scale)</span>
-</span><span class='line'><span class="cm">     参数:</span>
-</span><span class='line'><span class="cm">        1&gt;size:位图上下文的尺寸（新图片的尺寸）</span>
-</span><span class='line'><span class="cm">        2&gt;opaque: 不透明度 YES：不透明 NO:透明，通常我们需要透明的上下文</span>
-</span><span class='line'><span class="cm">        3&gt;scale:通常不需要缩放上下文，取值为0，表示不缩放</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm">     */</span>
-</span><span class='line'>    <span class="n">UIGraphicsBeginImageContextWithOptions</span><span class="p">(</span><span class="n">image</span><span class="p">.</span><span class="n">size</span><span class="p">,</span> <span class="nb">NO</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 1.获取上下文(位图上下文)</span>
-</span><span class='line'>    <span class="n">CGContextRef</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">UIGraphicsGetCurrentContext</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 2.描述路径</span>
-</span><span class='line'>    <span class="n">CGContextMoveToPoint</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">CGContextAddLineToPoint</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">]</span> <span class="n">set</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 3.渲染上下文</span>
-</span><span class='line'>    <span class="n">CGContextStrokePath</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span><span class="p">[</span><span class="bp">UIBezierPath</span> <span class="nl">bezierPathWithOvalInRect</span><span class="p">:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">)];</span>
-</span><span class='line'>    <span class="p">[[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">]</span> <span class="n">set</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="n">stroke</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 3.生成一张图片给我们,从上下文中获取图片</span>
-</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">imageWater</span> <span class="o">=</span> <span class="n">UIGraphicsGetImageFromCurrentImageContext</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">myImageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">imageWater</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Quartz2d-矩阵操作]]></title>
-    <link href="http://xiaobenmao.github.io/blog/2014/07/13/quartz2d-ju-zhen-cao-zuo/"/>
-    <updated>2014-07-13T08:36:24+08:00</updated>
-    <id>http://xiaobenmao.github.io/blog/2014/07/13/quartz2d-ju-zhen-cao-zuo</id>
-    <content type="html"><![CDATA[<p><img src="http://xiaobenmao.github.io/images/%E7%9F%A9%E9%98%B5%E6%93%8D%E4%BD%9C.png" alt="" /></p>
-
-<ul>
-<li><p>view之所以能够显示视图，是因为它的上面有layer,将来图形也是渲染到layer上面</p></li>
-<li><p>形变操作是对该layer的操作,从以下举例图形的旋转可以看出,旋转的时候本身中心点也改变</p></li>
-<li><p>添加顺序</p>
-
-<ul>
-<li>形变操作必须要在添加路径之前</li>
-<li>形变操作必须在使用上下文添加图形之前</li>
-</ul>
-</li>
-</ul>
-
-
-<!--more-->
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 1.获取上下文</span>
-</span><span class='line'>    <span class="n">CGContextRef</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">UIGraphicsGetCurrentContext</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 2.描述路径</span>
-</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="nl">bezierPathWithOvalInRect</span><span class="p">:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">)];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path1</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="nl">bezierPathWithRect</span><span class="p">:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">)];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">]</span> <span class="n">set</span><span class="p">];</span>
-</span><span class='line'>    <span class="c1">// 上下文矩阵操作</span>
-</span><span class='line'>    <span class="c1">// 注意:矩阵操作必须要在添加路径之前,或者在使用上下文添加图形之前</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 平移,缩放,旋转的</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//  平移</span>
-</span><span class='line'>    <span class="c1">// 参数:上下文,x方向平移量,y方向平移量</span>
-</span><span class='line'>    <span class="n">CGContextTranslateCTM</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 缩放</span>
-</span><span class='line'>    <span class="c1">// 参数:上下文,x方向缩放量,y方向缩放量</span>
-</span><span class='line'>    <span class="n">CGContextScaleCTM</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 旋转</span>
-</span><span class='line'>    <span class="c1">// 参数:上下文,旋转度数</span>
-</span><span class='line'>    <span class="n">CGContextRotateCTM</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">M_PI_4</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 3.把路径添加上下文</span>
-</span><span class='line'>    <span class="n">CGContextAddPath</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">path</span><span class="p">.</span><span class="bp">CGPath</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">CGContextAddPath</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">path1</span><span class="p">.</span><span class="bp">CGPath</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 必须放在形变之后</span>
-</span><span class='line'>    <span class="n">CGContextAddRect</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">));</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">]</span> <span class="n">set</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 4.渲染上下文</span>
-</span><span class='line'>    <span class="n">CGContextFillPath</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E5%BD%A2%E5%8F%98%E5%88%9D%E5%A7%8B%E7%8A%B6%E6%80%81.png" alt="" /></p>
-
-<p><img src="http://xiaobenmao.github.io/images/%E5%BD%A2%E5%8F%98%E5%B9%B3%E7%A7%BB.png" alt="" /></p>
-
-<p><img src="http://xiaobenmao.github.io/images/%E5%BD%A2%E5%8F%98%E7%BC%A9%E6%94%BE.png" alt="" /></p>
-
-<p><img src="http://xiaobenmao.github.io/images/%E5%BD%A2%E5%8F%98%E6%97%8B%E8%BD%AC.png" alt="" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Quartz2d-图形上下文栈]]></title>
-    <link href="http://xiaobenmao.github.io/blog/2014/07/12/quartz2d-tu-xing-shang-xia-wen-zhan/"/>
-    <updated>2014-07-12T20:32:55+08:00</updated>
-    <id>http://xiaobenmao.github.io/blog/2014/07/12/quartz2d-tu-xing-shang-xia-wen-zhan</id>
-    <content type="html"><![CDATA[<p><img src="http://xiaobenmao.github.io/images/%E5%9B%BE%E5%BD%A2%E4%B8%8A%E4%B8%8B%E6%96%87%E6%A0%88.png" alt="" /></p>
-
-<!--more-->
-
-
-<ul>
-<li><p>UIBezierPath的路径和上下文的路径是不同的,特别是在设置状态的时候,有时候不会起作用,可以使用'.CGPath'将UIkit的路径转换成CoreGraphics路径</p>
-
-<ul>
-<li>如果以后用贝瑟尔绘制图形[path stroke],应设置贝瑟尔路径状态</li>
-<li>如果渲染上下文CGContextStrokePath(ctx),上下文的状态要用上下文设置,上下文只有一条路径,或者将贝塞尔路径转换成上下文路径</li>
-</ul>
-</li>
-<li><p>如果通过上下文设置状态(宽度,颜色等),那么只有一条路径</p>
-
-<ul>
-<li>如果向获得不同的状态可以通过前后设置不同的状态实现</li>
-<li>也可以通过上下文栈实现</li>
-</ul>
-</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DrawView.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">DrawView</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 如果以后用贝瑟尔绘制图形【path stroke】,上下文的状态由贝瑟尔路径状态</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 1.获取上下文</span>
-</span><span class='line'>    <span class="n">CGContextRef</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">UIGraphicsGetCurrentContext</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 2.描述路径</span>
-</span><span class='line'>    <span class="c1">// 第一根</span>
-</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="n">bezierPath</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="nl">moveToPoint</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">125</span><span class="p">)];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="nl">addLineToPoint</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="mi">240</span><span class="p">,</span> <span class="mi">125</span><span class="p">)];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 把路径添加到上下文</span>
-</span><span class='line'>    <span class="c1">// .CGPath 可以UIkit的路径转换成CoreGraphics路径</span>
-</span><span class='line'>    <span class="n">CGContextAddPath</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">path</span><span class="p">.</span><span class="bp">CGPath</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 保存一份上下文的状态</span>
-</span><span class='line'>    <span class="n">CGContextSaveGState</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 设置上下文状态</span>
-</span><span class='line'>    <span class="n">CGContextSetLineWidth</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">]</span> <span class="n">set</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 渲染上下文</span>
-</span><span class='line'>    <span class="n">CGContextStrokePath</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 第二根</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 2.描述路径</span>
-</span><span class='line'>    <span class="c1">// 第一根</span>
-</span><span class='line'>    <span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="n">bezierPath</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="nl">moveToPoint</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="mi">125</span><span class="p">,</span> <span class="mi">10</span><span class="p">)];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="nl">addLineToPoint</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="mi">125</span><span class="p">,</span> <span class="mi">240</span><span class="p">)];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 把路径添加到上下文</span>
-</span><span class='line'>    <span class="c1">// .CGPath 可以UIkit的路径转换成CoreGraphics路径</span>
-</span><span class='line'>    <span class="n">CGContextAddPath</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">path</span><span class="p">.</span><span class="bp">CGPath</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 还原状态</span>
-</span><span class='line'>    <span class="n">CGContextRestoreGState</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//    // 设置不同的上下文状态</span>
-</span><span class='line'><span class="c1">//    CGContextSetLineWidth(ctx, 1);</span>
-</span><span class='line'><span class="c1">//</span>
-</span><span class='line'><span class="c1">//    [[UIColor blackColor] set];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 渲染上下文</span>
-</span><span class='line'>    <span class="n">CGContextStrokePath</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E5%9B%BE%E5%BD%A2%E4%B8%8A%E4%B8%8B%E6%96%87%E6%A0%88%E4%B8%89%E6%9D%A1%E7%BA%BF.png" alt="" />
-- 画三条线描述上下文栈
-    - 先保存一份初始上下文状态,CGContextSaveGState
-    - 设置第一条线的上下文状态进行设置,并保存在上下文栈
-    - 设置第二条线的上下文状态进行设置,并保存在上下文栈
-    - 设置第三条线(不设置上下文状态),如果不恢复上下文,则将上下文栈中栈顶即第二条线上下文状态取出进行设置</p>
-
-<pre><code>- 如果恢复上下文状态CGContextRestoreGState,则第三条线的上下文状态最初始的默认的上下文状态
-</code></pre>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 1.获取上下文</span>
-</span><span class='line'>    <span class="n">CGContextRef</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">UIGraphicsGetCurrentContext</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">CGContextMoveToPoint</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">125</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">CGContextAddLineToPoint</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">140</span><span class="p">,</span> <span class="mi">125</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 保存一份上下文的状态</span>
-</span><span class='line'>    <span class="n">CGContextSaveGState</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 第一条线的状态加入上下文栈</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 设置上下文状态</span>
-</span><span class='line'>    <span class="n">CGContextSetLineWidth</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">]</span> <span class="n">set</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 渲染上下文</span>
-</span><span class='line'>    <span class="n">CGContextStrokePath</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 第二根线</span>
-</span><span class='line'>    <span class="n">CGContextMoveToPoint</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">90</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">CGContextAddLineToPoint</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">140</span><span class="p">,</span> <span class="mi">185</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 第二条线的状态加入上下文栈</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 设置上下文状态</span>
-</span><span class='line'>    <span class="n">CGContextSetLineWidth</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[[</span><span class="bp">UIColor</span> <span class="n">blueColor</span><span class="p">]</span> <span class="n">set</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 渲染上下文</span>
-</span><span class='line'>    <span class="n">CGContextStrokePath</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 第三根</span>
-</span><span class='line'>    <span class="n">CGContextMoveToPoint</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">125</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">CGContextAddLineToPoint</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">125</span><span class="p">,</span> <span class="mi">240</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 还原状态 ,则为最原始的默认上下文状态</span>
-</span><span class='line'>    <span class="c1">//CGContextRestoreGState(ctx);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//不还原状态,则取出图形上下文栈中即第二条的状态进行设置</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 渲染上下文</span>
-</span><span class='line'>    <span class="n">CGContextStrokePath</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E4%B8%8A%E4%B8%8B%E6%96%87%E6%A0%88.png" alt="" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Quartz2d-绘制图片和模仿UIImageView]]></title>
-    <link href="http://xiaobenmao.github.io/blog/2014/07/11/quartz2d-hui-zhi-tu-pian-he-mo-fang-uiimageview/"/>
-    <updated>2014-07-11T17:31:01+08:00</updated>
-    <id>http://xiaobenmao.github.io/blog/2014/07/11/quartz2d-hui-zhi-tu-pian-he-mo-fang-uiimageview</id>
-    <content type="html"><![CDATA[<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 超出裁剪区域的内容全部裁剪掉</span>
-</span><span class='line'>    <span class="c1">// 注意：裁剪必须放在绘制之前</span>
-</span><span class='line'>    <span class="n">UIRectClip</span><span class="p">(</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">));</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="s">@&quot;阿狸头像&quot;</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 默认绘制的内容尺寸跟图片尺寸一样大</span>
-</span><span class='line'>    <span class="c1">//[image drawAtPoint:CGPointZero];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 在矩形区域内拉伸</span>
-</span><span class='line'>    <span class="c1">//[image drawInRect:rect];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 将图片原比例平铺</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">image</span> <span class="nl">drawAsPatternInRect</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="n">bounds</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<!--more-->
-
-
-<ul>
-<li><p>画图片drawAtPoint
-<img src="http://xiaobenmao.github.io/images/%E7%94%BB%E5%9B%BE%E7%89%87drawAtPoint.png" alt="" /></p></li>
-<li><p>画图片drawInRect
-<img src="http://xiaobenmao.github.io/images/%E7%94%BB%E5%9B%BE%E7%89%87drawInRect.png" alt="" /></p></li>
-<li><p>画图片平铺
-<img src="http://xiaobenmao.github.io/images/%E7%94%BB%E5%9B%BE%E7%89%87%E5%B9%B3%E9%93%BA.png" alt="" /></p></li>
-<li><p>系统UIimageView设置图片</p></li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 默认图片把控件填充，图片的尺寸跟控件尺寸一样大</span>
-</span><span class='line'>    <span class="c1">//UIImageView *imageV = [[UIImageView alloc] initWithFrame:CGRectMake(50, 50, 200, 350)];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 默认imagView的尺寸和image的尺寸一样大</span>
-</span><span class='line'>    <span class="bp">UIImageView</span> <span class="o">*</span><span class="n">imageV</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithImage</span><span class="p">:[</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="s">@&quot;阿狸头像&quot;</span><span class="p">]];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//imageV.image = [UIImage imageNamed:@&quot;阿狸头像&quot;];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">imageV</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><p>模仿UIimageView,绘制图片</p></li>
-<li><ul>
-<li>initWithFrame:
-<img src="http://xiaobenmao.github.io/images/%E6%A8%A1%E4%BB%BFImageView1.png" alt="" /></li>
-</ul>
-</li>
-<li><p>initWithImage:
-<img src="http://xiaobenmao.github.io/images/%E7%94%BB%E5%9B%BE%E7%89%87drawInRect.png" alt="" /></p></li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">MyUIimageView</span> : <span class="bp">UIView</span>
-</span><span class='line'><span class="cm">/** 图片属性*/</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span><span class="p">;</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">initWithImage:</span><span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="p">)</span> <span class="nv">image</span><span class="p">;</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">initWithFrame:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span> <span class="nv">rect</span><span class="p">;</span>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#import &quot;MyUIimageView.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">MyUIimageView</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">initWithFrame:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// 设置控件的尺寸</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nb">self</span> <span class="o">=</span> <span class="p">[</span><span class="nb">super</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">rect</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">rect</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">initWithImage:</span><span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">image</span>
-</span><span class='line'><span class="p">{</span>   <span class="c1">// 默认控件大小等于图片尺寸</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nb">self</span> <span class="o">=</span> <span class="p">[</span><span class="nb">super</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">image</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">image</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">)])</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">_image</span> <span class="o">=</span> <span class="n">image</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setImage:</span><span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">image</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">_image</span> <span class="o">=</span> <span class="n">image</span><span class="p">;</span>
-</span><span class='line'>    <span class="c1">// 设置新图片后重新绘制</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">setNeedsDisplay</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// 图片填充整个控件</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">image</span> <span class="nl">drawInRect</span><span class="p">:</span><span class="n">rect</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>使用</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//MyUIimageView *imageV = [[MyUIimageView alloc]initWithImage:[UIImage imageNamed:@&quot;阿狸头像&quot;]];</span>
-</span><span class='line'>    <span class="c1">//imageV.image = [UIImage imageNamed:@&quot;001&quot;];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">MyUIimageView</span> <span class="o">*</span><span class="n">imageV</span> <span class="o">=</span> <span class="p">[[</span><span class="n">MyUIimageView</span> <span class="n">alloc</span><span class="p">]</span><span class="nl">initWithFrame</span><span class="p">:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">300</span><span class="p">)];</span>
-</span><span class='line'>    <span class="n">imageV</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="s">@&quot;阿狸头像&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">imageV</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Quartz2d-绘制文字]]></title>
-    <link href="http://xiaobenmao.github.io/blog/2014/07/10/quartz2d-hui-zhi-wen-zi/"/>
-    <updated>2014-07-10T12:30:33+08:00</updated>
-    <id>http://xiaobenmao.github.io/blog/2014/07/10/quartz2d-hui-zhi-wen-zi</id>
-    <content type="html"><![CDATA[<p><img src="http://xiaobenmao.github.io/images/%E7%94%BB%E6%96%87%E5%AD%97.png" alt="" /></p>
-
-<!--more-->
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E7%94%BB%E6%96%87%E5%AD%971.png" alt="" /></p>
-
-<p><img src="http://xiaobenmao.github.io/images/%E7%94%BB%E6%96%87%E5%AD%972.png" alt="" /></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// 绘制文字</span>
-</span><span class='line'><span class="bp">NSString</span> <span class="o">*</span><span class="n">str</span> <span class="o">=</span> <span class="s">@&quot;带我一起飞一起飞一起飞一起飞一起飞一起飞一起飞一起飞&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="c1">// 只设置起点,不会换行</span>
-</span><span class='line'><span class="c1">//[str drawAtPoint:self.bounds.origin withAttributes:textDict];</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">[</span><span class="n">str</span> <span class="nl">drawInRect</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="n">bounds</span> <span class="nl">withAttributes</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E7%94%BB%E5%AF%8C%E6%96%87%E6%9C%AC%E6%96%87%E5%AD%97.png" alt="" /></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 绘制文字</span>
-</span><span class='line'>    <span class="bp">NSString</span> <span class="o">*</span><span class="n">str</span> <span class="o">=</span> <span class="s">@&quot;带我一起飞一起飞一起飞一起飞一起飞一起飞一起飞一起飞&quot;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 富文本属性</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//Attritbutes:富文本属性,用来设置字体的一些属性</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="bp">NSMutableDictionary</span> <span class="o">*</span><span class="n">textDict</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSMutableDictionary</span> <span class="n">dictionary</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 设置文字的颜色</span>
-</span><span class='line'>    <span class="n">textDict</span><span class="p">[</span><span class="n">NSForegroundColorAttributeName</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 设置文字字体</span>
-</span><span class='line'>    <span class="n">textDict</span><span class="p">[</span><span class="n">NSFontAttributeName</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIFont</span> <span class="nl">systemFontOfSize</span><span class="p">:</span><span class="mi">30</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 设置文字的宽度,只有设置了宽度,文字才会有空心颜色的效果</span>
-</span><span class='line'>    <span class="n">textDict</span><span class="p">[</span><span class="n">NSStrokeWidthAttributeName</span><span class="p">]</span> <span class="o">=</span> <span class="mi">@3</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 设置文字的空心颜色,该颜色会覆盖字体的颜色</span>
-</span><span class='line'>    <span class="n">textDict</span><span class="p">[</span><span class="n">NSStrokeColorAttributeName</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">blueColor</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 创建阴影对象</span>
-</span><span class='line'>    <span class="bp">NSShadow</span> <span class="o">*</span><span class="n">shadow</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">NSShadow</span> <span class="n">alloc</span><span class="p">]</span><span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="c1">// 设置阴影的颜色</span>
-</span><span class='line'>    <span class="n">shadow</span><span class="p">.</span><span class="n">shadowColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">greenColor</span><span class="p">];</span>
-</span><span class='line'>    <span class="c1">// 设置阴影的偏移量</span>
-</span><span class='line'>    <span class="n">shadow</span><span class="p">.</span><span class="n">shadowOffset</span> <span class="o">=</span> <span class="n">CGSizeMake</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
-</span><span class='line'>    <span class="c1">// 设置阴影的模糊度</span>
-</span><span class='line'>    <span class="n">shadow</span><span class="p">.</span><span class="n">shadowBlurRadius</span> <span class="o">=</span> <span class="mf">1.5</span><span class="p">;</span>
-</span><span class='line'>    <span class="c1">// 将阴影对象加入富文本中</span>
-</span><span class='line'>    <span class="n">textDict</span><span class="p">[</span><span class="n">NSShadowAttributeName</span><span class="p">]</span> <span class="o">=</span> <span class="n">shadow</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 在矩形框内画出文字(自动换行),并添加富文本</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">str</span> <span class="nl">drawInRect</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="n">bounds</span> <span class="nl">withAttributes</span><span class="p">:</span><span class="n">textDict</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>UILabel控件有个attributedText属性,也可以设置富文本属性</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// 创建富文本字符串</span>
-</span><span class='line'><span class="bp">NSAttributedString</span> <span class="o">*</span><span class="n">strArr</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">NSAttributedString</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithString</span><span class="p">:</span><span class="s">@&quot;asdlsajkldl&quot;</span> <span class="nl">attributes</span><span class="p">:</span><span class="n">textDict</span><span class="p">];</span>
-</span><span class='line'><span class="c1">//给label设置富文本字符串</span>
-</span><span class='line'><span class="nb">self</span><span class="p">.</span><span class="n">labelView</span><span class="p">.</span><span class="n">attributedText</span> <span class="o">=</span>  <span class="n">strArr</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>NSAttributedString描述</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cm">/*</span>
-</span><span class='line'><span class="cm"> 字符属性</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> 字符属性可以应用于 attributed string 的文本中。</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> NSString *const NSFontAttributeName;(字体)</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> NSString *const NSParagraphStyleAttributeName;(段落)</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> NSString *const NSForegroundColorAttributeName;(字体颜色)</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> NSString *const NSBackgroundColorAttributeName;(字体背景色)</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> NSString *const NSLigatureAttributeName;(连字符)</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> NSString *const NSKernAttributeName;(字间距)</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> NSString *const NSStrikethroughStyleAttributeName;(删除线)</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> NSString *const NSUnderlineStyleAttributeName;(下划线)</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> NSString *const NSStrokeColorAttributeName;(边线颜色)</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> NSString *const NSStrokeWidthAttributeName;(边线宽度)</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> NSString *const NSShadowAttributeName;(阴影)(横竖排版)</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> NSString *const NSVerticalGlyphFormAttributeName;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> 常量</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> 1&gt; NSFontAttributeName(字体)</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> 该属性所对应的值是一个 UIFont 对象。该属性用于改变一段文本的字体。如果不指定该属性，则默认为12-point Helvetica(Neue)。</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> 2&gt; NSParagraphStyleAttributeName(段落)</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> 该属性所对应的值是一个 NSParagraphStyle 对象。该属性在一段文本上应用多个属性。如果不指定该属性，则默认为 NSParagraphStyle 的defaultParagraphStyle 方法返回的默认段落属性。</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> 3&gt; NSForegroundColorAttributeName(字体颜色)</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> 该属性所对应的值是一个 UIColor 对象。该属性用于指定一段文本的字体颜色。如果不指定该属性，则默认为黑色。</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> 4&gt; NSBackgroundColorAttributeName(字体背景色)</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> 该属性所对应的值是一个 UIColor 对象。该属性用于指定一段文本的背景颜色。如果不指定该属性，则默认无背景色。</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> 5&gt; NSLigatureAttributeName(连字符)</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> 该属性所对应的值是一个 NSNumber 对象(整数)。连体字符是指某些连在一起的字符，它们采用单个的图元符号。0 表示没有连体字符。1 表示使用默认的连体字符。2表示使用所有连体符号。默认值为 1（注意，iOS 不支持值为 2）。</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> 6&gt; NSKernAttributeName(字间距)</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> 该属性所对应的值是一个 NSNumber 对象(整数)。字母紧排指定了用于调整字距的像素点数。字母紧排的效果依赖于字体。值为 0 表示不使用字母紧排。默认值为0。</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> 7&gt; NSStrikethroughStyleAttributeName(删除线)</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> 该属性所对应的值是一个 NSNumber 对象(整数)。该值指定是否在文字上加上删除线，该值参考“Underline Style Attributes”。默认值是NSUnderlineStyleNone。</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> 8&gt; NSUnderlineStyleAttributeName(下划线)</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> 该属性所对应的值是一个 NSNumber 对象(整数)。该值指定是否在文字上加上下划线，该值参考“Underline Style Attributes”。默认值是NSUnderlineStyleNone。</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> 9&gt; NSStrokeColorAttributeName(边线颜色)</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> 该属性所对应的值是一个 UIColor 对象。如果该属性不指定（默认），则等同于 NSForegroundColorAttributeName。否则，指定为删除线或下划线颜色。更多细节见“Drawing attributedstrings that are both filled and stroked”。</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> 10&gt; NSStrokeWidthAttributeName(边线宽度)</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> 该属性所对应的值是一个 NSNumber 对象(小数)。该值改变描边宽度（相对于字体size 的百分比）。默认为 0，即不改变。正数只改变描边宽度。负数同时改变文字的描边和填充宽度。例如，对于常见的空心字，这个值通常为3.0。</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> 11&gt; NSShadowAttributeName(阴影)</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> 该属性所对应的值是一个 NSShadow 对象。默认为 nil。</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> 12&gt; NSVerticalGlyphFormAttributeName(横竖排版)</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> 该属性所对应的值是一个 NSNumber 对象(整数)。0 表示横排文本。1 表示竖排文本。在 iOS 中，总是使用横排文本，0 以外的值都未定义。</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm"> */</span>
-</span></code></pre></td></tr></table></div></figure>
-
 ]]></content>
   </entry>
   

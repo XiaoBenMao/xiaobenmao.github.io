@@ -9,7 +9,17 @@
   <meta name="author" content="嗷大喵">
 
   
-  <meta name="description" content=" ">
+  <meta name="description" content="1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+/** *Only override drawRect: if you perform custom drawing. *绘图的步骤： 1.获取上下文 2.创建路径（描述路径） 3.把路径添加到上下文 4.渲染上下文 *通常在这个方法里面绘制图形 * &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +75,286 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/07/03/quartz2d-hua-zhi-xian-he-qu-xian/">Quartz2d-画直线和曲线</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-07-03T18:29:36+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2014</span></span> <span class='time'>6:29 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> *Only override drawRect: if you perform custom drawing.</span>
+</span><span class='line'><span class="cm"> *绘图的步骤： 1.获取上下文 2.创建路径（描述路径） 3.把路径添加到上下文 4.渲染上下文</span>
+</span><span class='line'><span class="cm"> *通常在这个方法里面绘制图形</span>
+</span><span class='line'><span class="cm"> *为什么要再drawRect里面绘图，只有在这个方法里面才能获取到跟View的layer相关联的图形上下文</span>
+</span><span class='line'><span class="cm"> *什么时候调用:当这个View要显示的时候才会调用drawRect绘制图形</span>
+</span><span class='line'><span class="cm"> *注意：rect是当前控件的bounds</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="p">{</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/07/03/quartz2d-hua-zhi-xian-he-qu-xian/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/07/01/quartz2d-jian-jie/">Quartz2d-简介</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-07-01T17:29:23+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2014</span></span> <span class='time'>5:29 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/%E4%BB%80%E4%B9%88%E6%98%AFQuartz2d.png" alt="" /></p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/07/01/quartz2d-jian-jie/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/06/15/shi-jian-chu-li-jian-dan-shou-shi-2/">事件处理-简单手势(2)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-06-15T17:59:30+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:59 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"></div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/06/15/shi-jian-chu-li-jian-dan-shou-shi-2/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/06/15/shi-jian-chu-li-jian-dan-shou-shi-1/">事件处理-简单手势(1)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-06-15T16:59:26+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>4:59 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/%E7%9B%91%E5%90%AC%E8%A7%A6%E6%91%B8%E4%BA%8B%E4%BB%B6%E7%9A%84%E5%81%9A%E6%B3%95.png" alt="" /></p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/06/15/shi-jian-chu-li-jian-dan-shou-shi-1/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/05/03/cun-chu-gui-dang-he-jie-dang/">存储-归档和解档</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-05-03T15:38:07+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2014</span></span> <span class='time'>3:38 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h4>NSKeyedArchiver</h4>
+
+<ul>
+<li>归档可以存储自定义对象</li>
+<li><p>如果对象是NSString、NSDictionary、NSArray、NSData、NSNumber等类型，可以直接用NSKeyedArchiver进行归档和恢复</p></li>
+<li><p>不是所有的对象都可以直接用这种方法进行归档，只有遵守了NSCoding协议的对象才可以</p></li>
+</ul>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/05/03/cun-chu-gui-dang-he-jie-dang/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/05/02/cun-chu-pian-hao-she-zhi/">存储-偏好设置</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-05-02T15:37:43+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>2</span><span class='date-suffix'>nd</span>, <span class='date-year'>2014</span></span> <span class='time'>3:37 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><ul>
+<li><p>很多iOS应用都支持偏好设置，比如保存用户名、密码、字体大小等设置，iOS提供了一套标准的解决方案来为应用加入偏好设置功能</p></li>
+<li><p>每个应用都有个NSUserDefaults实例，通过它来存取偏好设置</p>
+
+<ul>
+<li>比如，保存用户名、字体大小、是否自动登录</li>
+</ul>
+</li>
+</ul>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/05/02/cun-chu-pian-hao-she-zhi/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/05/01/cun-chu-plist/">存储-plist</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-05-01T15:37:32+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2014</span></span> <span class='time'>3:37 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>plist文件</h2>
+
+<ul>
+<li><p>直接将数据直接写在代码里面，不是一种合理的做法。如果数据经常改，就要经常翻开对应的代码进行修改，造成代码扩展性低</p></li>
+<li><p>因此，可以考虑将经常变的数据放在文件中进行存储，程序启动后从文件中读取最新的数据。如果要变动数据，直接修改数据文件即可，不用修改代码</p></li>
+<li><p>一般可以使用属性列表文件存储NSArray或者NSDictionary之类的数据，这种“属性列表文件”的扩展名是plist，因此也称为“plist文件”</p></li>
+</ul>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/05/01/cun-chu-plist/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -172,271 +462,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/26/pickerviewshu-ju-yuan-he-dai-li/">PickerView数据源和代理</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-04-26T16:32:48+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>4:32 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"></div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/26/pickerviewshu-ju-yuan-he-dai-li/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/20/uidatepicker-jian-pan-chu-li-xuan-ze-ri-qi/">UIDatePicker - 键盘处理-选择日期</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-04-20T03:34:05+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>20</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>3:34 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><img src="/images/UIDatePicker%E8%8B%B1%E6%96%87.png" alt="pickerView点餐系统" /></p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/20/uidatepicker-jian-pan-chu-li-xuan-ze-ri-qi/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/16/liao-tian-cellbu-ju-kong-jian-chang-yong-xing-bian-transformshu-xing-fang-fa-xuan-zhuan/">聊天cell布局-控件常用形变transform属性方法(旋转</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-04-16T19:59:58+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>7:59 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>transform常用属性方法</h2>
-
-<ul>
-<li>带make的每次设置都是相对于初始transform状态,</li>
-<li>不带make的每次设置都是相对于当前transform状态</li>
-<li>平移,缩放,旋转</li>
-</ul>
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/16/liao-tian-cellbu-ju-kong-jian-chang-yong-xing-bian-transformshu-xing-fang-fa-xuan-zhuan/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/15/liao-tian-cellbu-ju-jian-pan-dan-chu-he-tui-chu-chu-li/">聊天cell布局-键盘弹出和退出处理</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-04-15T19:52:36+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>7:52 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>聊天布局-键盘弹出和隐藏处理(方法一)</h2>
-
-<ul>
-<li>当键盘弹出时,工具条和tableView应该整体往上移,所以tableView不应该有顶部约束,否则将会被压缩.
-
-<ul>
-<li>将tableView的顶部约束删除(如果有)</li>
-<li>将tableView和父控件view连线,约束选择equalHeight</li>
-<li>点击约束修改为tableView.height = superView.heitht - 44(工具条的高度)</li>
-</ul>
-</li>
-</ul>
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/15/liao-tian-cellbu-ju-jian-pan-dan-chu-he-tui-chu-chu-li/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/10/liao-tian-cellbu-ju-liao-tian-gong-ju-tiao-de-shu-ru-kuang-textfield/">聊天cell布局-聊天工具条的输入框(TextField)</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-04-10T19:51:53+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>7:51 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h3>聊天工具条</h3>
-
-<ul>
-<li>输入框Text Field系统默认borderStyle边缘框是椭圆形的,如果想自定义使用背景图片,要先修改为虚线模式,否则不清晰</li>
-</ul>
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/10/liao-tian-cellbu-ju-liao-tian-gong-ju-tiao-de-shu-ru-kuang-textfield/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/07/liao-tian-cellbu-ju-buttonde-textlabelzhong-wen-zi-chao-chu-bei-jing-liao-tian-tu-pian/">聊天cell布局-button的textLabel中文字超出背景聊天图片</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-04-07T19:51:18+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>7:51 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h3>label中文字超出背景聊天图片</h3>
-
-<ul>
-<li>将button的背景图片拉伸后,button中的textLabel中的字体会超出背景图片的原因是:背景图片周围有一段空白区域:</li>
-</ul>
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/07/liao-tian-cellbu-ju-buttonde-textlabelzhong-wen-zi-chao-chu-bei-jing-liao-tian-tu-pian/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/05/liao-tian-cellbu-ju-tu-pian-la-shen-yuan-li/">聊天cell布局-图片拉伸原理</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-04-05T19:49:32+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>7:49 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h3>图片被拉伸后效果</h3>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/05/liao-tian-cellbu-ju-tu-pian-la-shen-yuan-li/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/5">&larr; Older</a>
@@ -509,6 +534,10 @@
         <a class='category' href='/blog/categories/nsrunloop-and-nsruntime/'>nsrunloop&nsruntime</a> (1)
       </li>
     
+      <li class="category">
+        <a class='category' href='/blog/categories/kuai-su-cong-ocdao-swift/'>快速从oc到swift</a> (7)
+      </li>
+    
   </ul>
 </section><section>
   <h1>Recent Posts</h1>
@@ -523,15 +552,15 @@
       </li>
     
       <li class="post">
-        <a href="/blog/2015/08/01/nsrunloop-and-nsruntime/">NSRunLoop-运行逻辑</a>
+        <a href="/blog/2015/09/01/swift-bi-bao/">Swift-闭包</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/08/06/coreanimation-li-zi-xiao-guo/">CoreAnimation-粒子效果</a>
+        <a href="/blog/2015/09/01/swift-zi-fu-chuan/">Swift-字符串</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/08/05/coreanimation-zhe-die-tu-pian-contentsrect/">CoreAnimation-折叠图片</a>
+        <a href="/blog/2015/09/01/swift-zi-dian/">Swift-字典</a>
       </li>
     
   </ul>

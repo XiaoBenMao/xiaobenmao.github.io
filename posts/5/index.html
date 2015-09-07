@@ -9,8 +9,7 @@
   <meta name="author" content="嗷大喵">
 
   
-  <meta name="description" content="
-当不限制label的行数时,文字不会换行 设置宽度一定的label的numberOfLines属性为0则label中的文字会自动换行. ">
+  <meta name="description" content="">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,6 +65,271 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/26/pickerviewshu-ju-yuan-he-dai-li/">PickerView数据源和代理</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-04-26T16:32:48+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>4:32 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"></div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/04/26/pickerviewshu-ju-yuan-he-dai-li/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/20/uidatepicker-jian-pan-chu-li-xuan-ze-ri-qi/">UIDatePicker - 键盘处理-选择日期</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-04-20T03:34:05+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>20</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>3:34 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/UIDatePicker%E8%8B%B1%E6%96%87.png" alt="pickerView点餐系统" /></p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/04/20/uidatepicker-jian-pan-chu-li-xuan-ze-ri-qi/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/16/liao-tian-cellbu-ju-kong-jian-chang-yong-xing-bian-transformshu-xing-fang-fa-xuan-zhuan/">聊天cell布局-控件常用形变transform属性方法(旋转</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-04-16T19:59:58+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>7:59 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>transform常用属性方法</h2>
+
+<ul>
+<li>带make的每次设置都是相对于初始transform状态,</li>
+<li>不带make的每次设置都是相对于当前transform状态</li>
+<li>平移,缩放,旋转</li>
+</ul>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/04/16/liao-tian-cellbu-ju-kong-jian-chang-yong-xing-bian-transformshu-xing-fang-fa-xuan-zhuan/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/15/liao-tian-cellbu-ju-jian-pan-dan-chu-he-tui-chu-chu-li/">聊天cell布局-键盘弹出和退出处理</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-04-15T19:52:36+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>7:52 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>聊天布局-键盘弹出和隐藏处理(方法一)</h2>
+
+<ul>
+<li>当键盘弹出时,工具条和tableView应该整体往上移,所以tableView不应该有顶部约束,否则将会被压缩.
+
+<ul>
+<li>将tableView的顶部约束删除(如果有)</li>
+<li>将tableView和父控件view连线,约束选择equalHeight</li>
+<li>点击约束修改为tableView.height = superView.heitht - 44(工具条的高度)</li>
+</ul>
+</li>
+</ul>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/04/15/liao-tian-cellbu-ju-jian-pan-dan-chu-he-tui-chu-chu-li/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/10/liao-tian-cellbu-ju-liao-tian-gong-ju-tiao-de-shu-ru-kuang-textfield/">聊天cell布局-聊天工具条的输入框(TextField)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-04-10T19:51:53+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>7:51 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>聊天工具条</h3>
+
+<ul>
+<li>输入框Text Field系统默认borderStyle边缘框是椭圆形的,如果想自定义使用背景图片,要先修改为虚线模式,否则不清晰</li>
+</ul>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/04/10/liao-tian-cellbu-ju-liao-tian-gong-ju-tiao-de-shu-ru-kuang-textfield/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/07/liao-tian-cellbu-ju-buttonde-textlabelzhong-wen-zi-chao-chu-bei-jing-liao-tian-tu-pian/">聊天cell布局-button的textLabel中文字超出背景聊天图片</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-04-07T19:51:18+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>7:51 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>label中文字超出背景聊天图片</h3>
+
+<ul>
+<li>将button的背景图片拉伸后,button中的textLabel中的字体会超出背景图片的原因是:背景图片周围有一段空白区域:</li>
+</ul>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/04/07/liao-tian-cellbu-ju-buttonde-textlabelzhong-wen-zi-chao-chu-bei-jing-liao-tian-tu-pian/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/05/liao-tian-cellbu-ju-tu-pian-la-shen-yuan-li/">聊天cell布局-图片拉伸原理</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-04-05T19:49:32+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>7:49 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>图片被拉伸后效果</h3>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/04/05/liao-tian-cellbu-ju-tu-pian-la-shen-yuan-li/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -203,477 +467,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/23/tableview-zi-ding-yi-fei-deng-gao-cell-xib-1/">tableView-自定义非等高cell-xib(1)</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-03-23T20:10:16+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2014</span></span> <span class='time'>8:10 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><ul>
-<li>非等高的cell
-
-<ul>
-<li>xib自定义cell</li>
-<li>storyboard自定义cell</li>
-<li>代码自定义cell（frame）</li>
-<li>代码自定义cell（Autolayout）</li>
-</ul>
-</li>
-</ul>
-
-
-<p>\</p>
-
-<h3>布局内容,返回每一行的高度为固定值</h3>
-
-<h3>常规设置</h3>
-
-<ul>
-<li>自定义控制器类
-
-<ul>
-<li>懒加载,面向模型开发,将字典转为模型,以后数据通过模型获得</li>
-<li>实现数据源和代理类方法</li>
-</ul>
-</li>
-</ul>
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/03/23/tableview-zi-ding-yi-fei-deng-gao-cell-xib-1/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/19/tableview-zi-ding-yi-deng-gao-cell-dai-ma-framehe-masonryfang-shi/">tableView-自定义等高cell-(代码frame和masonry方式)</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-03-19T17:31:54+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:31 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h3>代码自定义cell方法</h3>
-
-<ul>
-<li><code>代码自定义cell(使用frame)</code>
-
-<ul>
-<li>1.创建一个继承自UITableViewCell的子类，比如WQDealCell
-
-<ul>
-<li>在initWithStyle:reuseIdentifier:方法中
-
-<ul>
-<li>添加子控件</li>
-<li>设置子控件的初始化属性（比如文字颜色、字体）</li>
-</ul>
-</li>
-<li>在layoutSubviews方法中设置子控件的frame</li>
-<li>需要提供一个模型属性，重写模型的set方法，在这个方法中设置模型数据到子控件</li>
-</ul>
-</li>
-<li>2.在控制器中
-
-<ul>
-<li>利用registerClass&hellip;方法注册WQDealCell类</li>
-<li>利用重用标识找到cell（如果没有注册类，就需要手动创建cell）</li>
-<li>给cell传递模型数据</li>
-<li>也可以将创建获得cell的代码封装起来（比如cellWithTableView:方法）</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/03/19/tableview-zi-ding-yi-deng-gao-cell-dai-ma-framehe-masonryfang-shi/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/18/tableview-zi-ding-yi-deng-gao-cell-xibfang-shi/">tableView-自定义等高cell-(xib方式)</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-03-18T09:31:32+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>18</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>9:31 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h3><code>xib自定义cell</code></h3>
-
-<ul>
-<li>1.创建一个继承自UITableViewCell的子类，比如WQDealCell<br></li>
-<li>2.创建一个xib文件（文件名建议跟cell的类名一样），比如WQDealCell.xib
-
-<ul>
-<li>拖拽一个UITableViewCell出来</li>
-<li>修改cell的class为XMGDealCell</li>
-<li>设置cell的重用标识</li>
-<li>往cell中添加需要用到的子控件</li>
-</ul>
-</li>
-<li>3.在控制器中
-
-<ul>
-<li>利用registerNib&hellip;方法注册xib文件</li>
-<li>利用重用标识找到cell（如果没有注册xib文件，就需要手动去加载xib文件）</li>
-<li>给cell传递模型数据<br>
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/03/18/tableview-zi-ding-yi-deng-gao-cell-xibfang-shi/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/17/tableview-zi-ding-yi-deng-gao-cell-storyboardfang-shi/">tableView-自定义等高cell(storyboard方式)</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-03-17T14:30:14+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>2:30 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><ul>
-<li>自定义控制器类
-
-<ul>
-<li>1.创建一个继承自UITableViewController的子类，比如WQDealsTableViewController</li>
-<li><img src="/images/0603/%E8%87%AA%E5%AE%9A%E4%B9%89tableview%E6%8E%A7%E5%88%B6%E5%99%A8.png" alt="" /></li>
-<li>2.实现需要的数据源和代理方法.</li>
-<li>3.实现懒加载,获取数据模型.</li>
-<li>4.创建自定义cell.</li>
-</ul>
-</li>
-</ul>
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/03/17/tableview-zi-ding-yi-deng-gao-cell-storyboardfang-shi/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/13/tableview-zi-ding-yi-deng-gao-cell-san-chong-fang-shi/">tableView-自定义等高cell-(三种方式)</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-03-13T18:29:01+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>6:29 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>自定义cell</h2>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/03/13/tableview-zi-ding-yi-deng-gao-cell-san-chong-fang-shi/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/03/tableviewcellde-chang-jian-she-zhi/">tableViewCell的常见设置</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-03-03T18:08:44+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2014</span></span> <span class='time'>6:08 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><ul>
-<li>分割线颜色
-
-<ul>
-<li>分割线颜色,系统自带的分割线两边是不到屏幕边缘,当边缘有图片时更加明显,达不到所要的要求</li>
-<li>解决:可以将系统的分割线隐藏,自定义一个view,位置紧贴cell底部,设置为亮灰色,高度为1,如果太粗可以设置提高透明度</li>
-</ul>
-</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//self.tableView.separatorColor = [UIColor redColor];</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 隐藏分割线</span>
-</span><span class='line'><span class="nb">self</span><span class="p">.</span><span class="n">tableView</span><span class="p">.</span><span class="n">separatorStyle</span> <span class="o">=</span> <span class="n">UITableViewCellSeparatorStyleNone</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/03/03/tableviewcellde-chang-jian-she-zhi/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/02/tableviewde-chang-yong-dai-li-fang-fa/">tableView的常用代理方法</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-03-02T10:01:58+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>2</span><span class='date-suffix'>nd</span>, <span class='date-year'>2014</span></span> <span class='time'>10:01 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#pragma mark - &lt;UITableViewDelegate&gt;一般用于tableviewcell的选中事件监听,比如选中和编辑</span>
-</span><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm"> *  选中某一行的时候调用(点击某一行)</span>
-</span><span class='line'><span class="cm"> *</span>
-</span><span class='line'><span class="cm"> *  @param indexPath 被选中的那一行</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="bp">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">didSelectRowAtIndexPath:</span><span class="p">(</span><span class="bp">NSIndexPath</span> <span class="o">*</span><span class="p">)</span><span class="nv">indexPath</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;selectRowAtIndexPath - %zd&quot;</span><span class="p">,</span> <span class="n">indexPath</span><span class="p">.</span><span class="n">row</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm"> *  取消选中某一行的时候调用</span>
-</span><span class='line'><span class="cm"> *</span>
-</span><span class='line'><span class="cm"> *  @param indexPath 被取消选中的那一行</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="bp">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">didDeselectRowAtIndexPath:</span><span class="p">(</span><span class="bp">NSIndexPath</span> <span class="o">*</span><span class="p">)</span><span class="nv">indexPath</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;deselectRowAtIndexPath - %zd&quot;</span><span class="p">,</span> <span class="n">indexPath</span><span class="p">.</span><span class="n">row</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm"> *  告诉tableView第indexPath行cell的高度</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="bp">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">heightForRowAtIndexPath:</span><span class="p">(</span><span class="bp">NSIndexPath</span> <span class="o">*</span><span class="p">)</span><span class="nv">indexPath</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">indexPath</span><span class="p">.</span><span class="n">row</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="mi">100</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="mi">70</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="cp">#pragma mark -头部和尾部显示的内容和高度</span>
-</span><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm"> *  设置头部的显示高度</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="bp">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">heightForHeaderInSection:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">section</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="mi">100</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm"> *  告诉tableView第section显示怎样的头部控件</span>
-</span><span class='line'><span class="cm"> *  返回值类型为UIView:可以把头部要显示的内容添加到view上返回</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="bp">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">viewForHeaderInSection:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">section</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="bp">UIButton</span> <span class="nl">buttonWithType</span><span class="p">:</span><span class="n">UIButtonTypeContactAdd</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="cm">/** 尾部显示的高度*/</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="bp">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">heightForFooterInSection:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">section</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="mi">44</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="cm">/** 尾部显示的内容*/</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="bp">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">viewForFooterInSection:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">section</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="bp">UIButton</span> <span class="nl">buttonWithType</span><span class="p">:</span><span class="n">UIButtonTypeContactAdd</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="cp">#pragma mark -@protocol UITableViewDelegate&lt;NSObject, UIScrollViewDelegate&gt;</span>
-</span><span class='line'><span class="cm">/** 因为tableView代理遵守scroll的代理,所以可以实现UIScrollViewDelegate代理中的方法*/</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">scrollViewDidScroll:</span><span class="p">(</span><span class="bp">UIScrollView</span> <span class="o">*</span><span class="p">)</span><span class="nv">scrollView</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;----%@&quot;</span><span class="p">,</span> <span class="n">scrollView</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/6">&larr; Older</a>
@@ -746,6 +539,10 @@
         <a class='category' href='/blog/categories/nsrunloop-and-nsruntime/'>nsrunloop&nsruntime</a> (1)
       </li>
     
+      <li class="category">
+        <a class='category' href='/blog/categories/kuai-su-cong-ocdao-swift/'>快速从oc到swift</a> (7)
+      </li>
+    
   </ul>
 </section><section>
   <h1>Recent Posts</h1>
@@ -760,15 +557,15 @@
       </li>
     
       <li class="post">
-        <a href="/blog/2015/08/01/nsrunloop-and-nsruntime/">NSRunLoop-运行逻辑</a>
+        <a href="/blog/2015/09/01/swift-bi-bao/">Swift-闭包</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/08/06/coreanimation-li-zi-xiao-guo/">CoreAnimation-粒子效果</a>
+        <a href="/blog/2015/09/01/swift-zi-fu-chuan/">Swift-字符串</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/08/05/coreanimation-zhe-die-tu-pian-contentsrect/">CoreAnimation-折叠图片</a>
+        <a href="/blog/2015/09/01/swift-zi-dian/">Swift-字典</a>
       </li>
     
   </ul>
