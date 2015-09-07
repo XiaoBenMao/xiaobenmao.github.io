@@ -9,6 +9,10 @@
     <lastmod>2015-09-02T18:32:01+08:00</lastmod>
   </url>
   <url>
+    <loc>http://xiaobenmao.github.io/blog/2015/08/01/nsrunloop-and-nsruntime/</loc>
+    <lastmod>2015-08-01T04:20:43+08:00</lastmod>
+  </url>
+  <url>
     <loc>http://xiaobenmao.github.io/blog/2014/08/06/coreanimation-li-zi-xiao-guo/</loc>
     <lastmod>2014-08-06T09:15:04+08:00</lastmod>
   </url>
@@ -309,6 +313,9 @@
   </url>
   <url>
     <loc>http://xiaobenmao.github.io/blog/categories/coreanimation/</loc>
+  </url>
+  <url>
+    <loc>http://xiaobenmao.github.io/blog/categories/nsrunloop-and-nsruntime/</loc>
   </url>
   <url>
     <loc>http://xiaobenmao.github.io/posts/2/</loc>

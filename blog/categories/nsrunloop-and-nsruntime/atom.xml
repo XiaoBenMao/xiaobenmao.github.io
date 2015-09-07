@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Nsrunloop&nsruntime | My World]]></title>
+  <link href="http://xiaobenmao.github.io/blog/categories/nsrunloop-and-nsruntime/atom.xml" rel="self"/>
+  <link href="http://xiaobenmao.github.io/"/>
+  <updated>2015-09-08T04:24:59+08:00</updated>
+  <id>http://xiaobenmao.github.io/</id>
+  <author>
+    <name><![CDATA[嗷大喵]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[NSRunLoop-运行逻辑]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/08/01/nsrunloop-and-nsruntime/"/>
+    <updated>2015-08-01T04:20:43+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/08/01/nsrunloop-and-nsruntime</id>
+    <content type="html"><![CDATA[<ul>
+<li>RunLoop相关类</li>
+</ul>
+
+
+<pre><code class="objc">Core Foundation中关于RunLoop的5个类
+CFRunLoopRef // 运行循环
+CFRunLoopModeRef // 运行模式
+CFRunLoopSourceRef // 事件源
+CFRunLoopTimerRef   // 定时器timer
+CFRunLoopObserverRef    // 事件监听
+</code></pre>
+
+<p><img src="/images/RunLoop.png" alt="" />￼</p>
+
+<ul>
+<li><p>CFRunLoopModeRef代表RunLoop的运行模式</p>
+
+<ul>
+<li>一个 RunLoop 包含若干个Mode，每个Mode又包含若干个Source/Timer/Observer</li>
+<li>每次RunLoop启动时，只能指定其中一个 Mode，这个Mode被称作 CurrentMode</li>
+<li>如果需要切换Mode，只能退出Loop，再重新指定一个Mode进入</li>
+<li>这样做主要是为了分隔开不同组的Source/Timer/Observer，让其互不影响</li>
+</ul>
+</li>
+<li><p>CFRunLoop的源文件是c的,开源的</p></li>
+</ul>
+
+
+<p><img src="/images/runLoop%E6%BA%90%E6%96%87%E4%BB%B6.png" alt="" />￼</p>
+
+<p><img src="/images/runLoop%E5%A4%84%E7%90%86%E9%80%BB%E8%BE%91.png" alt="" />￼</p>
+
+<h3>第0步:</h3>
+
+<ul>
+<li>通过[NSRunLoop currentRunLoop]<code>懒加载</code>当前运行循环
+
+<ul>
+<li>主线程中的为<code>自动创建并运行</code>currentRunLoop或者mainRunLoop</li>
+<li>子线程中的需要<code>手动创建并运行run</code>
+<img src="/images/currentRunLoop.png" alt="" />￼</li>
+</ul>
+</li>
+</ul>
+
+
+<h3>第一步:</h3>
+
+<ul>
+<li>循环开始,runLoop字面意思运行循环,跑圈,实际是<code>do...while循环</code></li>
+<li>当退出标记不为NO时,一直死循环
+
+<ul>
+<li>kCFRunLoopRunStopped</li>
+<li>kCFRunLoopRunFinished
+<img src="/images/%E5%BE%AA%E7%8E%AF%E5%BC%80%E5%A7%8B.png" alt="" />￼</li>
+</ul>
+</li>
+</ul>
+
+
+<h3>第二步:</h3>
+
+<ul>
+<li>RunLoop创建默认模式</li>
+<li>先查找当前运行模式,在do&hellip;while主循环开始的时候传入<code>默认模式</code></li>
+<li><p>可以修改运行循环的模式
+<img src="/images/%E6%9F%A5%E6%89%BE%E5%BD%93%E5%89%8D%E8%BF%90%E8%A1%8Cmode.png" alt="" />￼</p></li>
+<li><p>如果当前currentRunLoop不为空,</p></li>
+<li>并且当前模式中,CFRUnLoopModeIsEmpty:
+
+<ul>
+<li>resources0不为空</li>
+<li>resources1不为空</li>
+<li>timer不为空</li>
+</ul>
+</li>
+<li><p>则开始RunLoop运行循环入口CFRunLoopRun</p></li>
+<li><p>RunLoop只能选择一个Mode启动，</p>
+
+<ul>
+<li>如果当前Mode中没有任何Source(sources0,sources1)、Timer，那么就直接退出RunLoop</li>
+<li>在查找当前模式时没有判断observer,所以即使只添加了observer了,运行循环也会退出
+<img src="/images/%E5%88%A4%E6%96%AD%E5%BD%93%E5%89%8D%E8%BF%90%E8%A1%8C%E5%BE%AA%E7%8E%AFmode%E6%98%AF%E5%90%A6%E4%B8%BA%E7%A9%BA.png" alt="" />￼
+<img src="/images/%E5%88%A4%E6%96%AD%E5%BD%93%E5%89%8D%E8%BF%90%E8%A1%8C%E5%BE%AA%E7%8E%AFmode%E6%98%AF%E5%90%A6%E4%B8%BA%E7%A9%BA1.png" alt="" />￼</li>
+</ul>
+</li>
+</ul>
+
+
+<h3>第三步:</h3>
+
+<ul>
+<li>开始进入RunLoop循环</li>
+</ul>
+
+
+<p><img src="/images/RunLoop.png" alt="" />￼</p>
+
+<ul>
+<li>以下为c语言层次:CFRunLoopRun函数为主要代码</li>
+</ul>
+
+
+<p><img src="/images/runLoop%E5%85%A5%E5%8F%A3.png" alt="" />￼</p>
+
+<p><img src="/images/%E6%A0%B8%E5%BF%83%E4%BB%A3%E7%A0%81.png" alt="" />￼</p>
+
+<p><img src="/images/%E7%AD%89%E5%BE%85%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86%E6%B6%88%E6%81%AF.png" alt="" />￼</p>
+
+<p><img src="/images/%E5%94%A4%E9%86%92runLoop%E6%B6%88%E6%81%AF%E5%A4%84%E7%90%86.png" alt="" />￼</p>
+
+<h3>补充:</h3>
+
+<ul>
+<li>自动释放池什么时候释放？
+
+<ul>
+<li>通过Observer监听RunLoop的状态,一旦监听到RunLoop<code>即将进入</code>睡眠等待状态,就释放自动释放池（kCFRunLoopBeforeWaiting)</li>
+</ul>
+</li>
+</ul>
+
+
+<pre><code class="objc">- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    NSLog(@"%@", [NSRunLoop currentRunLoop]);
+}
+
+/**
+打印结果:
+&lt;CFRunLoopObserver 0x7fe62250c600 [0x104a4d180]&gt;{valid = Yes, activities = 0xa0, repeats = Yes, order = 2147483647, callout = _wrapRunLoopWithAutoreleasePoolHandler (0x104b96a43), context = &lt;CFArray 0x7fe62250c530 [0x104a4d180]&gt;{type = mutable-small, count = 0, values = ()}}
+
+&lt;CFRunLoopObserver 0x7fe62250c560 [0x104a4d180]&gt;{valid = Yes, activities = 0x1, repeats = Yes, order = -2147483647, callout = _wrapRunLoopWithAutoreleasePoolHandler (0x104b96a43), context = &lt;CFArray 0x7fe62250c530 [0x104a4d180]&gt;{type = mutable-small, count = 0, values = ()}}
+
+ 以上两个_wrapRunLoopWithAutoreleasePoolHandler中activitier的地址分别为:0X1和0Xa0
+
+
+activities = 0x1 == 1 //即将进入runLoop
+activities = 0xa0 == 160
+160 = kCFRunLoopBeforeWaiting(32) + kCFRunLoopExit(128)
+
+在运行循环即将进入进入睡眠的时候释放自动释放池,并创建一个新的释放池
+/*
+
+ kCFRunLoopEntry = (1UL &lt;&lt; 0),  1
+ kCFRunLoopBeforeTimers = (1UL &lt;&lt; 1), 2
+ kCFRunLoopBeforeSources = (1UL &lt;&lt; 2), 4
+ kCFRunLoopBeforeWaiting = (1UL &lt;&lt; 5), 32
+ kCFRunLoopAfterWaiting = (1UL &lt;&lt; 6), 64
+ kCFRunLoopExit = (1UL &lt;&lt; 7), 128
+
+*/
+
+
+*/
+</code></pre>
+
+<ul>
+<li>在子线程开启RunLoop的时候最好放在一个大的自动释放池中</li>
+</ul>
+
+
+<pre><code class="objc">// 子线程回调函数
+- (void)execute{
+    @autoreleasepool {
+        // 开启runLoop代码
+    }
+}
+</code></pre>
+
+<p><img src="/images/runLoop%E5%A4%84%E7%90%86%E9%80%BB%E8%BE%91%E5%AE%98%E6%96%B9%E5%9B%BE%E7%89%87.png" alt="" />￼
+<img src="/images/runLoop%E5%A4%84%E7%90%86%E9%80%BB%E8%BE%91%E5%AE%98%E6%96%B9%E8%A7%A3%E9%87%8A.png" alt="" />￼</p>
+]]></content>
+  </entry>
+  
+</feed>

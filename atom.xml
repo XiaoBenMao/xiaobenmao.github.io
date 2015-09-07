@@ -4,7 +4,7 @@
   <title><![CDATA[My World]]></title>
   <link href="http://xiaobenmao.github.io/atom.xml" rel="self"/>
   <link href="http://xiaobenmao.github.io/"/>
-  <updated>2015-09-08T04:15:01+08:00</updated>
+  <updated>2015-09-08T04:24:59+08:00</updated>
   <id>http://xiaobenmao.github.io/</id>
   <author>
     <name><![CDATA[嗷大喵]]></name>
@@ -170,6 +170,237 @@
 
 
 
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[NSRunLoop-运行逻辑]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/08/01/nsrunloop-and-nsruntime/"/>
+    <updated>2015-08-01T04:20:43+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/08/01/nsrunloop-and-nsruntime</id>
+    <content type="html"><![CDATA[<ul>
+<li>RunLoop相关类</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">Core</span> <span class="n">Foundation</span><span class="err">中关于</span><span class="n">RunLoop</span><span class="err">的</span><span class="mi">5</span><span class="err">个类</span>
+</span><span class='line'><span class="n">CFRunLoopRef</span> <span class="c1">// 运行循环</span>
+</span><span class='line'><span class="n">CFRunLoopModeRef</span> <span class="c1">// 运行模式</span>
+</span><span class='line'><span class="n">CFRunLoopSourceRef</span> <span class="c1">// 事件源</span>
+</span><span class='line'><span class="n">CFRunLoopTimerRef</span>   <span class="c1">// 定时器timer</span>
+</span><span class='line'><span class="n">CFRunLoopObserverRef</span>    <span class="c1">// 事件监听</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="http://xiaobenmao.github.io/images/RunLoop.png" alt="" />￼</p>
+
+<ul>
+<li><p>CFRunLoopModeRef代表RunLoop的运行模式</p>
+
+<ul>
+<li>一个 RunLoop 包含若干个Mode，每个Mode又包含若干个Source/Timer/Observer</li>
+<li>每次RunLoop启动时，只能指定其中一个 Mode，这个Mode被称作 CurrentMode</li>
+<li>如果需要切换Mode，只能退出Loop，再重新指定一个Mode进入</li>
+<li>这样做主要是为了分隔开不同组的Source/Timer/Observer，让其互不影响</li>
+</ul>
+</li>
+<li><p>CFRunLoop的源文件是c的,开源的</p></li>
+</ul>
+
+
+<p><img src="http://xiaobenmao.github.io/images/runLoop%E6%BA%90%E6%96%87%E4%BB%B6.png" alt="" />￼</p>
+
+<p><img src="http://xiaobenmao.github.io/images/runLoop%E5%A4%84%E7%90%86%E9%80%BB%E8%BE%91.png" alt="" />￼</p>
+
+<h3>第0步:</h3>
+
+<ul>
+<li>通过[NSRunLoop currentRunLoop]<code>懒加载</code>当前运行循环
+
+<ul>
+<li>主线程中的为<code>自动创建并运行</code>currentRunLoop或者mainRunLoop</li>
+<li>子线程中的需要<code>手动创建并运行run</code>
+<img src="http://xiaobenmao.github.io/images/currentRunLoop.png" alt="" />￼</li>
+</ul>
+</li>
+</ul>
+
+
+<h3>第一步:</h3>
+
+<ul>
+<li>循环开始,runLoop字面意思运行循环,跑圈,实际是<code>do...while循环</code></li>
+<li>当退出标记不为NO时,一直死循环
+
+<ul>
+<li>kCFRunLoopRunStopped</li>
+<li>kCFRunLoopRunFinished
+<img src="http://xiaobenmao.github.io/images/%E5%BE%AA%E7%8E%AF%E5%BC%80%E5%A7%8B.png" alt="" />￼</li>
+</ul>
+</li>
+</ul>
+
+
+<h3>第二步:</h3>
+
+<ul>
+<li>RunLoop创建默认模式</li>
+<li>先查找当前运行模式,在do&hellip;while主循环开始的时候传入<code>默认模式</code></li>
+<li><p>可以修改运行循环的模式
+<img src="http://xiaobenmao.github.io/images/%E6%9F%A5%E6%89%BE%E5%BD%93%E5%89%8D%E8%BF%90%E8%A1%8Cmode.png" alt="" />￼</p></li>
+<li><p>如果当前currentRunLoop不为空,</p></li>
+<li>并且当前模式中,CFRUnLoopModeIsEmpty:
+
+<ul>
+<li>resources0不为空</li>
+<li>resources1不为空</li>
+<li>timer不为空</li>
+</ul>
+</li>
+<li><p>则开始RunLoop运行循环入口CFRunLoopRun</p></li>
+<li><p>RunLoop只能选择一个Mode启动，</p>
+
+<ul>
+<li>如果当前Mode中没有任何Source(sources0,sources1)、Timer，那么就直接退出RunLoop</li>
+<li>在查找当前模式时没有判断observer,所以即使只添加了observer了,运行循环也会退出
+<img src="http://xiaobenmao.github.io/images/%E5%88%A4%E6%96%AD%E5%BD%93%E5%89%8D%E8%BF%90%E8%A1%8C%E5%BE%AA%E7%8E%AFmode%E6%98%AF%E5%90%A6%E4%B8%BA%E7%A9%BA.png" alt="" />￼
+<img src="http://xiaobenmao.github.io/images/%E5%88%A4%E6%96%AD%E5%BD%93%E5%89%8D%E8%BF%90%E8%A1%8C%E5%BE%AA%E7%8E%AFmode%E6%98%AF%E5%90%A6%E4%B8%BA%E7%A9%BA1.png" alt="" />￼</li>
+</ul>
+</li>
+</ul>
+
+
+<h3>第三步:</h3>
+
+<ul>
+<li>开始进入RunLoop循环</li>
+</ul>
+
+
+<p><img src="http://xiaobenmao.github.io/images/RunLoop.png" alt="" />￼</p>
+
+<ul>
+<li>以下为c语言层次:CFRunLoopRun函数为主要代码</li>
+</ul>
+
+
+<p><img src="http://xiaobenmao.github.io/images/runLoop%E5%85%A5%E5%8F%A3.png" alt="" />￼</p>
+
+<p><img src="http://xiaobenmao.github.io/images/%E6%A0%B8%E5%BF%83%E4%BB%A3%E7%A0%81.png" alt="" />￼</p>
+
+<p><img src="http://xiaobenmao.github.io/images/%E7%AD%89%E5%BE%85%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86%E6%B6%88%E6%81%AF.png" alt="" />￼</p>
+
+<p><img src="http://xiaobenmao.github.io/images/%E5%94%A4%E9%86%92runLoop%E6%B6%88%E6%81%AF%E5%A4%84%E7%90%86.png" alt="" />￼</p>
+
+<h3>补充:</h3>
+
+<ul>
+<li>自动释放池什么时候释放？
+
+<ul>
+<li>通过Observer监听RunLoop的状态,一旦监听到RunLoop<code>即将进入</code>睡眠等待状态,就释放自动释放池（kCFRunLoopBeforeWaiting)</li>
+</ul>
+</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="p">[</span><span class="bp">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">]);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm">打印结果:</span>
+</span><span class='line'><span class="cm">&lt;CFRunLoopObserver 0x7fe62250c600 [0x104a4d180]&gt;{valid = Yes, activities = 0xa0, repeats = Yes, order = 2147483647, callout = _wrapRunLoopWithAutoreleasePoolHandler (0x104b96a43), context = &lt;CFArray 0x7fe62250c530 [0x104a4d180]&gt;{type = mutable-small, count = 0, values = ()}}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">&lt;CFRunLoopObserver 0x7fe62250c560 [0x104a4d180]&gt;{valid = Yes, activities = 0x1, repeats = Yes, order = -2147483647, callout = _wrapRunLoopWithAutoreleasePoolHandler (0x104b96a43), context = &lt;CFArray 0x7fe62250c530 [0x104a4d180]&gt;{type = mutable-small, count = 0, values = ()}}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 以上两个_wrapRunLoopWithAutoreleasePoolHandler中activitier的地址分别为:0X1和0Xa0</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="cm">activities = 0x1 == 1 //即将进入runLoop</span>
+</span><span class='line'><span class="cm">activities = 0xa0 == 160</span>
+</span><span class='line'><span class="cm">160 = kCFRunLoopBeforeWaiting(32) + kCFRunLoopExit(128)</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">在运行循环即将进入进入睡眠的时候释放自动释放池,并创建一个新的释放池</span>
+</span><span class='line'><span class="cm">/*</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> kCFRunLoopEntry = (1UL &lt;&lt; 0),  1</span>
+</span><span class='line'><span class="cm"> kCFRunLoopBeforeTimers = (1UL &lt;&lt; 1), 2</span>
+</span><span class='line'><span class="cm"> kCFRunLoopBeforeSources = (1UL &lt;&lt; 2), 4</span>
+</span><span class='line'><span class="cm"> kCFRunLoopBeforeWaiting = (1UL &lt;&lt; 5), 32</span>
+</span><span class='line'><span class="cm"> kCFRunLoopAfterWaiting = (1UL &lt;&lt; 6), 64</span>
+</span><span class='line'><span class="cm"> kCFRunLoopExit = (1UL &lt;&lt; 7), 128</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">*/</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="err">*/</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>在子线程开启RunLoop的时候最好放在一个大的自动释放池中</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// 子线程回调函数</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">execute</span><span class="p">{</span>
+</span><span class='line'>    <span class="k">@autoreleasepool</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// 开启runLoop代码</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="http://xiaobenmao.github.io/images/runLoop%E5%A4%84%E7%90%86%E9%80%BB%E8%BE%91%E5%AE%98%E6%96%B9%E5%9B%BE%E7%89%87.png" alt="" />￼
+<img src="http://xiaobenmao.github.io/images/runLoop%E5%A4%84%E7%90%86%E9%80%BB%E8%BE%91%E5%AE%98%E6%96%B9%E8%A7%A3%E9%87%8A.png" alt="" />￼</p>
 ]]></content>
   </entry>
   
@@ -4982,526 +5213,6 @@
 </span><span class='line'><span class="cm"> */</span>
 </span></code></pre></td></tr></table></div></figure>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Quartz2d-画饼形图和柱状图]]></title>
-    <link href="http://xiaobenmao.github.io/blog/2014/07/09/quartz2d-hua-bing-xing-tu-he-zhu-zhuang-tu/"/>
-    <updated>2014-07-09T11:30:24+08:00</updated>
-    <id>http://xiaobenmao.github.io/blog/2014/07/09/quartz2d-hua-bing-xing-tu-he-zhu-zhuang-tu</id>
-    <content type="html"><![CDATA[<ul>
-<li>绘制饼图
-
-<ul>
-<li>分析 -> 找规律 -> 得出startA,endA,angle的结论</li>
-<li>startA = endA angle = 比例 * 总度数360° endA = startA + angle</li>
-<li>angle = 自己 / 100.0 * 360</li>
-<li>一个一个扇形画</li>
-</ul>
-</li>
-</ul>
-
-
-<!--more-->
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E9%A5%BC%E5%BD%A2%E5%9B%BE%E5%88%86%E6%9E%90.png" alt="" /></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-<span class='line-number'>93</span>
-<span class='line-number'>94</span>
-<span class='line-number'>95</span>
-<span class='line-number'>96</span>
-<span class='line-number'>97</span>
-<span class='line-number'>98</span>
-<span class='line-number'>99</span>
-<span class='line-number'>100</span>
-<span class='line-number'>101</span>
-<span class='line-number'>102</span>
-<span class='line-number'>103</span>
-<span class='line-number'>104</span>
-<span class='line-number'>105</span>
-<span class='line-number'>106</span>
-<span class='line-number'>107</span>
-<span class='line-number'>108</span>
-<span class='line-number'>109</span>
-<span class='line-number'>110</span>
-<span class='line-number'>111</span>
-<span class='line-number'>112</span>
-<span class='line-number'>113</span>
-<span class='line-number'>114</span>
-<span class='line-number'>115</span>
-<span class='line-number'>116</span>
-<span class='line-number'>117</span>
-<span class='line-number'>118</span>
-<span class='line-number'>119</span>
-<span class='line-number'>120</span>
-<span class='line-number'>121</span>
-<span class='line-number'>122</span>
-<span class='line-number'>123</span>
-<span class='line-number'>124</span>
-<span class='line-number'>125</span>
-<span class='line-number'>126</span>
-<span class='line-number'>127</span>
-<span class='line-number'>128</span>
-<span class='line-number'>129</span>
-<span class='line-number'>130</span>
-<span class='line-number'>131</span>
-<span class='line-number'>132</span>
-<span class='line-number'>133</span>
-<span class='line-number'>134</span>
-<span class='line-number'>135</span>
-<span class='line-number'>136</span>
-<span class='line-number'>137</span>
-<span class='line-number'>138</span>
-<span class='line-number'>139</span>
-<span class='line-number'>140</span>
-<span class='line-number'>141</span>
-<span class='line-number'>142</span>
-<span class='line-number'>143</span>
-<span class='line-number'>144</span>
-<span class='line-number'>145</span>
-<span class='line-number'>146</span>
-<span class='line-number'>147</span>
-<span class='line-number'>148</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;PieView.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">PieView</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="nf">arrRandom</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="kt">int</span> <span class="n">totoal</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="bp">NSMutableArray</span> <span class="o">*</span><span class="n">arrM</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kt">int</span> <span class="n">temp</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// 30 40 30</span>
-</span><span class='line'>    <span class="c1">// 加1是为了至少循环两次</span>
-</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">arc4random_uniform</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// 加1为了在1到100之间随机取值</span>
-</span><span class='line'>        <span class="n">temp</span> <span class="o">=</span> <span class="n">arc4random_uniform</span><span class="p">(</span><span class="n">totoal</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
-</span><span class='line'>        <span class="c1">// 100 1~100</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// 随机出来的临时值等于总值，直接退出循环，因为已经把总数分配完毕，没必要在分配。</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="p">[</span><span class="n">arrM</span> <span class="nl">addObject</span><span class="p">:</span><span class="l">@(</span><span class="n">temp</span><span class="l">)</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// 解决方式：当随机出来的数等于总数直接退出循环。</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">temp</span> <span class="o">==</span> <span class="n">totoal</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">totoal</span> <span class="o">-=</span> <span class="n">temp</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="c1">// 100 30 1~100</span>
-</span><span class='line'>    <span class="c1">// 70 40 0 ~ 69 1 ~ 70</span>
-</span><span class='line'>    <span class="c1">// 30 25</span>
-</span><span class='line'>    <span class="c1">// 5</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 没有随机完全部剩下的加入数组中</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">totoal</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">arrM</span> <span class="nl">addObject</span><span class="p">:</span><span class="l">@(</span><span class="n">totoal</span><span class="l">)</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="n">arrM</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 返回一个随机数组</span>
-</span><span class='line'>    <span class="bp">NSArray</span> <span class="o">*</span><span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="nb">self</span> <span class="n">arrRandom</span><span class="p">];</span>
-</span><span class='line'>    <span class="c1">// 半径为当前矩形宽的一半</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">radius</span> <span class="o">=</span> <span class="n">rect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">;</span>
-</span><span class='line'>    <span class="c1">// 设置圆点</span>
-</span><span class='line'>    <span class="bp">CGPoint</span> <span class="n">center</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">radius</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">startA</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">angle</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">endA</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">arr</span><span class="p">.</span><span class="n">count</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">startA</span> <span class="o">=</span> <span class="n">endA</span><span class="p">;</span>
-</span><span class='line'>        <span class="c1">//  计算每一块的分布比重,通过角度显示</span>
-</span><span class='line'>        <span class="n">angle</span> <span class="o">=</span> <span class="p">[</span><span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="n">integerValue</span><span class="p">]</span> <span class="o">/</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="n">M_PI</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">endA</span> <span class="o">=</span> <span class="n">startA</span> <span class="o">+</span> <span class="n">angle</span><span class="p">;</span>
-</span><span class='line'>        <span class="c1">// 画圆弧</span>
-</span><span class='line'>        <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="nl">bezierPathWithArcCenter</span><span class="p">:</span><span class="n">center</span> <span class="nl">radius</span><span class="p">:</span><span class="n">radius</span> <span class="nl">startAngle</span><span class="p">:</span><span class="n">startA</span> <span class="nl">endAngle</span><span class="p">:</span><span class="n">endA</span> <span class="nl">clockwise</span><span class="p">:</span><span class="nb">YES</span><span class="p">];</span>
-</span><span class='line'>        <span class="c1">// 从圆弧终点到圆心连线</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">path</span> <span class="nl">addLineToPoint</span><span class="p">:</span><span class="n">center</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// 随机设置一种颜色</span>
-</span><span class='line'>        <span class="p">[[</span><span class="nb">self</span> <span class="n">colorRandom</span><span class="p">]</span> <span class="n">set</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// 填充矩形区域</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">path</span> <span class="n">fill</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 点击屏幕,更新画图</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">touchesBegan:</span><span class="p">(</span><span class="bp">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="bp">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">setNeedsDisplay</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 随机取颜色</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">UIColor</span> <span class="o">*</span><span class="p">)</span><span class="nf">colorRandom</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// 色度取值0到255,但是oc里只能取到0到1,所以除去255</span>
-</span><span class='line'>    <span class="c1">// 0 ~ 255 / 255</span>
-</span><span class='line'>    <span class="c1">// OC:0 ~ 1</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">r</span> <span class="o">=</span> <span class="n">arc4random_uniform</span><span class="p">(</span><span class="mi">256</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">g</span> <span class="o">=</span> <span class="n">arc4random_uniform</span><span class="p">(</span><span class="mi">256</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">b</span> <span class="o">=</span> <span class="n">arc4random_uniform</span><span class="p">(</span><span class="mi">256</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="nl">colorWithRed</span><span class="p">:</span><span class="n">r</span> <span class="nl">green</span><span class="p">:</span><span class="n">g</span> <span class="nl">blue</span><span class="p">:</span><span class="n">b</span> <span class="nl">alpha</span><span class="p">:</span><span class="mi">1</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">draw</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">radius</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">;</span>
-</span><span class='line'>    <span class="bp">CGPoint</span> <span class="n">center</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">radius</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">startA</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">angle</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">endA</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 第一个扇形</span>
-</span><span class='line'>    <span class="n">angle</span> <span class="o">=</span> <span class="mi">25</span> <span class="o">/</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="n">M_PI</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">endA</span> <span class="o">=</span> <span class="n">startA</span> <span class="o">+</span> <span class="n">angle</span><span class="p">;</span>
-</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="nl">bezierPathWithArcCenter</span><span class="p">:</span><span class="n">center</span> <span class="nl">radius</span><span class="p">:</span><span class="n">radius</span> <span class="nl">startAngle</span><span class="p">:</span><span class="n">startA</span> <span class="nl">endAngle</span><span class="p">:</span><span class="n">endA</span> <span class="nl">clockwise</span><span class="p">:</span><span class="nb">YES</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 添加一根线到圆心</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="nl">addLineToPoint</span><span class="p">:</span><span class="n">center</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 描边和填充通用</span>
-</span><span class='line'>    <span class="p">[[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">]</span> <span class="n">set</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="n">fill</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 第二个扇形</span>
-</span><span class='line'>    <span class="n">startA</span> <span class="o">=</span> <span class="n">endA</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">angle</span> <span class="o">=</span> <span class="mi">25</span> <span class="o">/</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="n">M_PI</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">endA</span> <span class="o">=</span> <span class="n">startA</span> <span class="o">+</span> <span class="n">angle</span><span class="p">;</span>
-</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path1</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="nl">bezierPathWithArcCenter</span><span class="p">:</span><span class="n">center</span> <span class="nl">radius</span><span class="p">:</span><span class="n">radius</span> <span class="nl">startAngle</span><span class="p">:</span><span class="n">startA</span> <span class="nl">endAngle</span><span class="p">:</span><span class="n">endA</span> <span class="nl">clockwise</span><span class="p">:</span><span class="nb">YES</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 添加一根线到圆心</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">path1</span> <span class="nl">addLineToPoint</span><span class="p">:</span><span class="n">center</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 描边和填充通用</span>
-</span><span class='line'>    <span class="p">[[</span><span class="bp">UIColor</span> <span class="n">greenColor</span><span class="p">]</span> <span class="n">set</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">path1</span> <span class="n">fill</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 第二个扇形</span>
-</span><span class='line'>    <span class="n">startA</span> <span class="o">=</span> <span class="n">endA</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">angle</span> <span class="o">=</span> <span class="mi">50</span> <span class="o">/</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="n">M_PI</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">endA</span> <span class="o">=</span> <span class="n">startA</span> <span class="o">+</span> <span class="n">angle</span><span class="p">;</span>
-</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path2</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="nl">bezierPathWithArcCenter</span><span class="p">:</span><span class="n">center</span> <span class="nl">radius</span><span class="p">:</span><span class="n">radius</span> <span class="nl">startAngle</span><span class="p">:</span><span class="n">startA</span> <span class="nl">endAngle</span><span class="p">:</span><span class="n">endA</span> <span class="nl">clockwise</span><span class="p">:</span><span class="nb">YES</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 添加一根线到圆心</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">path2</span> <span class="nl">addLineToPoint</span><span class="p">:</span><span class="n">center</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 描边和填充通用</span>
-</span><span class='line'>    <span class="p">[[</span><span class="bp">UIColor</span> <span class="n">blueColor</span><span class="p">]</span> <span class="n">set</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">path2</span> <span class="n">fill</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E9%A5%BC%E5%BD%A2%E5%9B%BE.png" alt="" /></p>
-
-<ul>
-<li>绘制柱状图
-
-<ul>
-<li>分析 -> 找规律 -> 得出w,h,y,x的结论</li>
-<li>w = viewW / (2 * count - 1)</li>
-<li>h = viewH * 比例</li>
-</ul>
-</li>
-</ul>
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E6%9F%B1%E7%8A%B6%E5%9B%BE%E5%88%86%E6%9E%90.png" alt="" /></p>
-
-<ul>
-<li>画柱状图</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;BarView.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">BarView</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 返回一个瓜分100的随机数组</span>
-</span><span class='line'>    <span class="bp">NSArray</span> <span class="o">*</span><span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="nb">self</span> <span class="n">arrRandom</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">w</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">h</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 所要画矩形的个数</span>
-</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">arr</span><span class="p">.</span><span class="n">count</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">// 每个的宽度</span>
-</span><span class='line'>        <span class="n">w</span> <span class="o">=</span> <span class="n">rect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">arr</span><span class="p">.</span><span class="n">count</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
-</span><span class='line'>        <span class="c1">// 每个矩形的x坐标</span>
-</span><span class='line'>        <span class="n">x</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">w</span> <span class="o">*</span> <span class="n">i</span><span class="p">;</span>
-</span><span class='line'>        <span class="c1">// 每个矩形的的高度,根据比重</span>
-</span><span class='line'>        <span class="n">h</span> <span class="o">=</span> <span class="p">[</span><span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="n">floatValue</span><span class="p">]</span> <span class="o">/</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="n">rect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">;</span>
-</span><span class='line'>        <span class="c1">// y值,因为圆点在左上角,所以要用高度减去高度</span>
-</span><span class='line'>        <span class="n">y</span> <span class="o">=</span> <span class="n">rect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">h</span><span class="p">;</span>
-</span><span class='line'>        <span class="c1">// 贝塞尔路径画矩形</span>
-</span><span class='line'>        <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="nl">bezierPathWithRect</span><span class="p">:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)];</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// 设置随机颜色</span>
-</span><span class='line'>        <span class="p">[[</span><span class="nb">self</span> <span class="n">colorRandom</span><span class="p">]</span> <span class="n">set</span><span class="p">];</span>
-</span><span class='line'>        <span class="c1">// 填充矩形</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">path</span> <span class="n">fill</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">touchesBegan:</span><span class="p">(</span><span class="bp">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="bp">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">setNeedsDisplay</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="nf">arrRandom</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="kt">int</span> <span class="n">totoal</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="bp">NSMutableArray</span> <span class="o">*</span><span class="n">arrM</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kt">int</span> <span class="n">temp</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// 30 40 30</span>
-</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">arc4random_uniform</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">temp</span> <span class="o">=</span> <span class="n">arc4random_uniform</span><span class="p">(</span><span class="n">totoal</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// 100 1~100</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// 随机出来的临时值等于总值，直接退出循环，因为已经把总数分配完毕，没必要在分配。</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">arrM</span> <span class="nl">addObject</span><span class="p">:</span><span class="l">@(</span><span class="n">temp</span><span class="l">)</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// 解决方式：当随机出来的数等于总数直接退出循环。</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">temp</span> <span class="o">==</span> <span class="n">totoal</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">totoal</span> <span class="o">-=</span> <span class="n">temp</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="c1">// 100 30 1~100</span>
-</span><span class='line'>    <span class="c1">// 70 40 0 ~ 69 1 ~ 70</span>
-</span><span class='line'>    <span class="c1">// 30 25</span>
-</span><span class='line'>    <span class="c1">// 5</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">totoal</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">arrM</span> <span class="nl">addObject</span><span class="p">:</span><span class="l">@(</span><span class="n">totoal</span><span class="l">)</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="n">arrM</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">UIColor</span> <span class="o">*</span><span class="p">)</span><span class="nf">colorRandom</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// 0 ~ 255 / 255</span>
-</span><span class='line'>    <span class="c1">// OC:0 ~ 1</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">r</span> <span class="o">=</span> <span class="n">arc4random_uniform</span><span class="p">(</span><span class="mi">256</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">g</span> <span class="o">=</span> <span class="n">arc4random_uniform</span><span class="p">(</span><span class="mi">256</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">b</span> <span class="o">=</span> <span class="n">arc4random_uniform</span><span class="p">(</span><span class="mi">256</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="nl">colorWithRed</span><span class="p">:</span><span class="n">r</span> <span class="nl">green</span><span class="p">:</span><span class="n">g</span> <span class="nl">blue</span><span class="p">:</span><span class="n">b</span> <span class="nl">alpha</span><span class="p">:</span><span class="mi">1</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E6%9F%B1%E7%8A%B6%E5%9B%BE.png" alt="" /></p>
 ]]></content>
   </entry>
   
