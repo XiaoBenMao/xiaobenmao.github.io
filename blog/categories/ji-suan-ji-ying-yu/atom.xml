@@ -1,0 +1,576 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: 计算机英语 | My World]]></title>
+  <link href="http://xiaobenmao.github.io/blog/categories/ji-suan-ji-ying-yu/atom.xml" rel="self"/>
+  <link href="http://xiaobenmao.github.io/"/>
+  <updated>2015-09-07T23:11:32+08:00</updated>
+  <id>http://xiaobenmao.github.io/</id>
+  <author>
+    <name><![CDATA[嗷大喵]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[编程英语(1)]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/02/15/bian-cheng-ying-yu-1/"/>
+    <updated>2014-02-15T16:30:38+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/02/15/bian-cheng-ying-yu-1</id>
+    <content type="html"><![CDATA[<p>转自:<a href="http://www.ryedu.net/syy/hyyy/200912/15824_2.html">http://www.ryedu.net/syy/hyyy/200912/15824_2.html</a></p>
+
+<!--more-->
+
+
+<pre><code>A2A integration [,inti'ɡreiʃən]     A2A整合        
+abstract ['æbstrækt, æb'strækt]  抽象的         
+abstract base [beis] class (ABC)抽象基类
+abstract class 抽象类
+abstraction [æb'strækʃən] 抽象、抽象物、抽象性
+access ['ækses, 'æksəs, æk'ses]存取、访问
+access level['levəl]访问级别
+access function ['fʌŋkʃən]访问函数
+account [ə'kaunt]账户
+action ['ækʃən]动作 
+activate ['æktiveit] 激活
+active ['æktiv]活动的
+actual parameter ['æktʃuəl] [pə'ræmitə] 实参
+adapter [ə'dæptə]适配器
+add-in 插件
+address [ə'dres]地址
+address space     地址空间 
+address-of operator ['ɔpəreitə]取地址操作符
+ADL (argument-dependent lookup) ['ɑ:ɡjumənt] [di'pendənt]
+ADO(ActiveX Data Object)ActiveX数据对象
+advanced [əd'vænst]高级的
+aggregation [,æɡri'ɡeiʃən] 聚合、聚集                         1
+algorithm ['ælgə'rɪðəm]算法
+alias [ˈeɪli:əs] 别名
+align [ə'lain]排列、对齐
+allocate [ˈæləkeit] 分配、配置
+allocator['æləukeitə]分配器、配置器
+angle bracket ['æŋɡl] ['brækit]尖括号
+annotation [,ænəu'teiʃən]注解、评注 
+API (Application Programming Interface) 应用(程序)编程接口 
+app domain (application domain) [æp] [do'men]应用域
+application [,æpli'keiʃən]应用、应用程序
+application framework ['freimwə:k] 应用程序框架
+appearance [ə'piərəns]外观
+append [ə'pend]附加
+architecture ['ɑ:kitektʃə]架构、体系结构
+archive file ['ɑ:kaiv] ['fail] 归档文件、存档文件
+argument['ɑ:ɡjumənt]引数(传给函式的值)。参见parameter [pə'ræmitə]
+array [ə'rei]数组
+arrow operator ['ærəu] ['ɔpəreitə]箭头操作符
+ASP(Active Server ['sɝvɚ] Page)活动服务器页面
+ASP.NET worker process ['prəuses, 'prɔ-] ASP.NET工作者进程 
+assembly [ə'sembli] 装配件、配件
+assembly language   汇编语言                                   2
+assembly manifest ['mænifest]装配件清单
+assert(ion) [ə'sə:t] assertion [ə'sɝʃən] 断言
+assign [ə'sain] 赋值
+assignment [ə'sainmənt]赋值、分配
+assignment operator 赋值操作符=
+associated [ə'səuʃi,eitid] 相关的、相关联的
+associative container [ə'səuʃjətiv] [kən'teinə]关联式容器(对应sequential container [si'kwenʃəl])         
+asynchronous [eɪˈsɪŋkrənəs] 异步的
+atomic [ə'tɔmik]原子的
+atomic operation   原子操作
+attribute[ 'ætribju:t]  特性、属性
+authentication [ɔːˌθentɪˈkeɪʃn]service 验证服务
+authorization [,ɔ:θərai'zeiʃən, -ri'z-]授权
+audio ['ɔ:diəu]  音频
+A.I.    人工智能artificial intelligence [,ɑ:ti'fiʃəl] [in'telidʒəns]
+B2B integration [,inti'ɡreiʃən] B2B整合、B2B集成(business-to-business integration)         
+background   背景、后台(进程)
+backward compatible [kəm'pætəbl] 向后兼容、向下兼容
+backup   备份 
+backup device[di'vais]备份设备                                       3
+backup file 备份文件 
+bandwidth ['bændwidθ] 带宽
+base class 基类
+base type 基类型
+batch [bætʃ]批处理
+BCL (base class library)基类库 
+binary ['bainəri]二进制   
+binary search 二分查找
+binary tree 二叉树
+binary function 双参函数
+binary large object二进制大对象
+binary operator 二元操作符
+binding ['baindiŋ] 绑定
+bit 位
+bitmap ['bit,mæp]位图
+bitwise 按位...
+bitwise copy       为单元进行复制；位元逐一复制,按位拷
+bitwise operation 按位运算 
+block 块、区块、语句块
+bookkeeping ['buk,ki:piŋ]簿记
+boolean ['bu:liən]布林值(真假值，true或false)                  
+border ['bɔ:də]边框                                               4
+bounds checking [baʊndz] ['tʃekiŋ]边界检查
+boxing 装箱、装箱转换 
+brace [breis]大括号 curly ['kə:li] brace花括号
+bracket ['brækit] (square [skwεə] brakcet) 中括号、方括号
+breakpoint ['breikpɔint]断点
+browser applications ['brauzə] [æpli'keiʃəns]浏览器应用(程序)
+browser-accessible [ək'sesəbl] application 可经由浏览器访问的应用程序
+build 编连(专指编译和连接
+built-in [,bɪlt 'ɪn]内建、内置
+bus 总线
+business 业务、商务(看场合)
+business Logic ['lɔdʒik]业务逻辑
+business rules 业务规则 
+buttons 按钮
+bug 臭虫
+by/through 通过
+byte 位元组(由8 bits组成)    
+cache [kæʃ] 高速缓存
+calendar ['kælində]日历
+call 调用
+callback ['kɔ:lbæk] 回调
+call-level interface (CLI)调用级接口(CLI)                            5
+call operator 调用操作符
+candidate key ['kændideit] 候选键 (for database)
+cascading delete [kæ'skeidiŋ] 级联删除 (for database)
+cascading update 级联更新 (for database)
+casting ['kɑ:stiŋ]  转型、造型转换
+catalog ['kætəlɔɡ]  目录
+chain [tʃein] 链(function calls)
+character ['kærəktə] 字符
+character format [ˈfɔ:mæt]  字符格式 
+character set     字符集 
+CHECK constraints [kən'streint] CHECK约束 (for database) 
+checkpoint ['tʃekpɔint] 检查点 (for database)
+check box 复选框
+check button 复选按钮
+child class 子类
+CIL (common intermediate [,intə'mi:djət, -dieit] language)通用中间语言、通用中介语言
+class    类
+class declaration [,deklə'reiʃən] 类声明
+class definition [,defi'niʃən]  类定义
+class derivation [,deri'veiʃən] list 类继承列表
+class factory    类厂                                        6
+class hierarchy ['haiə,rɑ:ki]类层次结构
+class library    类库
+class loader     类装载器
+class template ['templit]类模板
+class template partial ['pɑ:ʃəl] specializations [,spɛʃəlɪ'zeʃən] 类模板部分特化
+class template specializations         类模板特化
+classification [ˌklæsifiˈkeiʃən] 分类
+clause [klɔ:z]子句
+client ['klaiənt] application 客户端应用程序
+client cursor ['kə:sə] 客户端游标 (for database)
+code page 代码页 
+cleanup   清理、清除
+CLI (Common Language Infrastructure ['infrə,strʌktʃə])   通用语言基础设施
+client ['klaiənt]客户、客户端
+client area 客户区
+client-server 客户机/服务器、客户端/服务器
+clipboard ['klipbɔ:d]剪贴板
+clone [kləun]克隆 
+CLS (common language specification [,spesifi'keiʃən]) 通用语言规范
+code access security 代码访问安全
+COFF (Common Object File Format)    通用对象文件格式             7            
+collection [kə'lekʃən]集合
+COM (Component [kəm'pəunənt] Object Model) 组件对象模型
+combo ['kɔmbəu] box 组合框
+command [kə'mɑ:nd] line 命令行
+comment[ˈkɔment] 注释
+commit [kə'mit]提交 (for database)
+communication [kə,mju:ni'keiʃən]通讯
+compatible [kəm'pætəbl]兼容
+compiler [kəm'pail]编译器
+compile time 编译期、编译时
+component[kəm'pəunənt]组件
+composite ['kɔmpəzit] index 复合索引、组合索引 (for database)
+composite key 复合键、组合键 (for database) 
+composition [,kɔmpə'ziʃən]复合、组合
+concept ['kɔnsept]概念
+concrete[kən'kri:t, 'kɔnkri:t]具体的
+concrete class 具体类
+concurrency [kən'kʌrənsi]并发、并发机制 
+constraint [kən'streint]约束 (for database)
+configuration [kən,fiɡju'reiʃən]配置、组态
+connection [kə'nekʃən] 连接 (for database)
+connection pooling 连接池                                        8
+console [kən'səul] 控制台
+constant ['kɔnstənt]常量
+construct [kən'strʌkt]构件、成分、概念、构造（for language）
+constructor (ctor) [kɔn'strʌktə]构造函数、构造器
+container [kən'teinə] 容器
+containment[kən'teinmənt]包容
+context ['kɔntekst]环境、上下文
+control [kən'trəul]控件
+cookie ['kuki] (不译)
+copy    拷贝
+CORBA   通用对象请求中介架构
+(Common Object Request[ri'kwest] Broker Architecture) 
+cover   覆盖、涵盖
+create/creation [kri:'eiʃən]创建、生成
+crosstab query ['kwiəri]交叉表查询 (for database)
+CRTP 
+(curiously recurring [rɪ'kɝɪŋ] template ['templit] pattern ['pætən])
+CTS (common type system)通用类型系统
+cube [kju:b]多维数据集 (for database)
+cursor ['kə:sə] 光标
+cursor 游标 (for database) 
+custom ['kʌstəm] 定制、自定义                            9
+data   数据
+data connection   数据连接 (for database)
+Data Control Language (DCL) 数据控制语言(DCL) (for database)
+Data Definition [,defi'niʃən] Language (DDL) 数据定义语言(DDL) (for database)
+data dictionary ['dikʃənəri]数据字典 (for database)
+data dictionary view 数据字典视图 (for database)
+data file 数据文件 (for database)
+data integrity [inˈteɡriti] 数据完整性 (for database)
+data manipulation [mə,nipju'leiʃən] language (DML)数据操作语言(DML) (for database)
+data mart 数据集市 (for database)
+data pump [pʌmp]数据抽取 (for database)
+data scrubbing [skrʌbliŋ]数据清理 (for database)
+data source [sɔ:s]数据源 (for database)
+Data source name (DSN) 数据源名称(DSN) (for database)
+data warehouse ['wεəhaus, 'wεəhauz, -haus]数据仓库 (for database)
+dataset   数据集 (for database) 
+database 数据库 (for database)
+database catalog 数据库目录 (for database)
+database diagram ['daiəɡræm] 数据关系图 (for database)
+database file     数据库文件 (for database)                        10
+database object   数据库对象 (for database)
+database owner    数据库所有者 (for database)
+database project ['prɔdʒekt]数据库工程 (for database)
+database role     数据库角色 (for database)
+database schema ['ski:mə]数据库模式、数据库架构 (for database)
+database script [skript]数据库脚本 (for database)
+data-bound       数据绑定 (for database)
+data-aware control数据感知控件 (for database)
+data member   数据成员、成员变量
+dataset       数据集 (for database)
+data source   数据源 (for database)
+data structure['strʌktʃə]数据结构
+data table    数据表 (for database)
+datagram ['deitəɡræm]数据报文
+DBMS (database management system)数据库管理系统 (for database)
+DCOM (distributed [di'stribjutid] COM)分布式COM
+dead lock 死锁 (for database)
+Deallocate [de'elkeit]归还
+debug      调试
+debugger    调试器
+decay [di'kei]退化
+decision [di'siʒən] support [sə'pɔ:t] 决策支持                11
+declaration [,deklə'reiʃən]声明
+Declarative[dɪˈklærətɪv]referential [,refə'renʃəl] integrity [in'teɡrəti] (DRI)声明引用完整性(DRI) (for database)
+deduction [di'dʌkʃən]推导
+Deafault [di'fɔ:lt] constraint默认约束 (for database) 
+default database 默认数据库 (for database)
+default instance ['instəns]默认实例 (for database)
+default result set 默认结果集 (for database)
+default     缺省、默认值
+defer       推迟
+definition [,defi'niʃən]定义
+delegate ['deliɡeit]委托
+delegation 委托
+dependent name       
+deploy [di:'plɔi]部署 
+dereference [di'refərəns]解引用
+dereference operator (提领)运算子                      
+derived class 派生类
+design by contract 契约式设计
+design pattern ['pætən]设计模式
+destroy [di'strɔi]销毁
+destructor(dtor) [di'strʌktə]析构函数、析构器                12
+device [di'vais]设备
+DHTML
+ (dynamic [dai'næmik]HyperText ['haipətekst] Markup Language)动态超文本标记语言
+dialog ['daiəlɔɡ]对话框
+digest[daiˈdʒest]摘要
+digital 数字的
+DIME
+    (Direct Internet Message Encapsulation [in,-kæpsə'leiʃən])
+直接Internet消息封装
+directive [di'rektiv, dai-] (编译)指示符
+directory [di'rektəri, dai-]目录
+dirty pages脏页 (for database)
+dirty read 脏读 (for database)
+disassembler [,disə'semblə]反汇编器
+DISCO (Discovery of Web Services)Web Services的查找
+disk 盘
+dispatch [dis'pætʃ]调度、分派、派发（我喜欢“调度”）
+DISPID (Dispatch[dis'pætʃ] Identifier [ai'dentifaiə])分派标识符
+distributed [di'stribjutid] computing [kəm'pju:tiŋ]分布式计算
+distributed query分布式查询 (for database) 
+DNA (Distributed interNet Application)                            13
+分布式网间应用程序
+document ['dɔkjumənt, 'dɔkjument]文档
+DOM (Document Object Model)文档对象模型
+dot operator ['ɔpəreitə] (圆)点操作符
+driver 驱动(程序)
+DTD (document type definition [,defi'niʃən]) 文档类型定义
+double-byte character set (DBCS)双字节字符集(DBCS)
+dump [dʌmp] 转储
+dump file 转储文件
+dynamic [dai'næmik] cursor ['kə:sə]动态游标 (for database)
+dynamic filter [filtə]动态筛选 (for database)
+dynamic locking   动态锁定 (for database)
+dynamic recovery [ri'kʌvəri] 动态恢复 (for database)
+dynamic snapshot ['snæpʃɔt] 动态快照 (for database)
+dynamic SQL statements ['steitmənt]动态SQL语句 (for database)
+dynamic assembly 动态装配件、动态配件
+dynamic binding 动态绑定
+EAI (enterprise[ˈentəpraɪz] application integration [,inti'ɡreiʃən])企业应用程序集成(整合)
+EBCO (empty base class optimization [,ɔptimai'zeiʃən, -mi'z-])空基类优化（机制）
+e-business   电子商务                                  14
+EDI (Electronic [,ilek'trɔnik] Data Interchange [,intə'tʃeindʒ, 'intətʃeindʒ])电子数据交换
+efficiency [i'fiʃənsi]效率
+efficient [i'fiʃənt]高效
+end-to-end authentication [ɔː,θentɪ'keɪʃən] 端对端身份验证 
+end user 最终用户
+engine   引擎
+entity ['entəti] 实体
+encapsulation [in,-kæpsə'leiʃən]封装
+enclosing [ɪn'kləʊziŋ] class 外围类别(与巢状类别 nested class有关)
+enum (enumeration [i,nju:mə'reiʃən]) 枚举
+enumerators [i'nju:mə,reitəz] 枚举成员、枚举器
+equal ['i:kwəl]相等
+equality[i:'kwɔləti]相等性
+equality operator 等号操作符
+error['erə] log错误日志 (for database)
+escape code 转义码
+escape character 转义符、转义字符
+exclusive [ik'sklu:siv] lock   排它锁 (for database)
+explicit [ik'splisit] transaction [træn'zækʃən] 显式事务 (for database)
+evaluate [i'væljueit]评估
+event    事件                                          15
+event driven 事件驱动的
+event handler ['hændlə]事件处理器
+evidence ['evidəns]证据
+exception [ik'sepʃən] 异常
+exception declaration [,deklə'reiʃən]异常声明
+exception handling ['hændliŋ]异常处理、异常处理机制
+exception-safe 异常安全的
+exception specification [,spesifi'keiʃən]异常规范
+exit     退出
+explicit [ik'splisit] 显式
+explicit specialization [,speʃəlai'zeiʃən] 显式特化
+export [ik'spɔ:t]导出
+expression [ik'spreʃən]表达式
+facility [fə'siliti] 设施、设备
+fat client 胖客户端 
+feature ['fi:tʃə]特性、特征
+fetch [fetʃ]提取
+field 字段(java)
+field 字段 (for database)
+field length 字段长度 (for database)
+file   文件
+filter [filtə]筛选 (for database)                                16
+finalization [ˌfaɪnl'aɪzeʃən] 终结
+firewall ['faiəwɔ:l] 防火墙
+finalizer ['faɪnəlaɪzə] 终结器
+firmware ['fə:mwεə]固件
+flag     标记
+flash memory 闪存
+flush [flʌʃ] 刷新
+font 字体
+foreign key (FK) 外键(FK) (for database)
+form   窗体
+formal parameter [pə'ræmitə] 形参
+forward declaration 前置声明
+forward-only 只向前的
+forward-only cursor 只向前游标 (for database)
+fragmentation [,fræɡmen'teiʃən] 碎片 (for database)
+framework ['freimwə:k] 框架
+full specialization 完全特化
+function 函数
+function call operator (即operator ()) 函数调用操作符
+function object 函数对象
+function overloaded ['əuvə'ləudid] resolution[,rezə'lu:ʃən]函数重载决议
+functionality [,fʌŋkʃə'næliti]功能                                 17
+function template函数模板
+functor ['fʌŋktə]仿函数
+GAC (global assembly cache [kæʃ]) 
+全局装配件缓存、全局配件缓存
+GC (Garbage collection)     
+垃圾回收(机制)、垃圾收集(机制)
+game游戏
+generate ['dʒenəreit]生成
+generic [dʒi'nerik]泛化的、一般化的、通用的
+generic algorithm['ælɡəriðəm]通用算法
+genericity ['dʒenerisity] 泛型 
+getter (相对于 setter)取值函数
+global ['ɡləubəl]全局的
+global object 全局对象
+global scope [skəup] resolution operator 全局范围解析操作符
+grant [ɡrɑ:nt, ɡrænt]授权 (for database)
+granularity[ˌɡrænjuˈlæriti] 粒度
+group       组、群
+group box   分组框
+GUI   图形界面
+GUID (Globally Unique [ju:'ni:k] Identifier [ai'dentifaiə]) 全球唯一标识符
+hand shaking   握手                                       18
+handle     句柄
+handler    处理器
+hard-coded 硬编码的
+hard-copy 截屏图
+hard disk 硬盘
+hardware   硬件
+hash table 散列表、哈希表
+header file头文件
+heap [hi:p]堆
+help file 帮助文件
+hierarchy ['haiə,rɑ:ki]层次结构、继承体系
+hierarchical [,haiə'rɑ:kikəl] data 阶层式数据、层次式数据
+hook[huk]钩子
+Host (application)宿主(应用程序)
+hot key   热键
+hyperlink ['haipəliŋk]超链接
+HTML (HyperText ['haipətekst] Markup Language) 超文本标记语言 
+HTTP pipeline ['paip,lain]  HTTP管道 
+HTTP (HyperText Transfer Protocol) 超文本传输协议
+icon   图标
+IDE (Integrated Development Environment)集成开发环境
+IDL (Interface Definition Language)    接口定义语言               19
+identifier [ai'dentifaiə]标识符
+idle ['aidl] time 空闲时间
+if and only if当且仅当
+IL (Intermediate Language) 中间语言、中介语言
+image 图象
+IME   输入法
+immediate [i'mi:diət] base      直接基类
+immediate derived [di'raivd]   直接派生类
+immediate updating 即时更新 (for database)
+implicit [im'plisit] transaction [træn'zækʃən]隐式事务 (for database)
+incremental[ˌɪŋkrəˈmentl] update 增量更新 (for database)
+index          索引 (for database)
+implement ['implimənt, 'impliment]实现
+implementation [,implimen'teiʃən] 实现、实现品
+implicit [im'plisit]隐式
+import         导入
+increment ['inkrimənt] operator 增加操作符
+infinite ['infinət] loop       无限循环
+infinite recursive [ri'kə:siv] 无限递归
+information      信息
+infrastructure ['infrə,strʌktʃə]基础设施
+inheritance [in'heritəns]继承、继承机制                        20
+inline ['in,lain]内联
+inline expansion 内联展开
+initialization [i,niʃəlai'zeiʃən]初始化
+initialization list 初始化列表、初始值列表
+initialize [ɪ'nɪʃəlaɪz]初始化
+inner ['inə] join      内联接 (for database)
+in-place active 现场激活
+instance ['instəns]实例
+instantiated [ɪns'tænʃɪetid]    具现化、实体化(常应用于template)             
+instantiation[inˌstænʃiˈeiʃən]具现体、具现化实体(常应用于template)         
+integrate [ˈɪntɪgreɪt]       集成、整合
+integrity [ɪnˈtegrəti]      完整性、一致性
+integrity constraint完整性约束 (for database)
+interprocess communication (IPC)进程间通讯(IPC)
+interacts [,intə'rækts]交互
+interface 接口
+for GUI 界面
+interoperability[ˈintərˌɔpərəˈbiləti] 
+ 互操作性、互操作能力
+interpreter [in'tə:pritə]解释器
+introspection [,intrəu'spekʃən]自省
+invariants [in'vεəriənts]不变性                                  21
+invoke [in'vəuk]调用
+isolation [ˌaɪsəˈleɪʃn] level 隔离级别 (for database)
+iterate ['itəreit]迭代
+iterative ['itərətiv]反复的、迭代的
+iterator [ɪtə'retɚ]迭代器
+iteration [,itə'reiʃən] 迭代(回圈每次轮回称为一个iteration)          
+item      项、条款、项目
+JIT compilation [ˌkɔmpəˈleɪʃən] JIT编译 即时编译
+key          键 (for database) 
+key column   键列 (for database) 
+laser        激光
+late binding 迟绑定
+left outer join 左向外联接 (for database)
+level      阶、层例
+high level 高阶、高层
+library    库
+lifetime   生命期、寿命
+link       连接、链接
+linkage ['liŋkidʒ]连接、链接
+linker     连接器、链接器
+literal ['litərəl] constant 字面常数
+list   列表、表、链表                                       22
+list box 列表框
+livelock 活锁 (for database)
+load   装载、加载
+load balancing ['bælənsiŋ] 负载平衡
+loader 装载器、载入器
+local 局部的
+local object    局部对象
+lock 锁
+log   日志
+login 登录
+login security mode登录安全模式 (for database)
+lookup table   查找表 (for database)
+loop [lu:p]循环
+loose coupling ['kʌpliŋ] 松散耦合
+lvalue         左值
+machine code   机器码、机器代码
+macro ['mækrəu]宏
+maintain [mein'tein]维护
+managed code 受控代码、托管代码
+Managed Extensions [ik'stenʃəns] 受控扩充件、托管扩展
+managed object 受控对象、托管对象
+mangled ['mæŋg(ə)l] name                                       23
+manifest ['mænifest]清单
+manipulator [mə'nipjuleitə]操纵器(iostream预先定义的一种东西)            
+many-to-many relationship 多对多关系 (for database)
+many-to-one relationship 多对一关系 (for database)
+marshal ['mɑ:ʃəl]列集
+member   成员
+member access operator    成员取用运算子(有dot和arrow两种)             
+member function           成员函数
+member initialization list成员初始值列表
+memberwise 以member为单元…、members 逐一…            
+memberwise copy 
+memory      内存
+memory leak 内存泄漏
+menu     菜单
+message 消息
+message based 基于消息的
+message loop   消息环
+message queuing[kjuiŋ]消息队列
+metadata ['metədeɪtə] 元数据
+metaprogramming[mɛtə'prəuɡræmiŋ]元编程
+method ['meθəd]方法
+micro 微                                                 24
+middleware 中间件
+middle tier中间层
+modeling ['mɔdəliŋ]建模
+modeling language 建模语言
+modifier ['mɔdifaiə]修饰字、修饰符
+modem[ˈməudem]调制解调器
+module ['mɔdju:l]模块
+most derived [di'raivd] class最底层的派生类
+mouse   鼠标
+mutable ['mju:təbl]可变的
+mutex['mjutex]   互斥元、互斥体
+multidimensional [ˌmʌltidiˈmenʃənl] OLAP (MOLAP)    多维OLAP(MOLAP) (for database)
+multithreaded[ˌmʌltidiθ'redid] server application 多线程服务器应用程序 
+multiuser [,mʌlti'ju:zə]多用户
+multi-tasking   多任务
+multi-thread    多线程
+multicast ['mʌltikɑ:st] delegate ['deliɡət] 组播委托、多点委托
+named parameter    命名参数
+named pipe 命名管道
+namespace   名字空间、命名空间
+native      原生的、本地的                           25
+native code 本地码、本机码
+Native Image Generator ['dʒenəreitə] (NGEN)本地映像生成器
+nested ['nestid] class 嵌套类
+nested query 嵌套查询 (for database)
+nested table 嵌套表 (for database)
+network       网络
+network card 网卡
+nondependent name 
+</code></pre>
+]]></content>
+  </entry>
+  
+</feed>
