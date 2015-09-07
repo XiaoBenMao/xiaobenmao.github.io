@@ -9,24 +9,8 @@
   <meta name="author" content="嗷大喵">
 
   
-  <meta name="description" content="tableView 的编辑模式 左划删除按钮 1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-#pragma mark - UITableViewDelegate
-/* *只要实现这个代理方法,左划cell删除按钮就有了 *在编辑模式下:用户提交了添加(点击了添加按钮 &hellip;">
+  <meta name="description" content="自定义选中效果 增加自定义选中图片,控制其显示和隐藏
+在数据模型中增加bool属性,默认为NO,判断是否隐藏 不能直接对cell操作,否则在cell重用的时候会错 监听didSelectRowAtIndexPath方法,然后对选中行的是否隐藏属性取反 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -82,6 +66,161 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/18/tableview-pi-liang-cao-zuo/">tableView-批量操作</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-02-18T17:34:26+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>18</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:34 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>自定义选中效果</h3>
+
+<ul>
+<li>增加自定义选中图片,控制其显示和隐藏</li>
+<li>在数据模型中增加bool属性,默认为NO,判断是否隐藏
+
+<ul>
+<li>不能直接对cell操作,否则在cell重用的时候会错</li>
+</ul>
+</li>
+<li><p>监听didSelectRowAtIndexPath方法,然后对选中行的是否隐藏属性取反</p></li>
+<li><p>还一种思路就是可以将选中的数据模型保存在一个可变数组中进行操作(不推荐)</p></li>
+</ul>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/02/18/tableview-pi-liang-cao-zuo/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/18/tableview-footerviewhe-headerview/">tableView-footerView和headerView</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-02-18T08:39:44+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>18</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>8:39 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/%E7%82%B9%E5%87%BB%E5%8A%A0%E8%BD%BD.png" alt="" /></p>
+
+<p><img src="/images/%E6%AD%A3%E5%9C%A8%E5%8A%A0%E8%BD%BD.png" alt="" />
+- tableView的tableFooterView的宽度是填充屏幕的,
+    - 里面的<code>子控件宽度会被拉伸</code>,如果不想被拉伸,可以先添加view,再向view上加控件
+- 一般用来显示退出登录,或者加载更多</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/02/18/tableview-footerviewhe-headerview/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/17/uialertcontroller-dai-ti-uiactionsheethe-uialertview/">UIAlertController - 代替UIActionSheet和UIAlertView</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-02-17T17:29:04+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:29 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h1>0527-4</h1>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'>    <span class="c1">// 定义alert控制器,有两种模式: ActionSheet和UIAlertView</span>
+</span><span class='line'>    <span class="n">UIAlertController</span> <span class="o">*</span><span class="n">alert</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIAlertController</span> <span class="nl">alertControllerWithTitle</span><span class="p">:</span><span class="s">@&quot;是否注销?&quot;</span> <span class="nl">message</span><span class="p">:</span><span class="s">@&quot;messge&quot;</span> <span class="nl">preferredStyle</span><span class="p">:</span><span class="n">UIAlertControllerStyleActionSheet</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 上拉菜单增加按钮:取消,确定(文字红色)和默认三种样式</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">alert</span> <span class="nl">addAction</span><span class="p">:[</span><span class="n">UIAlertAction</span> <span class="nl">actionWithTitle</span><span class="p">:</span><span class="s">@&quot;取消&quot;</span> <span class="nl">style</span><span class="p">:</span><span class="n">UIAlertActionStyleCancel</span> <span class="nl">handler</span><span class="p">:</span><span class="nb">nil</span><span class="p">]];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">alert</span> <span class="nl">addAction</span><span class="p">:[</span><span class="n">UIAlertAction</span> <span class="nl">actionWithTitle</span><span class="p">:</span><span class="s">@&quot;注销&quot;</span> <span class="nl">style</span><span class="p">:</span><span class="n">UIAlertActionStyleDestructive</span> <span class="nl">handler</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="n">UIAlertAction</span> <span class="o">*</span><span class="n">action</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;点击注销按钮&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}]];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">alert</span> <span class="nl">addAction</span><span class="p">:[</span><span class="n">UIAlertAction</span> <span class="nl">actionWithTitle</span><span class="p">:</span><span class="s">@&quot;普通按钮&quot;</span> <span class="nl">style</span><span class="p">:</span><span class="n">UIAlertActionStyleDefault</span> <span class="nl">handler</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="n">UIAlertAction</span> <span class="o">*</span><span class="n">action</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;点击普通按钮&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}]];</span>
+</span><span class='line'>    <span class="c1">// 显示aler控制器</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="nl">presentViewController</span><span class="p">:</span><span class="n">alert</span> <span class="nl">animated</span><span class="p">:</span><span class="nb">YES</span> <span class="nl">completion</span><span class="p">:</span><span class="o">^</span><span class="p">{</span>
+</span><span class='line'>        <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;显示后alert时的操作&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/02/17/uialertcontroller-dai-ti-uiactionsheethe-uialertview/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -608,179 +747,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/01/04/u3d-xiao-qiu-gen-sui-shu-biao-zai-di-shang-gun-dong-(%5B%3F%5D/">U3D 小球跟随鼠标在地上滚动（一)</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-01-04T17:38:20+08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>4</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:38 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>新建一个plane作为地面Land，一个小球。给小球增加Rigidbody组件，设置一个阻力值Drag，此处我们设为1。</p>
-
-<p>然后给小球增加一个script，此处为moveController.cs</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/01/04/u3d-xiao-qiu-gen-sui-shu-biao-zai-di-shang-gun-dong-(%5B%3F%5D/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/01/04/u3d-xiao-qiu-gen-sui-shu-biao-zai-di-shang-gun-dong-(er/">U3D 小球跟随鼠标在地上滚动（二)</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-01-04T16:12:23+08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>4</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>4:12 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>利用刚体到方法实现小球的移动，会因为惯性等因素，使小球控制精度降低</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/01/04/u3d-xiao-qiu-gen-sui-shu-biao-zai-di-shang-gun-dong-(er/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/01/04/u3d-rayshe-xian-de-chuang-jian-he-peng-zhuang-jian-ce/">U3D Ray射线的创建和碰撞检测</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-01-04T15:30:19+08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>4</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>3:30 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>using UnityEngine;  
-</span><span class='line'>using System.Collections;  
-</span><span class='line'>  
-</span><span class='line'>public class CubeController : MonoBehaviour {  
-</span><span class='line'>  
-</span><span class='line'>    // Use this for initialization  
-</span><span class='line'>    void Awake () {  
-</span><span class='line'>        //创建一条射线  
-</span><span class='line'>        //Ray ray = new Ray (new Vector3 (1f, 1f, 1f), Vector3.up);  
-</span><span class='line'>    }  
-</span><span class='line'>      
-</span><span class='line'>    // Update is called once per frame  
-</span><span class='line'>    void Update () {  
-</span><span class='line'>          
-</span><span class='line'>        /* 
-</span><span class='line'>        //创建一条从主摄像机到鼠标触摸点的射线 
-</span><span class='line'>        Ray ray1 = Camera.main.ScreenPointToRay (Input.mousePosition); 
-</span><span class='line'>        //发射射线并进行碰撞检测 
-</span><span class='line'>        bool isCollision = Physics.Raycast (ray1); 
-</span><span class='line'>        if (isCollision) { 
-</span><span class='line'>            Debug.Log("ray1"); 
-</span><span class='line'>        } 
-</span><span class='line'>        */  
-</span><span class='line'>        if (Input.GetMouseButtonDown (0)) {  
-</span><span class='line'>            Ray ray2 = Camera.main.ScreenPointToRay(Input.mousePosition);  
-</span><span class='line'>            //RaycastHit  是一个结构体对象，返回储存的碰撞信息  
-</span><span class='line'>            RaycastHit hitInfo = new RaycastHit();  
-</span><span class='line'>            if( Physics.Raycast(ray2,out hitInfo)){  
-</span><span class='line'>                if (hitInfo.collider.gameObject.name == "Cube"){  
-</span><span class='line'>                    Debug.Log("hit_point = "+hitInfo.point);  
-</span><span class='line'>                }  
-</span><span class='line'>            }  
-</span><span class='line'>        }  
-</span><span class='line'>    }  
-</span><span class='line'>}  
-</span><span class='line'>//新建一个Cube，inspector的Layer属性自定义个一个名为Cube的层。当鼠标点击在Cube上时会发生碰撞，并打印碰撞点。  </span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="/images/U3D/Ray%E5%B0%84%E7%BA%BF%E5%88%9B%E5%BB%BA%E5%92%8C%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8.png" alt="" /></p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/7">&larr; Older</a>
@@ -846,7 +812,7 @@
       </li>
     
       <li class="category">
-        <a class='category' href='/blog/categories/coreanimation/'>coreanimation</a> (3)
+        <a class='category' href='/blog/categories/coreanimation/'>coreanimation</a> (6)
       </li>
     
   </ul>
@@ -863,15 +829,15 @@
       </li>
     
       <li class="post">
-        <a href="/blog/2014/08/02/calayer-shi-zhong/">CALayer-时钟</a>
+        <a href="/blog/2014/08/06/coreanimation-li-zi-xiao-guo/">CoreAnimation-粒子效果</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/08/02/calayer-yin-shi-dong-hua/">CALayer-隐式动画</a>
+        <a href="/blog/2014/08/05/coreanimation-zhe-die-tu-pian-contentsrect/">CoreAnimation-折叠图片</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/08/01/calayer-shu-xing-she-zhi/">CALayer-属性设置</a>
+        <a href="/blog/2014/08/04/coreanimation-cabasicanimationhe-cakeyframeanimationhe-cagroupanimation/">CoreAnimation-CABasicAnimation和CAKeyframeAnimation和CAGroupAnimation</a>
       </li>
     
   </ul>

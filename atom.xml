@@ -4,7 +4,7 @@
   <title><![CDATA[My World]]></title>
   <link href="http://xiaobenmao.github.io/atom.xml" rel="self"/>
   <link href="http://xiaobenmao.github.io/"/>
-  <updated>2015-09-08T01:40:23+08:00</updated>
+  <updated>2015-09-08T04:15:01+08:00</updated>
   <id>http://xiaobenmao.github.io/</id>
   <author>
     <name><![CDATA[嗷大喵]]></name>
@@ -169,6 +169,1240 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CoreAnimation-粒子效果]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/08/06/coreanimation-li-zi-xiao-guo/"/>
+    <updated>2014-08-06T09:15:04+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/08/06/coreanimation-li-zi-xiao-guo</id>
+    <content type="html"><![CDATA[<h4>粒子动画</h4>
+
+<p>效果：随机绘制一条路径，点击开始按钮，粒子动画</p>
+
+<h4>实现思路</h4>
+
+<ul>
+<li><p>1.搞个画板绘制路径，自定义view</p></li>
+<li><p>2.给自定义view添加pan手势，和创建复制图层和圆形图层，只需要设置一次，在awakeFromNib方法中设置。</p></li>
+</ul>
+
+
+<!--more-->
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'> <span class="c1">// 添加pan手势</span>
+</span><span class='line'>    <span class="bp">UIPanGestureRecognizer</span> <span class="o">*</span><span class="n">pan</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIPanGestureRecognizer</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTarget</span><span class="p">:</span><span class="nb">self</span> <span class="nl">action</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">pan</span><span class="p">:)];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="nl">addGestureRecognizer</span><span class="p">:</span><span class="n">pan</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 创建复制图层</span>
+</span><span class='line'>    <span class="bp">CAReplicatorLayer</span> <span class="o">*</span><span class="n">repLayer</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CAReplicatorLayer</span> <span class="n">layer</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">repLayer</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">layer</span> <span class="nl">addSublayer</span><span class="p">:</span><span class="n">repLayer</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 创建粒子图层</span>
+</span><span class='line'>    <span class="bp">CALayer</span> <span class="o">*</span><span class="n">layer</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CALayer</span> <span class="n">layer</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">layer</span><span class="p">.</span><span class="n">cornerRadius</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">layer</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">layer</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">whiteColor</span><span class="p">].</span><span class="bp">CGColor</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">repLayer</span> <span class="nl">addSublayer</span><span class="p">:</span><span class="n">layer</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">_dotLayer</span> <span class="o">=</span> <span class="n">layer</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>3.因为核心动画只能设置一个路径，因此只能创建一个路径，懒加载路径。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">UIBezierPath</span> <span class="o">*</span><span class="p">)</span><span class="nf">path</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_path</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">_path</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="n">bezierPath</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">_path</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>4.在一开始拖动的时候，保存路径起点，设置路径起点，拖动的时候每次添加线到某个点。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'> <span class="bp">CGPoint</span> <span class="n">curP</span> <span class="o">=</span> <span class="p">[</span><span class="n">pan</span> <span class="nl">locationInView</span><span class="p">:</span><span class="nb">self</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">pan</span><span class="p">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">UIGestureRecognizerStateBegan</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">_startP</span> <span class="o">=</span> <span class="n">curP</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">path</span> <span class="nl">moveToPoint</span><span class="p">:</span><span class="n">_startP</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">path</span> <span class="nl">addLineToPoint</span><span class="p">:</span><span class="n">curP</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">setNeedsDisplay</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>5.路径绘制好了，点击开始按钮的时候，添加动画到图层</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="bp">CAKeyframeAnimation</span> <span class="o">*</span><span class="n">anim</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CAKeyframeAnimation</span> <span class="n">animation</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">anim</span><span class="p">.</span><span class="n">keyPath</span> <span class="o">=</span> <span class="s">@&quot;position&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">anim</span><span class="p">.</span><span class="n">duration</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">anim</span><span class="p">.</span><span class="n">path</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="bp">CGPath</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">anim</span><span class="p">.</span><span class="n">repeatCount</span> <span class="o">=</span> <span class="n">MAXFLOAT</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">_dotLayer</span> <span class="nl">addAnimation</span><span class="p">:</span><span class="n">anim</span> <span class="nl">forKey</span><span class="p">:</span><span class="s">@&quot;anim&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">anim</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="nb">self</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>6.复制图层</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">repLayer</span><span class="p">.</span><span class="n">instanceCount</span> <span class="o">=</span> <span class="mi">20</span><span class="p">;</span>
+</span><span class='line'><span class="n">repLayer</span><span class="p">.</span><span class="n">instanceDelay</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">/</span> <span class="mf">20.0</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 设置子层颜色</span>
+</span><span class='line'><span class="n">repLayer</span><span class="p">.</span><span class="n">instanceColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="nl">colorWithRed</span><span class="p">:</span><span class="mi">0</span> <span class="nl">green</span><span class="p">:</span><span class="mi">1</span> <span class="nl">blue</span><span class="p">:</span><span class="mi">0</span> <span class="nl">alpha</span><span class="p">:</span><span class="mi">1</span><span class="p">].</span><span class="bp">CGColor</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 设置子层颜色绿色通道偏移量</span>
+</span><span class='line'><span class="n">repLayer</span><span class="p">.</span><span class="n">instanceGreenOffset</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.03</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>7.重绘
+清空路径，重新绘制，移除图层动画。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">_path</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'><span class="p">[</span><span class="n">_dotLayer</span> <span class="nl">removeAnimationForKey</span><span class="p">:</span><span class="s">@&quot;anim&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="nb">self</span> <span class="n">setNeedsDisplay</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="http://xiaobenmao.github.io/images/%E7%B2%92%E5%AD%90%E6%95%88%E6%9E%9C.png" alt="" /></p>
+
+<ul>
+<li>完整代码如下</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">DrawView</span> : <span class="bp">UIView</span>
+</span><span class='line'><span class="c1">// 开始动画</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">reDraw</span><span class="p">;</span>
+</span><span class='line'><span class="c1">// 重绘</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">startA</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#import &quot;DrawView.h&quot;</span>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">DrawView</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**路径*/</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**复制层*/</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">CAReplicatorLayer</span> <span class="o">*</span><span class="n">replicatorL</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**原始层*/</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">CALayer</span> <span class="o">*</span><span class="n">dotLayer</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">DrawView</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">awakeFromNib</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 添加手势</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">addPanGR</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="cp">#pragma mark - 懒加载</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 此处只需要添加一条路径,原始层添加的帧动画路径只有一个,所以复制出来的层都会由相同的动画路径,</span>
+</span><span class='line'><span class="c1">// 只是前后间隔延迟,每一个点是一个子层,重叠起来的</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">UIBezierPath</span> <span class="o">*</span><span class="p">)</span><span class="nf">path</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_path</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">_path</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="n">bezierPath</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">_path</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">CAReplicatorLayer</span> <span class="o">*</span><span class="p">)</span><span class="nf">replicatorL</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_replicatorL</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>         <span class="n">_replicatorL</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CAReplicatorLayer</span> <span class="n">layer</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">_replicatorL</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">_replicatorL</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">CALayer</span> <span class="o">*</span><span class="p">)</span><span class="nf">dotLayer</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_dotLayer</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">_dotLayer</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CALayer</span> <span class="n">layer</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">_dotLayer</span><span class="p">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">_dotLayer</span><span class="p">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">_dotLayer</span><span class="p">.</span><span class="n">cornerRadius</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">_dotLayer</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">blueColor</span><span class="p">].</span><span class="bp">CGColor</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">_dotLayer</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="cp">#pragma mark - 添加手势</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">addPanGR</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="bp">UIPanGestureRecognizer</span> <span class="o">*</span><span class="n">pan</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIPanGestureRecognizer</span> <span class="n">alloc</span><span class="p">]</span><span class="nl">initWithTarget</span><span class="p">:</span><span class="nb">self</span> <span class="nl">action</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">pan</span><span class="p">:)];</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="nl">addGestureRecognizer</span><span class="p">:</span><span class="n">pan</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">static</span> <span class="kt">int</span> <span class="n">_count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">pan:</span><span class="p">(</span><span class="bp">UIPanGestureRecognizer</span> <span class="o">*</span><span class="p">)</span><span class="nv">pan</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 获取当前点</span>
+</span><span class='line'>    <span class="bp">CGPoint</span> <span class="n">curP</span> <span class="o">=</span> <span class="p">[</span><span class="n">pan</span> <span class="nl">locationInView</span><span class="p">:</span><span class="nb">self</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 画线</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">pan</span><span class="p">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">UIGestureRecognizerStateBegan</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">path</span> <span class="nl">moveToPoint</span><span class="p">:</span><span class="n">curP</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="c1">// 手指不断移动,当前点连线到上一点,</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_path</span> <span class="nl">addLineToPoint</span><span class="p">:</span><span class="n">curP</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">// 重绘画出当前路径</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">setNeedsDisplay</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 用来记录触摸点滑动中个数,设置复制层中复制的个数,防止,路径太长,动画太少</span>
+</span><span class='line'>    <span class="n">_count</span> <span class="o">++</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">addReplicatorLayer</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 懒加载添加复制层</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">layer</span> <span class="nl">addSublayer</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="n">replicatorL</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">// 懒加载添加原始层</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">replicatorL</span> <span class="nl">addSublayer</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="n">dotLayer</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 添加动画</span>
+</span><span class='line'>    <span class="bp">CAKeyframeAnimation</span> <span class="o">*</span><span class="n">keyframe</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CAKeyframeAnimation</span> <span class="n">animation</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">keyframe</span><span class="p">.</span><span class="n">keyPath</span> <span class="o">=</span> <span class="s">@&quot;position&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">keyframe</span><span class="p">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">_path</span><span class="p">.</span><span class="bp">CGPath</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">keyframe</span><span class="p">.</span><span class="n">repeatCount</span> <span class="o">=</span> <span class="n">MAXFLOAT</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">duration</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">keyframe</span><span class="p">.</span><span class="n">duration</span>  <span class="o">=</span> <span class="n">duration</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">_dotLayer</span> <span class="nl">addAnimation</span><span class="p">:</span><span class="n">keyframe</span> <span class="nl">forKey</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 设置复制层属性,必须先添加动画再复制</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">num</span> <span class="o">=</span> <span class="n">_count</span> <span class="o">/</span> <span class="mi">5</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">_replicatorL</span><span class="p">.</span><span class="n">instanceCount</span> <span class="o">=</span> <span class="n">num</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//NSLog(@&quot;%zd&quot;,_replicatorL.instanceCount);</span>
+</span><span class='line'>    <span class="n">_replicatorL</span><span class="p">.</span><span class="n">instanceDelay</span> <span class="o">=</span> <span class="n">duration</span> <span class="o">/</span> <span class="n">num</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - 开始动画和重绘</span>
+</span><span class='line'><span class="c1">// 开始动画</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">startA</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">addReplicatorLayer</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// 重画</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">reDraw</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 清空绘图信息</span>
+</span><span class='line'>    <span class="n">_path</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// 把原始层移除父控件,复制出来的层也会移除</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_dotLayer</span> <span class="n">removeFromSuperlayer</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">_dotLayer</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// 清空数量</span>
+</span><span class='line'>    <span class="n">_count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">setNeedsDisplay</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 重绘</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">_path</span> <span class="n">stroke</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="bp">UIViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
+</span><span class='line'><span class="cp">#import &quot;DrawView.h&quot;</span>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// 点击重绘</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">reDraw:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">DrawView</span> <span class="o">*</span><span class="n">drView</span> <span class="o">=</span> <span class="p">(</span><span class="n">DrawView</span> <span class="o">*</span><span class="p">)</span> <span class="nb">self</span><span class="p">.</span><span class="n">view</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">drView</span> <span class="n">reDraw</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// 点击开始</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">startA:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">DrawView</span> <span class="o">*</span><span class="n">drView</span> <span class="o">=</span> <span class="p">(</span><span class="n">DrawView</span> <span class="o">*</span><span class="p">)</span> <span class="nb">self</span><span class="p">.</span><span class="n">view</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">drView</span> <span class="n">startA</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="http://xiaobenmao.github.io/images/%E7%B2%92%E5%AD%90%E6%95%88%E6%9E%9Cstoryboard.png" alt="" /></p>
+
+<ul>
+<li>将控制器的view作为画板,自定义继承于view的类,给控制器修改class为自定义类</li>
+<li><code>核心动画只能设置一个路径</code>,所以懒加载一个路径,</li>
+<li>一条路径可以不连贯,设置多个起点,分成多段</li>
+<li>在重绘的时候,可以通过设置动画的代理时的key值,将原始层的动画删除</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">_dotLayer</span> <span class="nl">addAnimation</span><span class="p">:</span><span class="n">keyframe</span> <span class="nl">forKey</span><span class="p">:</span><span class="s">@&quot;an&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">keyframe</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 重绘的时候</span>
+</span><span class='line'><span class="c1">// 原始层没有动画,复制的子层也没有动画</span>
+</span><span class='line'><span class="p">[</span><span class="n">_dotLayer</span> <span class="nl">removeAnimationForKey</span><span class="p">:</span><span class="s">@&quot;an&quot;</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>也可以将原始层删除,用到时重新加载</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CoreAnimation-折叠图片]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/08/05/coreanimation-zhe-die-tu-pian-contentsrect/"/>
+    <updated>2014-08-05T08:33:06+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/08/05/coreanimation-zhe-die-tu-pian-contentsrect</id>
+    <content type="html"><![CDATA[<h4>图片折叠效果</h4>
+
+<!--more-->
+
+
+<p><img src="http://xiaobenmao.github.io/images/%E6%8A%98%E5%8F%A0%E5%9B%BE%E7%89%87%E5%89%8D.png" alt="" /></p>
+
+<p><img src="http://xiaobenmao.github.io/images/%E6%8A%98%E5%8F%A0%E5%9B%BE%E7%89%87%E5%90%8E.png" alt="" /></p>
+
+<p><img src="http://xiaobenmao.github.io/images/%E6%8A%98%E5%8F%A0%E5%9B%BE%E7%89%87-%E6%8E%92%E5%88%97%E5%9B%BE%E7%89%87.png" alt="" /></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
+</span><span class='line'><span class="c1">//@property (weak, nonatomic) IBOutlet UIImageView *test1View;</span>
+</span><span class='line'><span class="c1">//@property (weak, nonatomic) IBOutlet UIImageView *testView;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">weak</span><span class="p">,</span> <span class="k">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="bp">UIImageView</span> <span class="o">*</span><span class="n">topView</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">weak</span><span class="p">,</span> <span class="k">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="bp">UIImageView</span> <span class="o">*</span><span class="n">bottomView</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">weak</span><span class="p">,</span> <span class="k">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="bp">UIView</span> <span class="o">*</span><span class="n">dragView</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">weak</span><span class="p">)</span> <span class="bp">CAGradientLayer</span> <span class="o">*</span><span class="n">gradientL</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> 两张图片的顺序,不能错,否则,旋转过九十度后就会看不到</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 阴影:渐变层的渐变色colors属性必须有颜色</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> *一张图片必须要通过两个控件展示，旋转的时候，只旋转上部分控件</span>
+</span><span class='line'><span class="cm"> *如何让一张完整的图片通过两个控件显示?</span>
+</span><span class='line'><span class="cm"> *  1&gt;通过layer的contentsRect属性控制图片的显示内容</span>
+</span><span class='line'><span class="cm"> *  2&gt;如果快速把两个控件拼接成一个完整图片</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//    // 通过上下接壤排列</span>
+</span><span class='line'><span class="c1">//    self.testView.layer.contentsRect = CGRectMake(0, 0, 1, 0.5);</span>
+</span><span class='line'><span class="c1">//    self.test1View.layer.contentsRect = CGRectMake(0, 0.5, 1, 0.5);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 快速排列</span>
+</span><span class='line'>    <span class="c1">// 通过设置contentsRect可以设置图片显示的尺寸，取值0~1</span>
+</span><span class='line'>    <span class="n">_topView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">contentsRect</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">_topView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">anchorPoint</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">_bottomView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">contentsRect</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">_bottomView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">anchorPoint</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 添加手势</span>
+</span><span class='line'>    <span class="bp">UIPanGestureRecognizer</span> <span class="o">*</span><span class="n">pan</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIPanGestureRecognizer</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTarget</span><span class="p">:</span><span class="nb">self</span> <span class="nl">action</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">pan</span><span class="p">:)];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_dragView</span> <span class="nl">addGestureRecognizer</span><span class="p">:</span><span class="n">pan</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 渐变图层</span>
+</span><span class='line'>    <span class="bp">CAGradientLayer</span> <span class="o">*</span><span class="n">gradientL</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CAGradientLayer</span> <span class="n">layer</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 注意图层需要设置尺寸</span>
+</span><span class='line'>    <span class="n">gradientL</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">_bottomView</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">gradientL</span><span class="p">.</span><span class="n">opacity</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// 设置渐变色,从无色到黑色,需要类型转换</span>
+</span><span class='line'>    <span class="c1">// 渐变层的渐变色排列在所添加的层上,这里开始的时候不需要显示,当旋转的时候慢慢出现,所以通过透明度来修改</span>
+</span><span class='line'>    <span class="n">gradientL</span><span class="p">.</span><span class="n">colors</span> <span class="o">=</span> <span class="l">@[</span><span class="p">(</span><span class="kt">id</span><span class="p">)[</span><span class="bp">UIColor</span> <span class="n">clearColor</span><span class="p">].</span><span class="bp">CGColor</span><span class="p">,(</span><span class="kt">id</span><span class="p">)[</span><span class="bp">UIColor</span> <span class="n">blackColor</span><span class="p">].</span><span class="bp">CGColor</span><span class="l">]</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">_gradientL</span> <span class="o">=</span> <span class="n">gradientL</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">_bottomView</span><span class="p">.</span><span class="n">layer</span> <span class="nl">addSublayer</span><span class="p">:</span><span class="n">gradientL</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 拖动的时候旋转上部分内容，200 M_PI</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">pan:</span><span class="p">(</span><span class="bp">UIPanGestureRecognizer</span> <span class="o">*</span><span class="p">)</span><span class="nv">pan</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 获取偏移量</span>
+</span><span class='line'>   <span class="bp">CGPoint</span> <span class="n">transP</span> <span class="o">=</span> <span class="p">[</span><span class="n">pan</span> <span class="nl">translationInView</span><span class="p">:</span><span class="n">_dragView</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 旋转角度,往下逆时针旋转,可向下滑动区域为dragView的高度,当y偏移200时,旋转M_Pi</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">angle</span> <span class="o">=</span> <span class="o">-</span><span class="n">transP</span><span class="p">.</span><span class="n">y</span> <span class="o">/</span> <span class="mf">200.0</span> <span class="o">*</span> <span class="n">M_PI</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">CATransform3D</span> <span class="n">transfrom</span> <span class="o">=</span> <span class="n">CATransform3DIdentity</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// m34增加旋转的立体感，近大远小,d：距离图层的距离</span>
+</span><span class='line'>    <span class="n">transfrom</span><span class="p">.</span><span class="n">m34</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">/</span> <span class="mf">500.0</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">transfrom</span> <span class="o">=</span> <span class="n">CATransform3DRotate</span><span class="p">(</span><span class="n">transfrom</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">_topView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">transfrom</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 设置阴影效果</span>
+</span><span class='line'>    <span class="n">_gradientL</span><span class="p">.</span><span class="n">opacity</span> <span class="o">=</span> <span class="n">transP</span><span class="p">.</span><span class="n">y</span> <span class="o">*</span> <span class="mi">1</span> <span class="o">/</span> <span class="mf">200.0</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">pan</span><span class="p">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">UIGestureRecognizerStateEnded</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// 反弹</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// 弹簧效果的动画</span>
+</span><span class='line'>        <span class="c1">// SpringWithDamping:弹性系数,越小，弹簧效果越明显</span>
+</span><span class='line'>        <span class="p">[</span><span class="bp">UIView</span> <span class="nl">animateWithDuration</span><span class="p">:</span><span class="mf">0.6</span> <span class="nl">delay</span><span class="p">:</span><span class="mi">0</span> <span class="nl">usingSpringWithDamping</span><span class="p">:</span><span class="mf">0.2</span> <span class="nl">initialSpringVelocity</span><span class="p">:</span><span class="mi">10</span> <span class="nl">options</span><span class="p">:</span><span class="n">UIViewAnimationOptionCurveEaseInOut</span> <span class="nl">animations</span><span class="p">:</span><span class="o">^</span><span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="n">_topView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">CATransform3DIdentity</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">}</span> <span class="nl">completion</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="kt">BOOL</span> <span class="n">finished</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">}];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="http://xiaobenmao.github.io/images/%E6%8A%98%E5%8F%A0%E5%9B%BE%E7%89%87storyboard.png" alt="" /></p>
+
+<h3>渐变层</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// 设置渐变颜色,渐变层会显示从红,绿,黄,三色排布</span>
+</span><span class='line'><span class="n">gradientL</span><span class="p">.</span><span class="n">colors</span> <span class="o">=</span> <span class="l">@[</span><span class="p">(</span><span class="kt">id</span><span class="p">)[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">].</span><span class="bp">CGColor</span><span class="p">,(</span><span class="kt">id</span><span class="p">)[</span><span class="bp">UIColor</span> <span class="n">greenColor</span><span class="p">].</span><span class="bp">CGColor</span><span class="p">,(</span><span class="kt">id</span><span class="p">)[</span><span class="bp">UIColor</span> <span class="n">yellowColor</span><span class="p">].</span><span class="bp">CGColor</span><span class="l">]</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 设置渐变定位点</span>
+</span><span class='line'><span class="c1">//gradientL.locations = @[@0.1,@0.4,@0.5];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 设置渐变开始点，取值0~1</span>
+</span><span class='line'><span class="n">gradientL</span><span class="p">.</span><span class="n">startPoint</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">[</span><span class="n">_bottomView</span><span class="p">.</span><span class="n">layer</span> <span class="nl">addSublayer</span><span class="p">:</span><span class="n">gradientL</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="http://xiaobenmao.github.io/images/%E6%8A%98%E5%8F%A0%E5%9B%BE%E7%89%87%E6%B8%90%E5%8F%98%E5%B1%821.png" alt="" /></p>
+
+<p><img src="http://xiaobenmao.github.io/images/%E6%8A%98%E5%8F%A0%E5%9B%BE%E7%89%87%E6%B8%90%E5%8F%98%E5%B1%822.png" alt="" /></p>
+
+<p><img src="http://xiaobenmao.github.io/images/%E6%8A%98%E5%8F%A0%E5%9B%BE%E7%89%87%E6%B8%90%E5%8F%98%E5%B1%823.png" alt="" /></p>
+
+<ul>
+<li>注意点:
+
+<ul>
+<li>`在storyboard排列imageView时,注意前后顺序,否则会在选装超过90°时被挡住</li>
+<li>必须设置渐变层的渐变色,然后通过透明度控制显示和隐藏</li>
+<li>在设置M34增加立体感时,
+
+<ul>
+<li>要创建一个空的CATransform3D</li>
+<li>然后添加M34(可通过参数设置很小,验证有没有效果,向外为负数)</li>
+<li>如果有旋转,则将transform作为上一次的旋转参数,赋值给要旋转的layer</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="bp">CATransform3D</span> <span class="n">transfrom</span> <span class="o">=</span> <span class="n">CATransform3DIdentity</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// m34增加旋转的立体感，近大远小,d：距离图层的距离</span>
+</span><span class='line'><span class="n">transfrom</span><span class="p">.</span><span class="n">m34</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">/</span> <span class="mf">10.0</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">transfrom</span> <span class="o">=</span> <span class="n">CATransform3DRotate</span><span class="p">(</span><span class="n">transfrom</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">_topView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">transfrom</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 设置阴影效果</span>
+</span><span class='line'><span class="n">_gradientL</span><span class="p">.</span><span class="n">opacity</span> <span class="o">=</span> <span class="n">transP</span><span class="p">.</span><span class="n">y</span> <span class="o">*</span> <span class="mi">1</span> <span class="o">/</span> <span class="mf">200.0</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="http://xiaobenmao.github.io/images/%E6%8A%98%E5%8F%A0%E5%9B%BE%E7%89%87%E7%AB%8B%E4%BD%93%E6%95%88%E6%9E%9C.png" alt="" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CoreAnimation-CABasicAnimation和CAKeyframeAnimation和CAGroupAnimation]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/08/04/coreanimation-cabasicanimationhe-cakeyframeanimationhe-cagroupanimation/"/>
+    <updated>2014-08-04T15:31:00+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/08/04/coreanimation-cabasicanimationhe-cakeyframeanimationhe-cagroupanimation</id>
+    <content type="html"><![CDATA[<h3>CABasicAnimation</h3>
+
+<!--more-->
+
+
+<p><img src="http://xiaobenmao.github.io/images/CABasicAnimation.png" alt="" /></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">touchesBegan:</span><span class="p">(</span><span class="bp">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="bp">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 创建动画</span>
+</span><span class='line'>    <span class="bp">CABasicAnimation</span> <span class="o">*</span><span class="n">anim</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CABasicAnimation</span> <span class="n">animation</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 描述下修改哪个属性产生动画</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 只能是layer属性</span>
+</span><span class='line'>    <span class="n">anim</span><span class="p">.</span><span class="n">keyPath</span> <span class="o">=</span> <span class="s">@&quot;transform.scale&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">anim</span><span class="p">.</span><span class="n">toValue</span> <span class="o">=</span> <span class="mf">@0.5</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 要想动画执行完成后保持最后状态,以下两个条件缺一不可</span>
+</span><span class='line'>    <span class="c1">// 设置动画完成的时候不要移除动画</span>
+</span><span class='line'>    <span class="n">anim</span><span class="p">.</span><span class="n">removedOnCompletion</span> <span class="o">=</span> <span class="nb">NO</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 设置动画执行完成要保持动画最后的状态</span>
+</span><span class='line'>    <span class="n">anim</span><span class="p">.</span><span class="n">fillMode</span> <span class="o">=</span> <span class="n">kCAFillModeForwards</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 设置动画执行次数</span>
+</span><span class='line'>    <span class="n">anim</span><span class="p">.</span><span class="n">repeatCount</span> <span class="o">=</span> <span class="n">MAXFLOAT</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// imageView上的图片是心形,将动画加在imageView的层上</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_imageV</span><span class="p">.</span><span class="n">layer</span> <span class="nl">addAnimation</span><span class="p">:</span><span class="n">anim</span> <span class="nl">forKey</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>如果保持最后状态:
+
+<ul>
+<li>当改变imagView的大小后,保持在最后的状态</li>
+<li>然后重复进行,</li>
+</ul>
+</li>
+<li>如果不添加保持最后状态的代码
+
+<ul>
+<li>当改变imageView的大小后,先恢复到原始状态</li>
+<li>然后重复进行</li>
+</ul>
+</li>
+</ul>
+
+
+<h3>CAKeyframeAnimation</h3>
+
+<p><img src="http://xiaobenmao.github.io/images/CAKeyframeAnimation.png" alt="" /></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'>   <span class="cm">/*</span>
+</span><span class='line'><span class="cm">    * 创建CALayer</span>
+</span><span class='line'><span class="cm">    * touchBegin,点击屏幕，做动画</span>
+</span><span class='line'><span class="cm">    * 创建动画，添加动画到CALayer</span>
+</span><span class='line'><span class="cm">    * 怎样执行动画？执行动画的本质是改变图层的属性。</span>
+</span><span class='line'><span class="cm">    * 告诉动画执行怎样的动画?设置动画属性(position)</span>
+</span><span class='line'><span class="cm">    * 告诉动画属性怎么改变?设置动画属性值改变 toValue fromValue</span>
+</span><span class='line'><span class="cm">    * duration:动画时长</span>
+</span><span class='line'><span class="cm">    * 动画有反弹?取消反弹</span>
+</span><span class='line'><span class="cm">        1&gt; 执行动画完毕不要移除</span>
+</span><span class='line'><span class="cm">        2&gt; 设置动画填充模式，保持最新的位置。</span>
+</span><span class='line'><span class="cm">    * rotation:</span>
+</span><span class='line'><span class="cm">    三维旋转：transform</span>
+</span><span class='line'><span class="cm">    二维旋转：transform.rotation</span>
+</span><span class='line'><span class="cm">    * scale</span>
+</span><span class='line'><span class="cm">    * 设置图层内容（心）</span>
+</span><span class='line'><span class="cm">    * tovalue:@0.5</span>
+</span><span class='line'><span class="cm">    * 总结CABasicAnimation只能在两个值之间做动画，怎么多个值做动画，用CAKeyframeAnimation</span>
+</span><span class='line'><span class="cm">    */</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DrawView.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">DrawView</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">DrawView</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">touchesBegan:</span><span class="p">(</span><span class="bp">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="bp">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// touch</span>
+</span><span class='line'>    <span class="bp">UITouch</span> <span class="o">*</span><span class="n">touch</span> <span class="o">=</span> <span class="p">[</span><span class="n">touches</span> <span class="n">anyObject</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 获取手指的触摸点</span>
+</span><span class='line'>    <span class="bp">CGPoint</span> <span class="n">curP</span> <span class="o">=</span> <span class="p">[</span><span class="n">touch</span> <span class="nl">locationInView</span><span class="p">:</span><span class="nb">self</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 创建路径</span>
+</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="n">bezierPath</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">_path</span> <span class="o">=</span> <span class="n">path</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 设置起点</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="nl">moveToPoint</span><span class="p">:</span><span class="n">curP</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">touchesMoved:</span><span class="p">(</span><span class="bp">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="bp">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// touch</span>
+</span><span class='line'>    <span class="bp">UITouch</span> <span class="o">*</span><span class="n">touch</span> <span class="o">=</span> <span class="p">[</span><span class="n">touches</span> <span class="n">anyObject</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 获取手指的触摸点</span>
+</span><span class='line'>    <span class="bp">CGPoint</span> <span class="n">curP</span> <span class="o">=</span> <span class="p">[</span><span class="n">touch</span> <span class="nl">locationInView</span><span class="p">:</span><span class="nb">self</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">// 不设置起点,默认起点是上一位置的终点</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_path</span> <span class="nl">addLineToPoint</span><span class="p">:</span><span class="n">curP</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">// 进行重绘</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">setNeedsDisplay</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">touchesEnded:</span><span class="p">(</span><span class="bp">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="bp">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 给imageView添加核心动画</span>
+</span><span class='line'>    <span class="c1">// 添加核心动画</span>
+</span><span class='line'>    <span class="bp">CAKeyframeAnimation</span> <span class="o">*</span><span class="n">anim</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CAKeyframeAnimation</span> <span class="n">animation</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">anim</span><span class="p">.</span><span class="n">keyPath</span> <span class="o">=</span> <span class="s">@&quot;position&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 路径转换,从UI转为CG</span>
+</span><span class='line'>    <span class="n">anim</span><span class="p">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">_path</span><span class="p">.</span><span class="bp">CGPath</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// 动画的时间</span>
+</span><span class='line'>    <span class="n">anim</span><span class="p">.</span><span class="n">duration</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// 执行最大次数,也就是重复执行</span>
+</span><span class='line'>    <span class="n">anim</span><span class="p">.</span><span class="n">repeatCount</span> <span class="o">=</span> <span class="n">MAXFLOAT</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// 取到imageView添加动画</span>
+</span><span class='line'>    <span class="p">[[[</span><span class="nb">self</span><span class="p">.</span><span class="n">subviews</span> <span class="n">firstObject</span><span class="p">]</span> <span class="n">layer</span><span class="p">]</span> <span class="nl">addAnimation</span><span class="p">:</span><span class="n">anim</span> <span class="nl">forKey</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 绘制路径</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_path</span> <span class="n">stroke</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="http://xiaobenmao.github.io/images/CAKeyframeAnimation%E7%9A%84path.png" alt="" /></p>
+
+<p><img src="http://xiaobenmao.github.io/images/CAKeyframeAnimation%E7%9A%84storyboard.png" alt="" /></p>
+
+<h4>图标抖动</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//    anim.values = @[@(angle2Radion(-10)),@(angle2Radion(10)),@(angle2Radion(-10))];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="http://xiaobenmao.github.io/images/CAAnimationGroup.png" alt="" /></p>
+
+<h3>CAGroupAnimation</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">touchesBegan:</span><span class="p">(</span><span class="bp">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="bp">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 同时缩放，平移，旋转</span>
+</span><span class='line'>    <span class="bp">CAAnimationGroup</span> <span class="o">*</span><span class="n">group</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CAAnimationGroup</span> <span class="n">animation</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">CABasicAnimation</span> <span class="o">*</span><span class="n">scale</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CABasicAnimation</span> <span class="n">animation</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">scale</span><span class="p">.</span><span class="n">keyPath</span> <span class="o">=</span> <span class="s">@&quot;transform.scale&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">scale</span><span class="p">.</span><span class="n">toValue</span> <span class="o">=</span> <span class="mf">@0.5</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">CABasicAnimation</span> <span class="o">*</span><span class="n">rotation</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CABasicAnimation</span> <span class="n">animation</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">rotation</span><span class="p">.</span><span class="n">keyPath</span> <span class="o">=</span> <span class="s">@&quot;transform.rotation&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">rotation</span><span class="p">.</span><span class="n">toValue</span> <span class="o">=</span> <span class="l">@(</span><span class="n">arc4random_uniform</span><span class="p">(</span><span class="n">M_PI</span><span class="p">)</span><span class="l">)</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">CABasicAnimation</span> <span class="o">*</span><span class="n">position</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CABasicAnimation</span> <span class="n">animation</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">position</span><span class="p">.</span><span class="n">keyPath</span> <span class="o">=</span> <span class="s">@&quot;position&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">position</span><span class="p">.</span><span class="n">toValue</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSValue</span> <span class="nl">valueWithCGPoint</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="n">arc4random_uniform</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span> <span class="n">arc4random_uniform</span><span class="p">(</span><span class="mi">200</span><span class="p">))];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">group</span><span class="p">.</span><span class="n">animations</span> <span class="o">=</span> <span class="l">@[</span><span class="n">scale</span><span class="p">,</span><span class="n">rotation</span><span class="p">,</span><span class="n">position</span><span class="l">]</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">_redView</span><span class="p">.</span><span class="n">layer</span> <span class="nl">addAnimation</span><span class="p">:</span><span class="n">group</span> <span class="nl">forKey</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 ]]></content>
   </entry>
@@ -4268,782 +5502,6 @@
 
 
 <p><img src="http://xiaobenmao.github.io/images/%E6%9F%B1%E7%8A%B6%E5%9B%BE.png" alt="" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Quartz2d-模仿下载进度]]></title>
-    <link href="http://xiaobenmao.github.io/blog/2014/07/08/quartz2d-mo-fang-xia-zai-jin-du/"/>
-    <updated>2014-07-08T08:30:05+08:00</updated>
-    <id>http://xiaobenmao.github.io/blog/2014/07/08/quartz2d-mo-fang-xia-zai-jin-du</id>
-    <content type="html"><![CDATA[<ul>
-<li>画下载进度</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'>   <span class="cm">/**</span>
-</span><span class='line'><span class="cm">重绘-下载进度条(setNeedsDisplay) 画图分析:</span>
-</span><span class='line'><span class="cm">    * 分析有几个控件：UISliderView,自定义view用来画图,UILabel</span>
-</span><span class='line'><span class="cm">    * 分析思路：滑动UISliderView的时候，把UISliderView的值传给自定义view,改变的显示。</span>
-</span><span class='line'><span class="cm">    * 怎么监听UISliderView，valueChange事件</span>
-</span><span class='line'><span class="cm">    * 自定义view搞一个属性接收滑动的值</span>
-</span><span class='line'><span class="cm">    * 接下来先搞label,因为他比较简单，做东西，先从简单的着手。</span>
-</span><span class='line'><span class="cm">    * 懒加载label,位置居中，文字居中</span>
-</span><span class='line'><span class="cm">    * label怎么显示?重写progress的set方法,有数据就展示在label上。</span>
-</span><span class='line'><span class="cm">    * 绘制圆弧，PPT分析，从哪开始画圆弧。</span>
-</span><span class='line'><span class="cm">    * 每次转多少°？ 角度 = 进度 * M_PI * 2</span>
-</span><span class='line'><span class="cm">    * startAngle = -M_PI_2</span>
-</span><span class='line'><span class="cm">    * endAngle = -M_PI_2 + 进度 * M_PI * 2</span>
-</span><span class='line'><span class="cm">    * 不会及时更新视图显示?为什么，因为drawRect只会在视图显示的时候调用一次。</span>
-</span><span class='line'><span class="cm">    * 怎么重绘？setNeedsDisplay</span>
-</span><span class='line'><span class="cm">    * 手动调用drawRect方法，不行，因为你自己不能创建上下文，必须系统调用来调用</span>
-</span><span class='line'><span class="cm">    * setNeedsDisplay：在view上做一个重绘的标记，在下一次绘图的周期来临，就会先创建好上下文，然后自动调用drawRect重绘。</span>
-</span><span class='line'><span class="cm">    */</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<!--more-->
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
-</span><span class='line'><span class="c1">// 模仿下载进度数值的改变</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">weak</span><span class="p">,</span> <span class="k">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">ProgressView</span> <span class="o">*</span><span class="n">progressView</span><span class="p">;</span>
-</span><span class='line'><span class="c1">// 用来显示进度的label</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">weak</span><span class="p">,</span> <span class="k">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="bp">UILabel</span> <span class="o">*</span><span class="n">labelView</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 改变数值</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">progressChange:</span><span class="p">(</span><span class="bp">UISlider</span> <span class="o">*</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// %% = %</span>
-</span><span class='line'>    <span class="n">_labelView</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSString</span> <span class="nl">stringWithFormat</span><span class="p">:</span><span class="s">@&quot;%.2f%%&quot;</span><span class="p">,</span><span class="n">sender</span><span class="p">.</span><span class="n">value</span> <span class="o">*</span> <span class="mi">100</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 给progressView赋值</span>
-</span><span class='line'>    <span class="n">_progressView</span><span class="p">.</span><span class="n">progress</span> <span class="o">=</span> <span class="n">sender</span><span class="p">.</span><span class="n">value</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 获取滑块值</span>
-</span><span class='line'><span class="c1">//    NSLog(@&quot;%f&quot;,sender.value);</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ProgressView.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ProgressView</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setProgress:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">progress</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">_progress</span> <span class="o">=</span> <span class="n">progress</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 重绘，系统会先创建与view相关联的上下文，然后再调用drawRect</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">setNeedsDisplay</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 注意：drawRect不能手动调用，因为图形上下文我们自己创建不了，只能由系统帮我们创建，并且传递给我们</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="p">{</span>
-</span><span class='line'>    <span class="c1">// Drawing code</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 创建贝瑟尔路径</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">radius</span> <span class="o">=</span> <span class="n">rect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">;</span>
-</span><span class='line'>    <span class="bp">CGPoint</span> <span class="n">center</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">radius</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">endA</span> <span class="o">=</span> <span class="o">-</span><span class="n">M_PI_2</span> <span class="o">+</span> <span class="n">_progress</span> <span class="o">*</span> <span class="n">M_PI</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="nl">bezierPathWithArcCenter</span><span class="p">:</span><span class="n">center</span> <span class="nl">radius</span><span class="p">:</span><span class="n">radius</span> <span class="o">-</span> <span class="mi">2</span> <span class="nl">startAngle</span><span class="p">:</span><span class="o">-</span><span class="n">M_PI_2</span> <span class="nl">endAngle</span><span class="p">:</span><span class="n">endA</span> <span class="nl">clockwise</span><span class="p">:</span><span class="nb">YES</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="n">stroke</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E6%A8%A1%E4%BB%BF%E4%B8%8B%E8%BD%BD%E8%BF%9B%E5%BA%A6.png" alt="" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Quartz2d-画圆]]></title>
-    <link href="http://xiaobenmao.github.io/blog/2014/07/07/quartz2d-hua-yuan/"/>
-    <updated>2014-07-07T13:08:11+08:00</updated>
-    <id>http://xiaobenmao.github.io/blog/2014/07/07/quartz2d-hua-yuan</id>
-    <content type="html"><![CDATA[<ul>
-<li>ShapeView:绘制图形
-
-<ul>
-<li>triangle三角形（画图分析）</li>
-<li>关闭路径closePath：从路径的终点连接到起点</li>
-<li>填充路径CGContextFillPath：有了封闭的路径就能填充</li>
-<li>设置填充颜色 [[UIColor blueColor] setFill];</li>
-<li>设置描边颜色 [[UIColor redColor] setStroke];</li>
-<li>不显示描边颜色，为什么?没有设置线宽</li>
-<li>设置线宽，还是不显示，为什么?因为绘制路径不对。</li>
-<li>即填充又描边CGContextDrawPath:kCGPathFillStroke。</li>
-<li>rectangle矩形</li>
-<li>circle圆：为什么传入矩形，因为圆内切与矩形</li>
-</ul>
-</li>
-</ul>
-
-
-<!--more-->
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="p">{</span>
-</span><span class='line'>    <span class="c1">// 圆角矩形</span>
-</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="nl">bezierPathWithRoundedRect</span><span class="p">:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span> <span class="nl">cornerRadius</span><span class="p">:</span><span class="mi">50</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="n">stroke</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E5%9C%86%E8%A7%92%E7%9F%A9%E5%BD%A2.png" alt="" /></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="p">{</span>
-</span><span class='line'>    <span class="c1">// 圆角矩形,当宽高等长,圆角半径为宽高一半时为圆</span>
-</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="nl">bezierPathWithRoundedRect</span><span class="p">:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span> <span class="nl">cornerRadius</span><span class="p">:</span><span class="mi">100</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="n">stroke</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E5%9C%86%E8%A7%92%E7%9F%A9%E5%BD%A2(%E5%9C%86" alt="" />.png)</p>
-
-<ul>
-<li>arc圆弧分析:
-
-<ul>
-<li>1> 圆弧属于圆的一部分，因此先要有圆，才有弧。</li>
-<li>2> 圆需要起点吗？画线需要，圆也不另外。</li>
-<li>3> 起点在哪? 圆心右边</li>
-<li>4> 画圆弧还需要起始角度，结束角度，方向，角度必须是弧度</li>
-</ul>
-</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="p">{</span>
-</span><span class='line'>    <span class="c1">// 圆弧</span>
-</span><span class='line'>    <span class="c1">// Center：圆心</span>
-</span><span class='line'>    <span class="c1">// startAngle:弧度</span>
-</span><span class='line'>    <span class="c1">// endAngle:结束角度</span>
-</span><span class='line'>    <span class="c1">// clockwise:YES:顺时针 NO：逆时针</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 扇形</span>
-</span><span class='line'>    <span class="bp">CGPoint</span> <span class="n">center</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="mi">125</span><span class="p">,</span> <span class="mi">125</span><span class="p">);</span>
-</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="nl">bezierPathWithArcCenter</span><span class="p">:</span><span class="n">center</span> <span class="nl">radius</span><span class="p">:</span><span class="mi">100</span> <span class="nl">startAngle</span><span class="p">:</span><span class="mi">0</span> <span class="nl">endAngle</span><span class="p">:</span><span class="n">M_PI</span> <span class="o">*</span> <span class="mi">2</span> <span class="nl">clockwise</span><span class="p">:</span><span class="nb">YES</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="n">stroke</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>画空心扇型</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 圆弧</span>
-</span><span class='line'>    <span class="c1">// Center：圆心</span>
-</span><span class='line'>    <span class="c1">// startAngle:弧度</span>
-</span><span class='line'>    <span class="c1">// endAngle:结束角度</span>
-</span><span class='line'>    <span class="c1">// clockwise:YES:顺时针 NO：逆时针</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 扇形</span>
-</span><span class='line'>    <span class="bp">CGPoint</span> <span class="n">center</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="mi">125</span><span class="p">,</span> <span class="mi">125</span><span class="p">);</span>
-</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="nl">bezierPathWithArcCenter</span><span class="p">:</span><span class="n">center</span> <span class="nl">radius</span><span class="p">:</span><span class="mi">100</span> <span class="nl">startAngle</span><span class="p">:</span><span class="mi">0</span> <span class="nl">endAngle</span><span class="p">:</span><span class="n">M_PI_2</span> <span class="nl">clockwise</span><span class="p">:</span><span class="nb">YES</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 添加一根线到圆心</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="nl">addLineToPoint</span><span class="p">:</span><span class="n">center</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 封闭路径，关闭路径：从路径的终点到起点</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="n">closePath</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="n">stroke</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E7%A9%BA%E5%BF%83%E6%89%87%E5%BD%A2.png" alt="" />
-- 填充的扇形,1/4圆
-    - 画个1/4圆弧，Stroke
-    - 填充路径，Fill
-    - 必须有封闭路径才能填充，没有封闭路径，系统会自动关闭路径，再去填充
-    - 画线连接圆心，自动关闭路径。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 圆弧</span>
-</span><span class='line'>    <span class="c1">// Center：圆心</span>
-</span><span class='line'>    <span class="c1">// startAngle:弧度</span>
-</span><span class='line'>    <span class="c1">// endAngle:结束角度</span>
-</span><span class='line'>    <span class="c1">// clockwise:YES:顺时针 NO：逆时针</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 扇形</span>
-</span><span class='line'>    <span class="bp">CGPoint</span> <span class="n">center</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="mi">125</span><span class="p">,</span> <span class="mi">125</span><span class="p">);</span>
-</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="nl">bezierPathWithArcCenter</span><span class="p">:</span><span class="n">center</span> <span class="nl">radius</span><span class="p">:</span><span class="mi">100</span> <span class="nl">startAngle</span><span class="p">:</span><span class="mi">0</span> <span class="nl">endAngle</span><span class="p">:</span><span class="n">M_PI_2</span> <span class="nl">clockwise</span><span class="p">:</span><span class="nb">YES</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 添加一根线到圆心</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="nl">addLineToPoint</span><span class="p">:</span><span class="n">center</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 封闭路径，关闭路径：从路径的终点到起点</span>
-</span><span class='line'>    <span class="c1">//[path closePath];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//[path stroke];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 填充：必须是一个完整的封闭路径,默认就会自动关闭路径</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="n">fill</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E5%A1%AB%E5%85%85%E6%89%87%E5%BD%A2.png" alt="" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Quartz2d-画直线和曲线]]></title>
-    <link href="http://xiaobenmao.github.io/blog/2014/07/03/quartz2d-hua-zhi-xian-he-qu-xian/"/>
-    <updated>2014-07-03T18:29:36+08:00</updated>
-    <id>http://xiaobenmao.github.io/blog/2014/07/03/quartz2d-hua-zhi-xian-he-qu-xian</id>
-    <content type="html"><![CDATA[<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm"> *Only override drawRect: if you perform custom drawing.</span>
-</span><span class='line'><span class="cm"> *绘图的步骤： 1.获取上下文 2.创建路径（描述路径） 3.把路径添加到上下文 4.渲染上下文</span>
-</span><span class='line'><span class="cm"> *通常在这个方法里面绘制图形</span>
-</span><span class='line'><span class="cm"> *为什么要再drawRect里面绘图，只有在这个方法里面才能获取到跟View的layer相关联的图形上下文</span>
-</span><span class='line'><span class="cm"> *什么时候调用:当这个View要显示的时候才会调用drawRect绘制图形</span>
-</span><span class='line'><span class="cm"> *注意：rect是当前控件的bounds</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="p">{</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<!--more-->
-
-
-<ul>
-<li>绘图的几种方式</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#pragma mark - 最原始的绘图方式</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawLine</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// 1.获取图形上下文</span>
-</span><span class='line'>    <span class="c1">// 目前我们所用的上下文都是以UIGraphics</span>
-</span><span class='line'>    <span class="c1">// CGContextRef Ref：引用 CG:目前使用到的类型和函数 一般都是CG开头 CoreGraphics</span>
-</span><span class='line'>    <span class="n">CGContextRef</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">UIGraphicsGetCurrentContext</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 2.描述路径</span>
-</span><span class='line'>    <span class="c1">// 创建路径</span>
-</span><span class='line'>    <span class="n">CGMutablePathRef</span> <span class="n">path</span> <span class="o">=</span> <span class="n">CGPathCreateMutable</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 设置起点</span>
-</span><span class='line'>    <span class="c1">// path：给哪个路径设置起点</span>
-</span><span class='line'>    <span class="n">CGPathMoveToPoint</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 添加一根线到某个点</span>
-</span><span class='line'>    <span class="n">CGPathAddLineToPoint</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 3.把路径添加到上下文</span>
-</span><span class='line'>    <span class="n">CGContextAddPath</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">path</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 4.渲染上下文</span>
-</span><span class='line'>    <span class="n">CGContextStrokePath</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark - 绘图第二种方式,路径由系统进行创建和添加</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawLine1</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// 获取上下文</span>
-</span><span class='line'>    <span class="n">CGContextRef</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">UIGraphicsGetCurrentContext</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 描述路径</span>
-</span><span class='line'>    <span class="c1">// 设置起点</span>
-</span><span class='line'>    <span class="n">CGContextMoveToPoint</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">CGContextAddLineToPoint</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 把上下文渲染到视图，图形上下文本身不具备显示功能</span>
-</span><span class='line'>    <span class="n">CGContextStrokePath</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark - 绘图第三种方式,贝瑟尔路径中系统创建上下文</span>
-</span><span class='line'><span class="c1">//</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawLine2</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// UIKit已经封装了一些绘图的功能</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 贝瑟尔路径</span>
-</span><span class='line'>    <span class="c1">// 创建路径</span>
-</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="n">bezierPath</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 设置起点</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="nl">moveToPoint</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">)];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 添加一根线到某个点</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="nl">addLineToPoint</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">)];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 直接addLineToPoint，因为路径是拼接的，默认下一条线的起点是上一条线的终点</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="nl">addLineToPoint</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">290</span><span class="p">)];</span>
-</span><span class='line'>    <span class="c1">// 绘制路径</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="n">stroke</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//    NSLog(@&quot;%@&quot;,NSStringFromCGRect(rect));</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>设置线宽和颜色</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawCtxState</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// 获取上下文</span>
-</span><span class='line'>    <span class="n">CGContextRef</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">UIGraphicsGetCurrentContext</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 描述路径</span>
-</span><span class='line'>    <span class="n">CGContextMoveToPoint</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">CGContextAddLineToPoint</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">);</span>
-</span><span class='line'>    <span class="c1">// 不设置起点</span>
-</span><span class='line'>    <span class="c1">// 默认下一根线的起点就是上一根线终点</span>
-</span><span class='line'>    <span class="n">CGContextAddLineToPoint</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 设置绘图状态,一定要在渲染之前</span>
-</span><span class='line'>    <span class="c1">// 颜色</span>
-</span><span class='line'>    <span class="p">[[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">]</span> <span class="n">setStroke</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 线宽</span>
-</span><span class='line'>    <span class="n">CGContextSetLineWidth</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 设置连接样式,即线的连接点样式,正切或者圆角...</span>
-</span><span class='line'>    <span class="n">CGContextSetLineJoin</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">kCGLineJoinBevel</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 设置顶角样式,即线的两头样式</span>
-</span><span class='line'>    <span class="n">CGContextSetLineCap</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">kCGLineCapRound</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 渲染上下文</span>
-</span><span class='line'>    <span class="n">CGContextStrokePath</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm">上述方法系统只创建一条路径,颜色等状态只能设置一种,</span>
-</span><span class='line'><span class="cm">不便于管理</span>
-</span><span class='line'><span class="cm">*/</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E8%AE%BE%E7%BD%AE%E7%8A%B6%E6%80%81.png" alt="" /></p>
-
-<ul>
-<li>最好一根线对应一个路径,便于管理</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawUIBezierPathState</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// 第一条线</span>
-</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="n">bezierPath</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="nl">moveToPoint</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">)];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="nl">addLineToPoint</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">)];</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">path</span><span class="p">.</span><span class="n">lineWidth</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
-</span><span class='line'>    <span class="c1">// 设置颜色</span>
-</span><span class='line'>    <span class="p">[[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">]</span> <span class="n">set</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="n">stroke</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 第二条线</span>
-</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path1</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="n">bezierPath</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">path1</span> <span class="nl">moveToPoint</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">path1</span> <span class="nl">addLineToPoint</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">60</span><span class="p">)];</span>
-</span><span class='line'>    <span class="c1">// 在第二条路径中重新设置颜色</span>
-</span><span class='line'>    <span class="p">[[</span><span class="bp">UIColor</span> <span class="n">greenColor</span><span class="p">]</span> <span class="n">set</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">path1</span><span class="p">.</span><span class="n">lineWidth</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">path1</span> <span class="n">stroke</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm">每一条线设置一条路径,不同的线可以设置不同的状态比如颜色粗细等</span>
-</span><span class='line'><span class="cm">便于管理</span>
-</span><span class='line'><span class="cm">*/</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>画曲线(<a href="http://donbe.blog.163.com/blog/static/138048021201052093633776/">http://donbe.blog.163.com/blog/static/138048021201052093633776/</a>)</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 参考博客</span>
-</span><span class='line'><span class="c1">// http://donbe.blog.163.com/blog/static/138048021201052093633776/</span>
-</span><span class='line'>    <span class="c1">// Drawing code</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 如何绘制曲线</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 原生绘制方法</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 获取上下文</span>
-</span><span class='line'>    <span class="n">CGContextRef</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">UIGraphicsGetCurrentContext</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 描述路径</span>
-</span><span class='line'>    <span class="c1">// 设置起点</span>
-</span><span class='line'>    <span class="n">CGContextMoveToPoint</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// cpx:控制点的x</span>
-</span><span class='line'>    <span class="n">CGContextAddQuadCurveToPoint</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">250</span><span class="p">,</span> <span class="mi">50</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 渲染上下文</span>
-</span><span class='line'>    <span class="n">CGContextStrokePath</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
 ]]></content>
   </entry>
   

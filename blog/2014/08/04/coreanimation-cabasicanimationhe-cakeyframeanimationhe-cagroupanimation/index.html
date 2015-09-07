@@ -1,0 +1,589 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>CoreAnimation-CABasicAnimation和CAKeyframeAnimation和CAGroupAnimation - My World</title>
+  <meta name="author" content="嗷大喵">
+
+  
+  <meta name="description" content="CABasicAnimation 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *) &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://xiaobenmao.github.io/blog/2014/08/04/coreanimation-cabasicanimationhe-cakeyframeanimationhe-cagroupanimation/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My World" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.useso.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.useso.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My World</a></h1>
+  
+    <h2>Your World</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="xiaobenmao.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">CoreAnimation-CABasicAnimation和CAKeyframeAnimation和CAGroupAnimation</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-08-04T15:31:00+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>4</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>3:31 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h3>CABasicAnimation</h3>
+
+<!--more-->
+
+
+<p><img src="/images/CABasicAnimation.png" alt="" /></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">touchesBegan:</span><span class="p">(</span><span class="bp">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="bp">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 创建动画</span>
+</span><span class='line'>    <span class="bp">CABasicAnimation</span> <span class="o">*</span><span class="n">anim</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CABasicAnimation</span> <span class="n">animation</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 描述下修改哪个属性产生动画</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 只能是layer属性</span>
+</span><span class='line'>    <span class="n">anim</span><span class="p">.</span><span class="n">keyPath</span> <span class="o">=</span> <span class="s">@&quot;transform.scale&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">anim</span><span class="p">.</span><span class="n">toValue</span> <span class="o">=</span> <span class="mf">@0.5</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 要想动画执行完成后保持最后状态,以下两个条件缺一不可</span>
+</span><span class='line'>    <span class="c1">// 设置动画完成的时候不要移除动画</span>
+</span><span class='line'>    <span class="n">anim</span><span class="p">.</span><span class="n">removedOnCompletion</span> <span class="o">=</span> <span class="nb">NO</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 设置动画执行完成要保持动画最后的状态</span>
+</span><span class='line'>    <span class="n">anim</span><span class="p">.</span><span class="n">fillMode</span> <span class="o">=</span> <span class="n">kCAFillModeForwards</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 设置动画执行次数</span>
+</span><span class='line'>    <span class="n">anim</span><span class="p">.</span><span class="n">repeatCount</span> <span class="o">=</span> <span class="n">MAXFLOAT</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// imageView上的图片是心形,将动画加在imageView的层上</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_imageV</span><span class="p">.</span><span class="n">layer</span> <span class="nl">addAnimation</span><span class="p">:</span><span class="n">anim</span> <span class="nl">forKey</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>如果保持最后状态:
+
+<ul>
+<li>当改变imagView的大小后,保持在最后的状态</li>
+<li>然后重复进行,</li>
+</ul>
+</li>
+<li>如果不添加保持最后状态的代码
+
+<ul>
+<li>当改变imageView的大小后,先恢复到原始状态</li>
+<li>然后重复进行</li>
+</ul>
+</li>
+</ul>
+
+
+<h3>CAKeyframeAnimation</h3>
+
+<p><img src="/images/CAKeyframeAnimation.png" alt="" /></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'>   <span class="cm">/*</span>
+</span><span class='line'><span class="cm">    * 创建CALayer</span>
+</span><span class='line'><span class="cm">    * touchBegin,点击屏幕，做动画</span>
+</span><span class='line'><span class="cm">    * 创建动画，添加动画到CALayer</span>
+</span><span class='line'><span class="cm">    * 怎样执行动画？执行动画的本质是改变图层的属性。</span>
+</span><span class='line'><span class="cm">    * 告诉动画执行怎样的动画?设置动画属性(position)</span>
+</span><span class='line'><span class="cm">    * 告诉动画属性怎么改变?设置动画属性值改变 toValue fromValue</span>
+</span><span class='line'><span class="cm">    * duration:动画时长</span>
+</span><span class='line'><span class="cm">    * 动画有反弹?取消反弹</span>
+</span><span class='line'><span class="cm">        1&gt; 执行动画完毕不要移除</span>
+</span><span class='line'><span class="cm">        2&gt; 设置动画填充模式，保持最新的位置。</span>
+</span><span class='line'><span class="cm">    * rotation:</span>
+</span><span class='line'><span class="cm">    三维旋转：transform</span>
+</span><span class='line'><span class="cm">    二维旋转：transform.rotation</span>
+</span><span class='line'><span class="cm">    * scale</span>
+</span><span class='line'><span class="cm">    * 设置图层内容（心）</span>
+</span><span class='line'><span class="cm">    * tovalue:@0.5</span>
+</span><span class='line'><span class="cm">    * 总结CABasicAnimation只能在两个值之间做动画，怎么多个值做动画，用CAKeyframeAnimation</span>
+</span><span class='line'><span class="cm">    */</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DrawView.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">DrawView</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">DrawView</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">touchesBegan:</span><span class="p">(</span><span class="bp">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="bp">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// touch</span>
+</span><span class='line'>    <span class="bp">UITouch</span> <span class="o">*</span><span class="n">touch</span> <span class="o">=</span> <span class="p">[</span><span class="n">touches</span> <span class="n">anyObject</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 获取手指的触摸点</span>
+</span><span class='line'>    <span class="bp">CGPoint</span> <span class="n">curP</span> <span class="o">=</span> <span class="p">[</span><span class="n">touch</span> <span class="nl">locationInView</span><span class="p">:</span><span class="nb">self</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 创建路径</span>
+</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="n">bezierPath</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">_path</span> <span class="o">=</span> <span class="n">path</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 设置起点</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="nl">moveToPoint</span><span class="p">:</span><span class="n">curP</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">touchesMoved:</span><span class="p">(</span><span class="bp">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="bp">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// touch</span>
+</span><span class='line'>    <span class="bp">UITouch</span> <span class="o">*</span><span class="n">touch</span> <span class="o">=</span> <span class="p">[</span><span class="n">touches</span> <span class="n">anyObject</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 获取手指的触摸点</span>
+</span><span class='line'>    <span class="bp">CGPoint</span> <span class="n">curP</span> <span class="o">=</span> <span class="p">[</span><span class="n">touch</span> <span class="nl">locationInView</span><span class="p">:</span><span class="nb">self</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">// 不设置起点,默认起点是上一位置的终点</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_path</span> <span class="nl">addLineToPoint</span><span class="p">:</span><span class="n">curP</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">// 进行重绘</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">setNeedsDisplay</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">touchesEnded:</span><span class="p">(</span><span class="bp">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="bp">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 给imageView添加核心动画</span>
+</span><span class='line'>    <span class="c1">// 添加核心动画</span>
+</span><span class='line'>    <span class="bp">CAKeyframeAnimation</span> <span class="o">*</span><span class="n">anim</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CAKeyframeAnimation</span> <span class="n">animation</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">anim</span><span class="p">.</span><span class="n">keyPath</span> <span class="o">=</span> <span class="s">@&quot;position&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 路径转换,从UI转为CG</span>
+</span><span class='line'>    <span class="n">anim</span><span class="p">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">_path</span><span class="p">.</span><span class="bp">CGPath</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// 动画的时间</span>
+</span><span class='line'>    <span class="n">anim</span><span class="p">.</span><span class="n">duration</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// 执行最大次数,也就是重复执行</span>
+</span><span class='line'>    <span class="n">anim</span><span class="p">.</span><span class="n">repeatCount</span> <span class="o">=</span> <span class="n">MAXFLOAT</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// 取到imageView添加动画</span>
+</span><span class='line'>    <span class="p">[[[</span><span class="nb">self</span><span class="p">.</span><span class="n">subviews</span> <span class="n">firstObject</span><span class="p">]</span> <span class="n">layer</span><span class="p">]</span> <span class="nl">addAnimation</span><span class="p">:</span><span class="n">anim</span> <span class="nl">forKey</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 绘制路径</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_path</span> <span class="n">stroke</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/CAKeyframeAnimation%E7%9A%84path.png" alt="" /></p>
+
+<p><img src="/images/CAKeyframeAnimation%E7%9A%84storyboard.png" alt="" /></p>
+
+<h4>图标抖动</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//    anim.values = @[@(angle2Radion(-10)),@(angle2Radion(10)),@(angle2Radion(-10))];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/CAAnimationGroup.png" alt="" /></p>
+
+<h3>CAGroupAnimation</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">touchesBegan:</span><span class="p">(</span><span class="bp">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="bp">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 同时缩放，平移，旋转</span>
+</span><span class='line'>    <span class="bp">CAAnimationGroup</span> <span class="o">*</span><span class="n">group</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CAAnimationGroup</span> <span class="n">animation</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">CABasicAnimation</span> <span class="o">*</span><span class="n">scale</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CABasicAnimation</span> <span class="n">animation</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">scale</span><span class="p">.</span><span class="n">keyPath</span> <span class="o">=</span> <span class="s">@&quot;transform.scale&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">scale</span><span class="p">.</span><span class="n">toValue</span> <span class="o">=</span> <span class="mf">@0.5</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">CABasicAnimation</span> <span class="o">*</span><span class="n">rotation</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CABasicAnimation</span> <span class="n">animation</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">rotation</span><span class="p">.</span><span class="n">keyPath</span> <span class="o">=</span> <span class="s">@&quot;transform.rotation&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">rotation</span><span class="p">.</span><span class="n">toValue</span> <span class="o">=</span> <span class="l">@(</span><span class="n">arc4random_uniform</span><span class="p">(</span><span class="n">M_PI</span><span class="p">)</span><span class="l">)</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">CABasicAnimation</span> <span class="o">*</span><span class="n">position</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CABasicAnimation</span> <span class="n">animation</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">position</span><span class="p">.</span><span class="n">keyPath</span> <span class="o">=</span> <span class="s">@&quot;position&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">position</span><span class="p">.</span><span class="n">toValue</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSValue</span> <span class="nl">valueWithCGPoint</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="n">arc4random_uniform</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span> <span class="n">arc4random_uniform</span><span class="p">(</span><span class="mi">200</span><span class="p">))];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">group</span><span class="p">.</span><span class="n">animations</span> <span class="o">=</span> <span class="l">@[</span><span class="n">scale</span><span class="p">,</span><span class="n">rotation</span><span class="p">,</span><span class="n">position</span><span class="l">]</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">_redView</span><span class="p">.</span><span class="n">layer</span> <span class="nl">addAnimation</span><span class="p">:</span><span class="n">group</span> <span class="nl">forKey</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">嗷大喵</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-08-04T15:31:00+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>4</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>3:31 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/coreanimation/'>coreanimation</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/08/02/calayer-shi-zhong/" title="Previous Post: CALayer-时钟">&laquo; CALayer-时钟</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/08/05/coreanimation-zhe-die-tu-pian-contentsrect/" title="Next Post: CoreAnimation-折叠图片">CoreAnimation-折叠图片 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>欢迎光临小站</h1>
+  <p>我的世界</p>
+  <p>新浪微博：<a href=" http://weibo.com/QQ908887023" target="_blank">我是嗷大喵</a></p>
+</section><section>
+  <h1>文章分类</h1>
+  <ul id="categories">
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/suan-fa/'>算法</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/cocos2dx-lua/'>cocos2dx-lua</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/u3d/'>u3d</a> (4)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ioswei-fen-lei/'>ios未分类</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/tableview/'>tableview</a> (14)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ji-suan-ji-ying-yu/'>计算机英语</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/liao-tian-cellbu-ju/'>聊天cell布局</a> (7)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/uipickerview/'>uipickerview</a> (5)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shu-ju-cun-chu/'>数据存储</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shi-jian-chu-li/'>事件处理</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a> (17)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/coreanimation/'>coreanimation</a> (6)
+      </li>
+    
+  </ul>
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/09/06/quartz2d-hua-ju-xing/">Quartz2d-画矩形</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/">Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/08/06/coreanimation-li-zi-xiao-guo/">CoreAnimation-粒子效果</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/08/05/coreanimation-zhe-die-tu-pian-contentsrect/">CoreAnimation-折叠图片</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/08/04/coreanimation-cabasicanimationhe-cakeyframeanimationhe-cagroupanimation/">CoreAnimation-CABasicAnimation和CAKeyframeAnimation和CAGroupAnimation</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - 嗷大喵 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

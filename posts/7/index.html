@@ -9,7 +9,7 @@
   <meta name="author" content="嗷大喵">
 
   
-  <meta name="description" content="引擎初始界面"HelloLua"代码解析 ">
+  <meta name="description" content="新建一个plane作为地面Land，一个小球。给小球增加Rigidbody组件，设置一个阻力值Drag，此处我们设为1。 然后给小球增加一个script，此处为moveController.cs ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +65,179 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/01/04/u3d-xiao-qiu-gen-sui-shu-biao-zai-di-shang-gun-dong-(%5B%3F%5D/">U3D 小球跟随鼠标在地上滚动（一)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-01-04T17:38:20+08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>4</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:38 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>新建一个plane作为地面Land，一个小球。给小球增加Rigidbody组件，设置一个阻力值Drag，此处我们设为1。</p>
+
+<p>然后给小球增加一个script，此处为moveController.cs</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/01/04/u3d-xiao-qiu-gen-sui-shu-biao-zai-di-shang-gun-dong-(%5B%3F%5D/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/01/04/u3d-xiao-qiu-gen-sui-shu-biao-zai-di-shang-gun-dong-(er/">U3D 小球跟随鼠标在地上滚动（二)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-01-04T16:12:23+08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>4</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>4:12 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>利用刚体到方法实现小球的移动，会因为惯性等因素，使小球控制精度降低</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/01/04/u3d-xiao-qiu-gen-sui-shu-biao-zai-di-shang-gun-dong-(er/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/01/04/u3d-rayshe-xian-de-chuang-jian-he-peng-zhuang-jian-ce/">U3D Ray射线的创建和碰撞检测</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-01-04T15:30:19+08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>4</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>3:30 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>using UnityEngine;  
+</span><span class='line'>using System.Collections;  
+</span><span class='line'>  
+</span><span class='line'>public class CubeController : MonoBehaviour {  
+</span><span class='line'>  
+</span><span class='line'>    // Use this for initialization  
+</span><span class='line'>    void Awake () {  
+</span><span class='line'>        //创建一条射线  
+</span><span class='line'>        //Ray ray = new Ray (new Vector3 (1f, 1f, 1f), Vector3.up);  
+</span><span class='line'>    }  
+</span><span class='line'>      
+</span><span class='line'>    // Update is called once per frame  
+</span><span class='line'>    void Update () {  
+</span><span class='line'>          
+</span><span class='line'>        /* 
+</span><span class='line'>        //创建一条从主摄像机到鼠标触摸点的射线 
+</span><span class='line'>        Ray ray1 = Camera.main.ScreenPointToRay (Input.mousePosition); 
+</span><span class='line'>        //发射射线并进行碰撞检测 
+</span><span class='line'>        bool isCollision = Physics.Raycast (ray1); 
+</span><span class='line'>        if (isCollision) { 
+</span><span class='line'>            Debug.Log("ray1"); 
+</span><span class='line'>        } 
+</span><span class='line'>        */  
+</span><span class='line'>        if (Input.GetMouseButtonDown (0)) {  
+</span><span class='line'>            Ray ray2 = Camera.main.ScreenPointToRay(Input.mousePosition);  
+</span><span class='line'>            //RaycastHit  是一个结构体对象，返回储存的碰撞信息  
+</span><span class='line'>            RaycastHit hitInfo = new RaycastHit();  
+</span><span class='line'>            if( Physics.Raycast(ray2,out hitInfo)){  
+</span><span class='line'>                if (hitInfo.collider.gameObject.name == "Cube"){  
+</span><span class='line'>                    Debug.Log("hit_point = "+hitInfo.point);  
+</span><span class='line'>                }  
+</span><span class='line'>            }  
+</span><span class='line'>        }  
+</span><span class='line'>    }  
+</span><span class='line'>}  
+</span><span class='line'>//新建一个Cube，inspector的Layer属性自定义个一个名为Cube的层。当鼠标点击在Cube上时会发生碰撞，并打印碰撞点。  </span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/U3D/Ray%E5%B0%84%E7%BA%BF%E5%88%9B%E5%BB%BA%E5%92%8C%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8.png" alt="" /></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -266,7 +439,7 @@
       </li>
     
       <li class="category">
-        <a class='category' href='/blog/categories/coreanimation/'>coreanimation</a> (3)
+        <a class='category' href='/blog/categories/coreanimation/'>coreanimation</a> (6)
       </li>
     
   </ul>
@@ -283,15 +456,15 @@
       </li>
     
       <li class="post">
-        <a href="/blog/2014/08/02/calayer-shi-zhong/">CALayer-时钟</a>
+        <a href="/blog/2014/08/06/coreanimation-li-zi-xiao-guo/">CoreAnimation-粒子效果</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/08/02/calayer-yin-shi-dong-hua/">CALayer-隐式动画</a>
+        <a href="/blog/2014/08/05/coreanimation-zhe-die-tu-pian-contentsrect/">CoreAnimation-折叠图片</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/08/01/calayer-shu-xing-she-zhi/">CALayer-属性设置</a>
+        <a href="/blog/2014/08/04/coreanimation-cabasicanimationhe-cakeyframeanimationhe-cagroupanimation/">CoreAnimation-CABasicAnimation和CAKeyframeAnimation和CAGroupAnimation</a>
       </li>
     
   </ul>

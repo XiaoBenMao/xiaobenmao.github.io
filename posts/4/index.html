@@ -9,7 +9,8 @@
   <meta name="author" content="嗷大喵">
 
   
-  <meta name="description" content=" ">
+  <meta name="description" content=" 数据模型:
+- 在使用KVC模式时,如果字典中存储了图片名,可以直接声明UIImage属性,通过重写setter方法,直接赋值, - 好处:在给子控件赋值时,统一使用点语法 ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +66,110 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/28/pickerview-xuan-ze-guo-qi/">pickerView - 选择国旗</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-04-28T21:33:56+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>28</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>9:33 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/%E9%80%89%E6%8B%A9%E5%9B%BD%E6%97%97.png" alt="" /></p>
+
+<p>数据模型:
+- 在使用KVC模式时,如果字典中存储了图片名,可以直接声明UIImage属性,通过重写setter方法,直接赋值,
+    -  好处:在给子控件赋值时,统一使用点语法</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/04/28/pickerview-xuan-ze-guo-qi/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/27/pickerview-dian-can/">pickerVIew - 点餐</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-04-27T20:33:11+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>27</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>8:33 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/pickerView%E7%82%B9%E9%A4%90.png" alt="pickerView点餐系统" /></p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/04/27/pickerview-dian-can/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/26/pickerviewshu-ju-yuan-he-dai-li/">PickerView数据源和代理</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-04-26T16:32:48+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>4:32 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"></div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/04/26/pickerviewshu-ju-yuan-he-dai-li/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -343,160 +448,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/01/liao-tian-cellbu-ju-bu-deng-gao-celldai-ma/">聊天cell布局-不等高cell代码</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-04-01T19:49:01+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2014</span></span> <span class='time'>7:49 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"></div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/01/liao-tian-cellbu-ju-bu-deng-gao-celldai-ma/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/24/tableview-zi-ding-yi-fei-deng-gao-cell-xib-2/">tableView-自定义非等高cell-xib(2)</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-03-24T19:10:29+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>7:10 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><ul>
-<li>方法一:
-
-<ul>
-<li>返回每行的真实高度,创建临时cell(不能够利用缓冲池重用优化),浪费大量内存
-
-<ul>
-<li>heightForRowAtIndexPath:返回每一行的高度
-
-<ul>
-<li>此方法中调用cellForRowAtIndexPath会造成死循环(通过行号先获取cell,会先创建cell,在创建之前会先获取高度,又会调用当前方法&hellip;)</li>
-</ul>
-</li>
-<li>cellForRowAtIndexPath:创建每一行cell</li>
-<li>前的调用在创建之前,而且有多少行就会调用多少次,所以开始返回的高度都是0;</li>
-<li>解决方法:临时创建cell,并给里面的控件赋值,强制布局,显示出来,返回该行真实高度.
-
-<ul>
-<li>layoutIfNeeded:强制布局,当给控件赋值的时候,控件或许没有布局好,这时候的高度是不准确的,当强制布局后,控件真正显示出来,这时候是真实的高度</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/03/24/tableview-zi-ding-yi-fei-deng-gao-cell-xib-2/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/23/tableview-zi-ding-yi-fei-deng-gao-cell-xib-1/">tableView-自定义非等高cell-xib(1)</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-03-23T20:10:16+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2014</span></span> <span class='time'>8:10 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><ul>
-<li>非等高的cell
-
-<ul>
-<li>xib自定义cell</li>
-<li>storyboard自定义cell</li>
-<li>代码自定义cell（frame）</li>
-<li>代码自定义cell（Autolayout）</li>
-</ul>
-</li>
-</ul>
-
-
-<p>\</p>
-
-<h3>布局内容,返回每一行的高度为固定值</h3>
-
-<h3>常规设置</h3>
-
-<ul>
-<li>自定义控制器类
-
-<ul>
-<li>懒加载,面向模型开发,将字典转为模型,以后数据通过模型获得</li>
-<li>实现数据源和代理类方法</li>
-</ul>
-</li>
-</ul>
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/03/23/tableview-zi-ding-yi-fei-deng-gao-cell-xib-1/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/5">&larr; Older</a>
@@ -562,7 +513,7 @@
       </li>
     
       <li class="category">
-        <a class='category' href='/blog/categories/coreanimation/'>coreanimation</a> (3)
+        <a class='category' href='/blog/categories/coreanimation/'>coreanimation</a> (6)
       </li>
     
   </ul>
@@ -579,15 +530,15 @@
       </li>
     
       <li class="post">
-        <a href="/blog/2014/08/02/calayer-shi-zhong/">CALayer-时钟</a>
+        <a href="/blog/2014/08/06/coreanimation-li-zi-xiao-guo/">CoreAnimation-粒子效果</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/08/02/calayer-yin-shi-dong-hua/">CALayer-隐式动画</a>
+        <a href="/blog/2014/08/05/coreanimation-zhe-die-tu-pian-contentsrect/">CoreAnimation-折叠图片</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/08/01/calayer-shu-xing-she-zhi/">CALayer-属性设置</a>
+        <a href="/blog/2014/08/04/coreanimation-cabasicanimationhe-cakeyframeanimationhe-cagroupanimation/">CoreAnimation-CABasicAnimation和CAKeyframeAnimation和CAGroupAnimation</a>
       </li>
     
   </ul>

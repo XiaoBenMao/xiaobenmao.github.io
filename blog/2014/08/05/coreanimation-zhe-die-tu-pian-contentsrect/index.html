@@ -1,0 +1,583 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>CoreAnimation-折叠图片 - My World</title>
+  <meta name="author" content="嗷大喵">
+
+  
+  <meta name="description" content="图片折叠效果 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://xiaobenmao.github.io/blog/2014/08/05/coreanimation-zhe-die-tu-pian-contentsrect/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My World" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.useso.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.useso.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My World</a></h1>
+  
+    <h2>Your World</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="xiaobenmao.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">CoreAnimation-折叠图片</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-08-05T08:33:06+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>8:33 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h4>图片折叠效果</h4>
+
+<!--more-->
+
+
+<p><img src="/images/%E6%8A%98%E5%8F%A0%E5%9B%BE%E7%89%87%E5%89%8D.png" alt="" /></p>
+
+<p><img src="/images/%E6%8A%98%E5%8F%A0%E5%9B%BE%E7%89%87%E5%90%8E.png" alt="" /></p>
+
+<p><img src="/images/%E6%8A%98%E5%8F%A0%E5%9B%BE%E7%89%87-%E6%8E%92%E5%88%97%E5%9B%BE%E7%89%87.png" alt="" /></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
+</span><span class='line'><span class="c1">//@property (weak, nonatomic) IBOutlet UIImageView *test1View;</span>
+</span><span class='line'><span class="c1">//@property (weak, nonatomic) IBOutlet UIImageView *testView;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">weak</span><span class="p">,</span> <span class="k">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="bp">UIImageView</span> <span class="o">*</span><span class="n">topView</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">weak</span><span class="p">,</span> <span class="k">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="bp">UIImageView</span> <span class="o">*</span><span class="n">bottomView</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">weak</span><span class="p">,</span> <span class="k">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="bp">UIView</span> <span class="o">*</span><span class="n">dragView</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">weak</span><span class="p">)</span> <span class="bp">CAGradientLayer</span> <span class="o">*</span><span class="n">gradientL</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> 两张图片的顺序,不能错,否则,旋转过九十度后就会看不到</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 阴影:渐变层的渐变色colors属性必须有颜色</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> *一张图片必须要通过两个控件展示，旋转的时候，只旋转上部分控件</span>
+</span><span class='line'><span class="cm"> *如何让一张完整的图片通过两个控件显示?</span>
+</span><span class='line'><span class="cm"> *  1&gt;通过layer的contentsRect属性控制图片的显示内容</span>
+</span><span class='line'><span class="cm"> *  2&gt;如果快速把两个控件拼接成一个完整图片</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//    // 通过上下接壤排列</span>
+</span><span class='line'><span class="c1">//    self.testView.layer.contentsRect = CGRectMake(0, 0, 1, 0.5);</span>
+</span><span class='line'><span class="c1">//    self.test1View.layer.contentsRect = CGRectMake(0, 0.5, 1, 0.5);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 快速排列</span>
+</span><span class='line'>    <span class="c1">// 通过设置contentsRect可以设置图片显示的尺寸，取值0~1</span>
+</span><span class='line'>    <span class="n">_topView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">contentsRect</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">_topView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">anchorPoint</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">_bottomView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">contentsRect</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">_bottomView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">anchorPoint</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 添加手势</span>
+</span><span class='line'>    <span class="bp">UIPanGestureRecognizer</span> <span class="o">*</span><span class="n">pan</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIPanGestureRecognizer</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTarget</span><span class="p">:</span><span class="nb">self</span> <span class="nl">action</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">pan</span><span class="p">:)];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_dragView</span> <span class="nl">addGestureRecognizer</span><span class="p">:</span><span class="n">pan</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 渐变图层</span>
+</span><span class='line'>    <span class="bp">CAGradientLayer</span> <span class="o">*</span><span class="n">gradientL</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CAGradientLayer</span> <span class="n">layer</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 注意图层需要设置尺寸</span>
+</span><span class='line'>    <span class="n">gradientL</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">_bottomView</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">gradientL</span><span class="p">.</span><span class="n">opacity</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// 设置渐变色,从无色到黑色,需要类型转换</span>
+</span><span class='line'>    <span class="c1">// 渐变层的渐变色排列在所添加的层上,这里开始的时候不需要显示,当旋转的时候慢慢出现,所以通过透明度来修改</span>
+</span><span class='line'>    <span class="n">gradientL</span><span class="p">.</span><span class="n">colors</span> <span class="o">=</span> <span class="l">@[</span><span class="p">(</span><span class="kt">id</span><span class="p">)[</span><span class="bp">UIColor</span> <span class="n">clearColor</span><span class="p">].</span><span class="bp">CGColor</span><span class="p">,(</span><span class="kt">id</span><span class="p">)[</span><span class="bp">UIColor</span> <span class="n">blackColor</span><span class="p">].</span><span class="bp">CGColor</span><span class="l">]</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">_gradientL</span> <span class="o">=</span> <span class="n">gradientL</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">_bottomView</span><span class="p">.</span><span class="n">layer</span> <span class="nl">addSublayer</span><span class="p">:</span><span class="n">gradientL</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 拖动的时候旋转上部分内容，200 M_PI</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">pan:</span><span class="p">(</span><span class="bp">UIPanGestureRecognizer</span> <span class="o">*</span><span class="p">)</span><span class="nv">pan</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 获取偏移量</span>
+</span><span class='line'>   <span class="bp">CGPoint</span> <span class="n">transP</span> <span class="o">=</span> <span class="p">[</span><span class="n">pan</span> <span class="nl">translationInView</span><span class="p">:</span><span class="n">_dragView</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 旋转角度,往下逆时针旋转,可向下滑动区域为dragView的高度,当y偏移200时,旋转M_Pi</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">angle</span> <span class="o">=</span> <span class="o">-</span><span class="n">transP</span><span class="p">.</span><span class="n">y</span> <span class="o">/</span> <span class="mf">200.0</span> <span class="o">*</span> <span class="n">M_PI</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">CATransform3D</span> <span class="n">transfrom</span> <span class="o">=</span> <span class="n">CATransform3DIdentity</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// m34增加旋转的立体感，近大远小,d：距离图层的距离</span>
+</span><span class='line'>    <span class="n">transfrom</span><span class="p">.</span><span class="n">m34</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">/</span> <span class="mf">500.0</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">transfrom</span> <span class="o">=</span> <span class="n">CATransform3DRotate</span><span class="p">(</span><span class="n">transfrom</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">_topView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">transfrom</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 设置阴影效果</span>
+</span><span class='line'>    <span class="n">_gradientL</span><span class="p">.</span><span class="n">opacity</span> <span class="o">=</span> <span class="n">transP</span><span class="p">.</span><span class="n">y</span> <span class="o">*</span> <span class="mi">1</span> <span class="o">/</span> <span class="mf">200.0</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">pan</span><span class="p">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">UIGestureRecognizerStateEnded</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// 反弹</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// 弹簧效果的动画</span>
+</span><span class='line'>        <span class="c1">// SpringWithDamping:弹性系数,越小，弹簧效果越明显</span>
+</span><span class='line'>        <span class="p">[</span><span class="bp">UIView</span> <span class="nl">animateWithDuration</span><span class="p">:</span><span class="mf">0.6</span> <span class="nl">delay</span><span class="p">:</span><span class="mi">0</span> <span class="nl">usingSpringWithDamping</span><span class="p">:</span><span class="mf">0.2</span> <span class="nl">initialSpringVelocity</span><span class="p">:</span><span class="mi">10</span> <span class="nl">options</span><span class="p">:</span><span class="n">UIViewAnimationOptionCurveEaseInOut</span> <span class="nl">animations</span><span class="p">:</span><span class="o">^</span><span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="n">_topView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">CATransform3DIdentity</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">}</span> <span class="nl">completion</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="kt">BOOL</span> <span class="n">finished</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">}];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/%E6%8A%98%E5%8F%A0%E5%9B%BE%E7%89%87storyboard.png" alt="" /></p>
+
+<h3>渐变层</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// 设置渐变颜色,渐变层会显示从红,绿,黄,三色排布</span>
+</span><span class='line'><span class="n">gradientL</span><span class="p">.</span><span class="n">colors</span> <span class="o">=</span> <span class="l">@[</span><span class="p">(</span><span class="kt">id</span><span class="p">)[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">].</span><span class="bp">CGColor</span><span class="p">,(</span><span class="kt">id</span><span class="p">)[</span><span class="bp">UIColor</span> <span class="n">greenColor</span><span class="p">].</span><span class="bp">CGColor</span><span class="p">,(</span><span class="kt">id</span><span class="p">)[</span><span class="bp">UIColor</span> <span class="n">yellowColor</span><span class="p">].</span><span class="bp">CGColor</span><span class="l">]</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 设置渐变定位点</span>
+</span><span class='line'><span class="c1">//gradientL.locations = @[@0.1,@0.4,@0.5];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 设置渐变开始点，取值0~1</span>
+</span><span class='line'><span class="n">gradientL</span><span class="p">.</span><span class="n">startPoint</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">[</span><span class="n">_bottomView</span><span class="p">.</span><span class="n">layer</span> <span class="nl">addSublayer</span><span class="p">:</span><span class="n">gradientL</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/%E6%8A%98%E5%8F%A0%E5%9B%BE%E7%89%87%E6%B8%90%E5%8F%98%E5%B1%821.png" alt="" /></p>
+
+<p><img src="/images/%E6%8A%98%E5%8F%A0%E5%9B%BE%E7%89%87%E6%B8%90%E5%8F%98%E5%B1%822.png" alt="" /></p>
+
+<p><img src="/images/%E6%8A%98%E5%8F%A0%E5%9B%BE%E7%89%87%E6%B8%90%E5%8F%98%E5%B1%823.png" alt="" /></p>
+
+<ul>
+<li>注意点:
+
+<ul>
+<li>`在storyboard排列imageView时,注意前后顺序,否则会在选装超过90°时被挡住</li>
+<li>必须设置渐变层的渐变色,然后通过透明度控制显示和隐藏</li>
+<li>在设置M34增加立体感时,
+
+<ul>
+<li>要创建一个空的CATransform3D</li>
+<li>然后添加M34(可通过参数设置很小,验证有没有效果,向外为负数)</li>
+<li>如果有旋转,则将transform作为上一次的旋转参数,赋值给要旋转的layer</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="bp">CATransform3D</span> <span class="n">transfrom</span> <span class="o">=</span> <span class="n">CATransform3DIdentity</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// m34增加旋转的立体感，近大远小,d：距离图层的距离</span>
+</span><span class='line'><span class="n">transfrom</span><span class="p">.</span><span class="n">m34</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">/</span> <span class="mf">10.0</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">transfrom</span> <span class="o">=</span> <span class="n">CATransform3DRotate</span><span class="p">(</span><span class="n">transfrom</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">_topView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">transfrom</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 设置阴影效果</span>
+</span><span class='line'><span class="n">_gradientL</span><span class="p">.</span><span class="n">opacity</span> <span class="o">=</span> <span class="n">transP</span><span class="p">.</span><span class="n">y</span> <span class="o">*</span> <span class="mi">1</span> <span class="o">/</span> <span class="mf">200.0</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/%E6%8A%98%E5%8F%A0%E5%9B%BE%E7%89%87%E7%AB%8B%E4%BD%93%E6%95%88%E6%9E%9C.png" alt="" /></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">嗷大喵</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-08-05T08:33:06+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>8:33 am</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/coreanimation/'>coreanimation</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/08/04/coreanimation-cabasicanimationhe-cakeyframeanimationhe-cagroupanimation/" title="Previous Post: CoreAnimation-CABasicAnimation和CAKeyframeAnimation和CAGroupAnimation">&laquo; CoreAnimation-CABasicAnimation和CAKeyframeAnimation和CAGroupAnimation</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/08/06/coreanimation-li-zi-xiao-guo/" title="Next Post: CoreAnimation-粒子效果">CoreAnimation-粒子效果 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>欢迎光临小站</h1>
+  <p>我的世界</p>
+  <p>新浪微博：<a href=" http://weibo.com/QQ908887023" target="_blank">我是嗷大喵</a></p>
+</section><section>
+  <h1>文章分类</h1>
+  <ul id="categories">
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/suan-fa/'>算法</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/cocos2dx-lua/'>cocos2dx-lua</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/u3d/'>u3d</a> (4)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ioswei-fen-lei/'>ios未分类</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/tableview/'>tableview</a> (14)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ji-suan-ji-ying-yu/'>计算机英语</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/liao-tian-cellbu-ju/'>聊天cell布局</a> (7)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/uipickerview/'>uipickerview</a> (5)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shu-ju-cun-chu/'>数据存储</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shi-jian-chu-li/'>事件处理</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a> (17)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/coreanimation/'>coreanimation</a> (6)
+      </li>
+    
+  </ul>
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/09/06/quartz2d-hua-ju-xing/">Quartz2d-画矩形</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/">Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/08/06/coreanimation-li-zi-xiao-guo/">CoreAnimation-粒子效果</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/08/05/coreanimation-zhe-die-tu-pian-contentsrect/">CoreAnimation-折叠图片</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/08/04/coreanimation-cabasicanimationhe-cakeyframeanimationhe-cagroupanimation/">CoreAnimation-CABasicAnimation和CAKeyframeAnimation和CAGroupAnimation</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - 嗷大喵 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

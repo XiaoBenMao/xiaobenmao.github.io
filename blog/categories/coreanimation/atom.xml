@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Coreanimation | My World]]></title>
   <link href="http://xiaobenmao.github.io/blog/categories/coreanimation/atom.xml" rel="self"/>
   <link href="http://xiaobenmao.github.io/"/>
-  <updated>2015-09-08T01:40:23+08:00</updated>
+  <updated>2015-09-08T04:15:01+08:00</updated>
   <id>http://xiaobenmao.github.io/</id>
   <author>
     <name><![CDATA[嗷大喵]]></name>
@@ -12,6 +12,714 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[CoreAnimation-粒子效果]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/08/06/coreanimation-li-zi-xiao-guo/"/>
+    <updated>2014-08-06T09:15:04+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/08/06/coreanimation-li-zi-xiao-guo</id>
+    <content type="html"><![CDATA[<h4>粒子动画</h4>
+
+<p>效果：随机绘制一条路径，点击开始按钮，粒子动画</p>
+
+<h4>实现思路</h4>
+
+<ul>
+<li><p>1.搞个画板绘制路径，自定义view</p></li>
+<li><p>2.给自定义view添加pan手势，和创建复制图层和圆形图层，只需要设置一次，在awakeFromNib方法中设置。</p></li>
+</ul>
+
+
+<!--more-->
+
+
+<pre><code class="objc">
+    // 添加pan手势
+    UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
+
+    [self addGestureRecognizer:pan];
+
+    // 创建复制图层
+    CAReplicatorLayer *repLayer = [CAReplicatorLayer layer];
+
+    repLayer.frame = self.bounds;
+
+    [self.layer addSublayer:repLayer];
+
+
+    // 创建粒子图层
+    CALayer *layer = [CALayer layer];
+
+    layer.cornerRadius = 5;
+
+    layer.frame = CGRectMake(-100, 10, 10, 10);
+
+    layer.backgroundColor = [UIColor whiteColor].CGColor;
+
+    [repLayer addSublayer:layer];
+
+    _dotLayer = layer;
+</code></pre>
+
+<ul>
+<li>3.因为核心动画只能设置一个路径，因此只能创建一个路径，懒加载路径。</li>
+</ul>
+
+
+<pre><code class="objc">- (UIBezierPath *)path
+{
+    if (_path == nil) {
+        _path = [UIBezierPath bezierPath];
+    }
+
+    return _path;
+}
+</code></pre>
+
+<ul>
+<li>4.在一开始拖动的时候，保存路径起点，设置路径起点，拖动的时候每次添加线到某个点。</li>
+</ul>
+
+
+<pre><code class="objc">
+    CGPoint curP = [pan locationInView:self];
+    if (pan.state == UIGestureRecognizerStateBegan) {
+
+        _startP = curP;
+
+        [self.path moveToPoint:_startP];
+
+    }
+
+    [self.path addLineToPoint:curP];
+
+
+    [self setNeedsDisplay];
+</code></pre>
+
+<ul>
+<li>5.路径绘制好了，点击开始按钮的时候，添加动画到图层</li>
+</ul>
+
+
+<pre><code class="objc">CAKeyframeAnimation *anim = [CAKeyframeAnimation animation];
+
+    anim.keyPath = @"position";
+    anim.duration = 4;
+    anim.path = self.path.CGPath;
+
+    anim.repeatCount = MAXFLOAT;
+
+    [_dotLayer addAnimation:anim forKey:@"anim"];
+    anim.delegate = self;
+</code></pre>
+
+<ul>
+<li>6.复制图层</li>
+</ul>
+
+
+<pre><code class="objc">    repLayer.instanceCount = 20;
+    repLayer.instanceDelay = 4 / 20.0;
+
+    // 设置子层颜色
+    repLayer.instanceColor = [UIColor colorWithRed:0 green:1 blue:0 alpha:1].CGColor;
+
+    // 设置子层颜色绿色通道偏移量
+    repLayer.instanceGreenOffset = -0.03;
+</code></pre>
+
+<ul>
+<li>7.重绘
+清空路径，重新绘制，移除图层动画。</li>
+</ul>
+
+
+<pre><code class="objc">    _path = nil;
+    [_dotLayer removeAnimationForKey:@"anim"];
+    [self setNeedsDisplay];
+</code></pre>
+
+<p><img src="/images/%E7%B2%92%E5%AD%90%E6%95%88%E6%9E%9C.png" alt="" /></p>
+
+<ul>
+<li>完整代码如下</li>
+</ul>
+
+
+<pre><code class="objc">#import &lt;UIKit/UIKit.h&gt;
+
+@interface DrawView : UIView
+// 开始动画
+- (void)reDraw;
+// 重绘
+- (void)startA;
+@end
+
+#import "DrawView.h"
+@interface DrawView()
+
+/**路径*/
+@property (nonatomic, strong) UIBezierPath *path;
+
+/**复制层*/
+@property (nonatomic, strong) CAReplicatorLayer *replicatorL;
+
+/**原始层*/
+@property (nonatomic, strong) CALayer *dotLayer;
+@end
+@implementation DrawView
+
+- (void)awakeFromNib
+{
+    // 添加手势
+    [self addPanGR];
+}
+#pragma mark - 懒加载
+
+// 此处只需要添加一条路径,原始层添加的帧动画路径只有一个,所以复制出来的层都会由相同的动画路径,
+// 只是前后间隔延迟,每一个点是一个子层,重叠起来的
+- (UIBezierPath *)path
+{
+    if (_path == nil) {
+        _path = [UIBezierPath bezierPath];
+    }
+    return _path;
+}
+
+
+- (CAReplicatorLayer *)replicatorL
+{
+    if (_replicatorL == nil) {
+         _replicatorL = [CAReplicatorLayer layer];
+        _replicatorL.frame = self.bounds;
+    }
+    return _replicatorL;
+}
+
+- (CALayer *)dotLayer
+{
+    if (_dotLayer == nil) {
+        _dotLayer = [CALayer layer];
+        _dotLayer.position = CGPointMake(-10, -10);
+
+        _dotLayer.bounds = CGRectMake(0, 0, 10, 10);
+
+        _dotLayer.cornerRadius = 5;
+
+        _dotLayer.backgroundColor = [UIColor blueColor].CGColor;
+
+            }
+    return _dotLayer;
+}
+#pragma mark - 添加手势
+- (void)addPanGR
+{
+    UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(pan:)];
+    [self addGestureRecognizer:pan];
+}
+
+static int _count = 0;
+- (void)pan:(UIPanGestureRecognizer *)pan
+{
+    // 获取当前点
+    CGPoint curP = [pan locationInView:self];
+
+    // 画线
+    if (pan.state == UIGestureRecognizerStateBegan) {
+
+        [self.path moveToPoint:curP];
+    }
+    // 手指不断移动,当前点连线到上一点,
+    [_path addLineToPoint:curP];
+    // 重绘画出当前路径
+    [self setNeedsDisplay];
+
+    // 用来记录触摸点滑动中个数,设置复制层中复制的个数,防止,路径太长,动画太少
+    _count ++;
+}
+
+- (void)addReplicatorLayer
+{
+    // 懒加载添加复制层
+    [self.layer addSublayer:self.replicatorL];
+    // 懒加载添加原始层
+    [self.replicatorL addSublayer:self.dotLayer];
+
+    // 添加动画
+    CAKeyframeAnimation *keyframe = [CAKeyframeAnimation animation];
+
+    keyframe.keyPath = @"position";
+
+    keyframe.path = _path.CGPath;
+
+    keyframe.repeatCount = MAXFLOAT;
+
+    CGFloat duration = 2;
+
+    keyframe.duration  = duration;
+
+    [_dotLayer addAnimation:keyframe forKey:nil];
+
+    // 设置复制层属性,必须先添加动画再复制
+    int num = _count / 5;
+    _replicatorL.instanceCount = num;
+
+    //NSLog(@"%zd",_replicatorL.instanceCount);
+    _replicatorL.instanceDelay = duration / num;
+
+}
+
+#pragma mark - 开始动画和重绘
+// 开始动画
+- (void)startA
+{
+    [self addReplicatorLayer];
+}
+// 重画
+- (void)reDraw
+{
+    // 清空绘图信息
+    _path = nil;
+    // 把原始层移除父控件,复制出来的层也会移除
+    [_dotLayer removeFromSuperlayer];
+    _dotLayer = nil;
+    // 清空数量
+    _count = 0;
+
+    [self setNeedsDisplay];
+}
+
+// 重绘
+- (void)drawRect:(CGRect)rect
+{
+
+    [_path stroke];
+}
+@end
+</code></pre>
+
+<pre><code class="objc">#import &lt;UIKit/UIKit.h&gt;
+
+@interface ViewController : UIViewController
+
+@end
+
+#import "ViewController.h"
+#import "DrawView.h"
+@interface ViewController ()
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+}
+// 点击重绘
+- (IBAction)reDraw:(id)sender {
+
+    DrawView *drView = (DrawView *) self.view;
+
+    [drView reDraw];
+}
+// 点击开始
+- (IBAction)startA:(id)sender {
+
+    DrawView *drView = (DrawView *) self.view;
+
+    [drView startA];
+}
+@end
+</code></pre>
+
+<p><img src="/images/%E7%B2%92%E5%AD%90%E6%95%88%E6%9E%9Cstoryboard.png" alt="" /></p>
+
+<ul>
+<li>将控制器的view作为画板,自定义继承于view的类,给控制器修改class为自定义类</li>
+<li><code>核心动画只能设置一个路径</code>,所以懒加载一个路径,</li>
+<li>一条路径可以不连贯,设置多个起点,分成多段</li>
+<li>在重绘的时候,可以通过设置动画的代理时的key值,将原始层的动画删除</li>
+</ul>
+
+
+<pre><code class="objc">    [_dotLayer addAnimation:keyframe forKey:@"an"];
+
+    keyframe.delegate = self;
+
+    // 重绘的时候
+    // 原始层没有动画,复制的子层也没有动画
+    [_dotLayer removeAnimationForKey:@"an"];
+</code></pre>
+
+<ul>
+<li>也可以将原始层删除,用到时重新加载</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CoreAnimation-折叠图片]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/08/05/coreanimation-zhe-die-tu-pian-contentsrect/"/>
+    <updated>2014-08-05T08:33:06+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/08/05/coreanimation-zhe-die-tu-pian-contentsrect</id>
+    <content type="html"><![CDATA[<h4>图片折叠效果</h4>
+
+<!--more-->
+
+
+<p><img src="/images/%E6%8A%98%E5%8F%A0%E5%9B%BE%E7%89%87%E5%89%8D.png" alt="" /></p>
+
+<p><img src="/images/%E6%8A%98%E5%8F%A0%E5%9B%BE%E7%89%87%E5%90%8E.png" alt="" /></p>
+
+<p><img src="/images/%E6%8A%98%E5%8F%A0%E5%9B%BE%E7%89%87-%E6%8E%92%E5%88%97%E5%9B%BE%E7%89%87.png" alt="" /></p>
+
+<pre><code class="objc">
+#import "ViewController.h"
+
+@interface ViewController ()
+//@property (weak, nonatomic) IBOutlet UIImageView *test1View;
+//@property (weak, nonatomic) IBOutlet UIImageView *testView;
+@property (weak, nonatomic) IBOutlet UIImageView *topView;
+@property (weak, nonatomic) IBOutlet UIImageView *bottomView;
+@property (weak, nonatomic) IBOutlet UIView *dragView;
+
+@property (nonatomic, weak) CAGradientLayer *gradientL;
+
+@end
+
+/**
+ 两张图片的顺序,不能错,否则,旋转过九十度后就会看不到
+
+ 阴影:渐变层的渐变色colors属性必须有颜色
+ */
+
+@implementation ViewController
+/**
+ *一张图片必须要通过两个控件展示，旋转的时候，只旋转上部分控件
+ *如何让一张完整的图片通过两个控件显示?
+ *  1&gt;通过layer的contentsRect属性控制图片的显示内容
+ *  2&gt;如果快速把两个控件拼接成一个完整图片
+ */
+- (void)viewDidLoad {
+    [super viewDidLoad];
+
+
+//    // 通过上下接壤排列
+//    self.testView.layer.contentsRect = CGRectMake(0, 0, 1, 0.5);
+//    self.test1View.layer.contentsRect = CGRectMake(0, 0.5, 1, 0.5);
+
+    // 快速排列
+    // 通过设置contentsRect可以设置图片显示的尺寸，取值0~1
+    _topView.layer.contentsRect = CGRectMake(0, 0, 1, 0.5);
+    _topView.layer.anchorPoint = CGPointMake(0.5, 1);
+
+    _bottomView.layer.contentsRect = CGRectMake(0, 0.5, 1, 0.5);
+    _bottomView.layer.anchorPoint = CGPointMake(0.5, 0);
+
+    // 添加手势
+    UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
+    [_dragView addGestureRecognizer:pan];
+
+
+
+    // 渐变图层
+    CAGradientLayer *gradientL = [CAGradientLayer layer];
+
+    // 注意图层需要设置尺寸
+    gradientL.frame = _bottomView.bounds;
+
+    gradientL.opacity = 0;
+    // 设置渐变色,从无色到黑色,需要类型转换
+    // 渐变层的渐变色排列在所添加的层上,这里开始的时候不需要显示,当旋转的时候慢慢出现,所以通过透明度来修改
+    gradientL.colors = @[(id)[UIColor clearColor].CGColor,(id)[UIColor blackColor].CGColor];
+    _gradientL = gradientL;
+
+    [_bottomView.layer addSublayer:gradientL];
+
+}
+
+// 拖动的时候旋转上部分内容，200 M_PI
+- (void)pan:(UIPanGestureRecognizer *)pan
+{
+    // 获取偏移量
+   CGPoint transP = [pan translationInView:_dragView];
+
+    // 旋转角度,往下逆时针旋转,可向下滑动区域为dragView的高度,当y偏移200时,旋转M_Pi
+    CGFloat angle = -transP.y / 200.0 * M_PI;
+
+    CATransform3D transfrom = CATransform3DIdentity;
+
+    // m34增加旋转的立体感，近大远小,d：距离图层的距离
+    transfrom.m34 = -1 / 500.0;
+
+    transfrom = CATransform3DRotate(transfrom, angle, 1, 0, 0);
+
+    _topView.layer.transform = transfrom;
+
+    // 设置阴影效果
+    _gradientL.opacity = transP.y * 1 / 200.0;
+
+    if (pan.state == UIGestureRecognizerStateEnded) { // 反弹
+
+        // 弹簧效果的动画
+        // SpringWithDamping:弹性系数,越小，弹簧效果越明显
+        [UIView animateWithDuration:0.6 delay:0 usingSpringWithDamping:0.2 initialSpringVelocity:10 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+
+            _topView.layer.transform = CATransform3DIdentity;
+
+        } completion:^(BOOL finished) {
+
+        }];
+    }
+}
+</code></pre>
+
+<p><img src="/images/%E6%8A%98%E5%8F%A0%E5%9B%BE%E7%89%87storyboard.png" alt="" /></p>
+
+<h3>渐变层</h3>
+
+<pre><code class="objc">    // 设置渐变颜色,渐变层会显示从红,绿,黄,三色排布
+    gradientL.colors = @[(id)[UIColor redColor].CGColor,(id)[UIColor greenColor].CGColor,(id)[UIColor yellowColor].CGColor];
+
+    // 设置渐变定位点
+    //gradientL.locations = @[@0.1,@0.4,@0.5];
+
+    // 设置渐变开始点，取值0~1
+    gradientL.startPoint = CGPointMake(0, 1);
+
+    [_bottomView.layer addSublayer:gradientL];
+</code></pre>
+
+<p><img src="/images/%E6%8A%98%E5%8F%A0%E5%9B%BE%E7%89%87%E6%B8%90%E5%8F%98%E5%B1%821.png" alt="" /></p>
+
+<p><img src="/images/%E6%8A%98%E5%8F%A0%E5%9B%BE%E7%89%87%E6%B8%90%E5%8F%98%E5%B1%822.png" alt="" /></p>
+
+<p><img src="/images/%E6%8A%98%E5%8F%A0%E5%9B%BE%E7%89%87%E6%B8%90%E5%8F%98%E5%B1%823.png" alt="" /></p>
+
+<ul>
+<li>注意点:
+
+<ul>
+<li>`在storyboard排列imageView时,注意前后顺序,否则会在选装超过90°时被挡住</li>
+<li>必须设置渐变层的渐变色,然后通过透明度控制显示和隐藏</li>
+<li>在设置M34增加立体感时,
+
+<ul>
+<li>要创建一个空的CATransform3D</li>
+<li>然后添加M34(可通过参数设置很小,验证有没有效果,向外为负数)</li>
+<li>如果有旋转,则将transform作为上一次的旋转参数,赋值给要旋转的layer</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<pre><code class="objc">    CATransform3D transfrom = CATransform3DIdentity;
+
+    // m34增加旋转的立体感，近大远小,d：距离图层的距离
+    transfrom.m34 = -1 / 10.0;
+
+    transfrom = CATransform3DRotate(transfrom, angle, 1, 0, 0);
+
+    _topView.layer.transform = transfrom;
+
+    // 设置阴影效果
+    _gradientL.opacity = transP.y * 1 / 200.0;
+</code></pre>
+
+<p><img src="/images/%E6%8A%98%E5%8F%A0%E5%9B%BE%E7%89%87%E7%AB%8B%E4%BD%93%E6%95%88%E6%9E%9C.png" alt="" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CoreAnimation-CABasicAnimation和CAKeyframeAnimation和CAGroupAnimation]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/08/04/coreanimation-cabasicanimationhe-cakeyframeanimationhe-cagroupanimation/"/>
+    <updated>2014-08-04T15:31:00+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/08/04/coreanimation-cabasicanimationhe-cakeyframeanimationhe-cagroupanimation</id>
+    <content type="html"><![CDATA[<h3>CABasicAnimation</h3>
+
+<!--more-->
+
+
+<p><img src="/images/CABasicAnimation.png" alt="" /></p>
+
+<pre><code class="objc">- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    // 创建动画
+    CABasicAnimation *anim = [CABasicAnimation animation];
+
+    // 描述下修改哪个属性产生动画
+
+    // 只能是layer属性
+    anim.keyPath = @"transform.scale";
+
+    anim.toValue = @0.5;
+
+    // 要想动画执行完成后保持最后状态,以下两个条件缺一不可
+    // 设置动画完成的时候不要移除动画
+    anim.removedOnCompletion = NO;
+
+    // 设置动画执行完成要保持动画最后的状态
+    anim.fillMode = kCAFillModeForwards;
+
+    // 设置动画执行次数
+    anim.repeatCount = MAXFLOAT;
+
+    // imageView上的图片是心形,将动画加在imageView的层上
+    [_imageV.layer addAnimation:anim forKey:nil];
+
+}
+</code></pre>
+
+<ul>
+<li>如果保持最后状态:
+
+<ul>
+<li>当改变imagView的大小后,保持在最后的状态</li>
+<li>然后重复进行,</li>
+</ul>
+</li>
+<li>如果不添加保持最后状态的代码
+
+<ul>
+<li>当改变imageView的大小后,先恢复到原始状态</li>
+<li>然后重复进行</li>
+</ul>
+</li>
+</ul>
+
+
+<h3>CAKeyframeAnimation</h3>
+
+<p><img src="/images/CAKeyframeAnimation.png" alt="" /></p>
+
+<pre><code class="objc">   /*
+    * 创建CALayer
+    * touchBegin,点击屏幕，做动画
+    * 创建动画，添加动画到CALayer
+    * 怎样执行动画？执行动画的本质是改变图层的属性。
+    * 告诉动画执行怎样的动画?设置动画属性(position)
+    * 告诉动画属性怎么改变?设置动画属性值改变 toValue fromValue
+    * duration:动画时长
+    * 动画有反弹?取消反弹
+        1&gt; 执行动画完毕不要移除
+        2&gt; 设置动画填充模式，保持最新的位置。
+    * rotation:
+    三维旋转：transform
+    二维旋转：transform.rotation
+    * scale
+    * 设置图层内容（心）
+    * tovalue:@0.5
+    * 总结CABasicAnimation只能在两个值之间做动画，怎么多个值做动画，用CAKeyframeAnimation
+    */
+</code></pre>
+
+<pre><code class="objc">#import "DrawView.h"
+
+@interface DrawView ()
+
+@property (nonatomic, strong) UIBezierPath *path;
+
+@end
+
+@implementation DrawView
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    // touch
+    UITouch *touch = [touches anyObject];
+
+    // 获取手指的触摸点
+    CGPoint curP = [touch locationInView:self];
+
+    // 创建路径
+    UIBezierPath *path = [UIBezierPath bezierPath];
+    _path = path;
+
+    // 设置起点
+    [path moveToPoint:curP];
+
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    // touch
+    UITouch *touch = [touches anyObject];
+
+    // 获取手指的触摸点
+    CGPoint curP = [touch locationInView:self];
+    // 不设置起点,默认起点是上一位置的终点
+    [_path addLineToPoint:curP];
+    // 进行重绘
+    [self setNeedsDisplay];
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    // 给imageView添加核心动画
+    // 添加核心动画
+    CAKeyframeAnimation *anim = [CAKeyframeAnimation animation];
+
+    anim.keyPath = @"position";
+
+    // 路径转换,从UI转为CG
+    anim.path = _path.CGPath;
+    // 动画的时间
+    anim.duration = 1;
+    // 执行最大次数,也就是重复执行
+    anim.repeatCount = MAXFLOAT;
+    // 取到imageView添加动画
+    [[[self.subviews firstObject] layer] addAnimation:anim forKey:nil];
+}
+
+- (void)drawRect:(CGRect)rect
+{
+    // 绘制路径
+    [_path stroke];
+}
+</code></pre>
+
+<p><img src="/images/CAKeyframeAnimation%E7%9A%84path.png" alt="" /></p>
+
+<p><img src="/images/CAKeyframeAnimation%E7%9A%84storyboard.png" alt="" /></p>
+
+<h4>图标抖动</h4>
+
+<pre><code class="objc">    //    anim.values = @[@(angle2Radion(-10)),@(angle2Radion(10)),@(angle2Radion(-10))];
+</code></pre>
+
+<p><img src="/images/CAAnimationGroup.png" alt="" /></p>
+
+<h3>CAGroupAnimation</h3>
+
+<pre><code class="objc">- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    // 同时缩放，平移，旋转
+    CAAnimationGroup *group = [CAAnimationGroup animation];
+
+    CABasicAnimation *scale = [CABasicAnimation animation];
+    scale.keyPath = @"transform.scale";
+    scale.toValue = @0.5;
+
+    CABasicAnimation *rotation = [CABasicAnimation animation];
+    rotation.keyPath = @"transform.rotation";
+    rotation.toValue = @(arc4random_uniform(M_PI));
+
+    CABasicAnimation *position = [CABasicAnimation animation];
+    position.keyPath = @"position";
+    position.toValue = [NSValue valueWithCGPoint:CGPointMake(arc4random_uniform(200), arc4random_uniform(200))];
+
+    group.animations = @[scale,rotation,position];
+
+    [_redView.layer addAnimation:group forKey:nil];
+
+}
+</code></pre>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[CALayer-时钟]]></title>
@@ -288,128 +996,6 @@
 </code></pre>
 
 <p><img src="/images/%E9%9A%90%E5%BC%8F%E5%8A%A8%E7%94%BB%E9%9A%8F%E6%9C%BA.png" alt="" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[CALayer-属性设置]]></title>
-    <link href="http://xiaobenmao.github.io/blog/2014/08/01/calayer-shu-xing-she-zhi/"/>
-    <updated>2014-08-01T15:28:44+08:00</updated>
-    <id>http://xiaobenmao.github.io/blog/2014/08/01/calayer-shu-xing-she-zhi</id>
-    <content type="html"><![CDATA[<p><img src="/images/CALayer%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8.png" alt="" /></p>
-
-<!--more-->
-
-
-<p><img src="/images/CALayer.png" alt="" /></p>
-
-<p><img src="/images/CALyer%E7%9A%84%E5%B1%9E%E6%80%A71.png" alt="" /></p>
-
-<p><img src="/images/CALyer%E7%9A%84%E5%B1%9E%E6%80%A72.png" alt="" /></p>
-
-<h4>通过CCLAyer可以调整View的一些外观属性</h4>
-
-<p><img src="/images/CALayer%E5%AF%B9view%E7%9A%84%E5%B1%9E%E6%80%A7%E8%AE%BE%E7%BD%AE.png" alt="" /></p>
-
-<pre><code class="objc">- (void)viewDidLoad {
-    [super viewDidLoad];
-    // 可以通过CALyer,调整view的一些外观属性
-
-    // 圆角半径
-    self.greenView.layer.cornerRadius = 20;
-    // 边框
-    self.greenView.layer.borderWidth = 3;
-    // 边框颜色
-    self.greenView.layer.borderColor = [UIColor grayColor].CGColor;
-
-    // 设置阴影
-    //Opacity:不透明度,alpha:透明度
-    self.greenView.layer.shadowOpacity = 0.5;
-    // 注意：图层的颜色都是核心绘图框架，通常用.CGColor将UI类型转为CG类型
-    // 阴影颜色
-    self.greenView.layer.shadowColor = [UIColor redColor].CGColor;
-    // 阴影偏移量
-    self.greenView.layer.shadowOffset = CGSizeMake(10, 10);
-    // 阴影的半径
-    self.greenView.layer.shadowRadius = 10;
-}
-</code></pre>
-
-<h4>UIImageView在CALayer中的使用</h4>
-
-<p><img src="/images/CALyer%E5%89%AA%E8%A3%81%E5%A4%B4%E5%83%8F.png" alt="" /></p>
-
-<pre><code class="objc">- (void)viewDidLoad {
-    [super viewDidLoad];
-    // cornerRadiu设置控件的主层边框(rootLayer)
-    // 图片是加在主层的子控件contents内容层中
-    self.myImageView.layer.cornerRadius = 100;
-
-    NSLog(@"%@",self.myImageView.layer.contents);
-    // 超出主层边框的内容全部裁剪掉
-    self.myImageView.layer.masksToBounds = YES;
-
-    // 设置边框
-    self.myImageView.layer.borderWidth = 2;
-    self.myImageView.layer.borderColor = [UIColor redColor].CGColor;
-    /**
-     *通过剪裁和上述方法都能获取原型头像
-     *如何判断以后是否需要裁剪图片，就判断下需要显示图层的控件是否是正方形。
-     *如果控件的宽高不相等,则使用CALyer会变形
-     */
-}
-</code></pre>
-
-<p><img src="/images/CALayer%E5%89%AA%E8%A3%81%E5%A4%B4%E5%83%8F1.png" alt="" /></p>
-
-<h4>CALayer的形变属性</h4>
-
-<p><img src="/images/xyz%E8%BD%B4.png" alt="" /></p>
-
-<pre><code class="objc">
-        // 旋转,不使用动画,会旋转过快,看不出效果
-        self.greenView.layer.transform = CATransform3DMakeRotation(M_PI, 0, 0 ,1);
-
-        // 缩放
-        self.greenView.layer.transform = CATransform3DMakeScale(0.5, 0.5, 1);
-
-        // 平移
-         self.greenView.layer.transform = CATransform3DMakeTranslation(20, 20, 0);
-
-        // 快速进行图层缩放,KVC
-        // [self.greenView.layer setValue:@0.5 forKeyPath:@"transform.scale"];
-        // [self.greenView.layer setValue:@(M_PI) forKeyPath:@"transform.rotation"];
-</code></pre>
-
-<p><img src="/images/CALayer%E4%B8%AD%E7%9A%84storyboard.png" alt="" /></p>
-
-<h4>创建CALayer</h4>
-
-<pre><code class="objc">- (void)viewDidLoad {
-    [super viewDidLoad];
-    // 创建CALayer
-    CALayer *layer = [CALayer layer];
-
-    layer.frame = CGRectMake(100, 100, 100, 100);
-
-    layer.backgroundColor = [UIColor redColor].CGColor;
-    // 图片设置在属性内容contents里;
-    // 前面有中文,后面的.CGImage不提示, 要进行类型转换
-    layer.contents = (id)([UIImage imageNamed:@"阿狸头像"].CGImage);
-    // 添加层
-    [self.view.layer addSublayer:layer];
-}
-</code></pre>
-
-<ul>
-<li><p><code>CGColor和CGImage需要在UIKit框架和CoreGraphic之间转换</code>
-<img src="/images/CGColor%E5%92%8CCGImage.png" alt="" /></p></li>
-<li><p><code>UIView和CALayer最大区别是是否能处理点击事件</code>
-<img src="/images/UIView%E5%92%8CCALayer%E7%9A%84%E9%80%89%E6%8B%A9.png" alt="" /></p></li>
-</ul>
-
-
-<p><img src="/images/UIView%E5%92%8CCALayer.png" alt="" /></p>
 ]]></content>
   </entry>
   

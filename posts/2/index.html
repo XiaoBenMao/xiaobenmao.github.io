@@ -71,6 +71,107 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2014/07/16/quartz2d-shou-dong-jie-ping/">Quartz2d-手动截屏</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-07-16T15:39:00+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>3:39 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"></div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/07/16/quartz2d-shou-dong-jie-ping/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/07/16/quartz2d-tu-pian-ca-chu-gei-mei-zi-tuo-yi-fu/">Quartz2d-图片擦除(给妹子脱衣服)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-07-16T11:38:52+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>11:38 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><ul>
+<li>图片擦除是将两张相似的图片重叠,当擦除上面图片的指定区域,显示下面相同区域所要的看到的图片效果</li>
+</ul>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/07/16/quartz2d-tu-pian-ca-chu-gei-mei-zi-tuo-yi-fu/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/07/15/quartz2d-jie-ping-zhi-ding-kong-jian/">Quartz2d-截屏(指定控件)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-07-15T17:38:26+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:38 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"></div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/07/15/quartz2d-jie-ping-zhi-ding-kong-jian/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2014/07/15/quartz2d-tu-pian-jian-cai-dai-you-bian-kuang/">Quartz2d-图片剪裁(带有边框)</a></h1>
     
     
@@ -361,188 +462,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/07/08/quartz2d-mo-fang-xia-zai-jin-du/">Quartz2d-模仿下载进度</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-07-08T08:30:05+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>8:30 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><ul>
-<li>画下载进度</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'>   <span class="cm">/**</span>
-</span><span class='line'><span class="cm">重绘-下载进度条(setNeedsDisplay) 画图分析:</span>
-</span><span class='line'><span class="cm">    * 分析有几个控件：UISliderView,自定义view用来画图,UILabel</span>
-</span><span class='line'><span class="cm">    * 分析思路：滑动UISliderView的时候，把UISliderView的值传给自定义view,改变的显示。</span>
-</span><span class='line'><span class="cm">    * 怎么监听UISliderView，valueChange事件</span>
-</span><span class='line'><span class="cm">    * 自定义view搞一个属性接收滑动的值</span>
-</span><span class='line'><span class="cm">    * 接下来先搞label,因为他比较简单，做东西，先从简单的着手。</span>
-</span><span class='line'><span class="cm">    * 懒加载label,位置居中，文字居中</span>
-</span><span class='line'><span class="cm">    * label怎么显示?重写progress的set方法,有数据就展示在label上。</span>
-</span><span class='line'><span class="cm">    * 绘制圆弧，PPT分析，从哪开始画圆弧。</span>
-</span><span class='line'><span class="cm">    * 每次转多少°？ 角度 = 进度 * M_PI * 2</span>
-</span><span class='line'><span class="cm">    * startAngle = -M_PI_2</span>
-</span><span class='line'><span class="cm">    * endAngle = -M_PI_2 + 进度 * M_PI * 2</span>
-</span><span class='line'><span class="cm">    * 不会及时更新视图显示?为什么，因为drawRect只会在视图显示的时候调用一次。</span>
-</span><span class='line'><span class="cm">    * 怎么重绘？setNeedsDisplay</span>
-</span><span class='line'><span class="cm">    * 手动调用drawRect方法，不行，因为你自己不能创建上下文，必须系统调用来调用</span>
-</span><span class='line'><span class="cm">    * setNeedsDisplay：在view上做一个重绘的标记，在下一次绘图的周期来临，就会先创建好上下文，然后自动调用drawRect重绘。</span>
-</span><span class='line'><span class="cm">    */</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/07/08/quartz2d-mo-fang-xia-zai-jin-du/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/07/07/quartz2d-hua-yuan/">Quartz2d-画圆</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-07-07T13:08:11+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>1:08 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><ul>
-<li>ShapeView:绘制图形
-
-<ul>
-<li>triangle三角形（画图分析）</li>
-<li>关闭路径closePath：从路径的终点连接到起点</li>
-<li>填充路径CGContextFillPath：有了封闭的路径就能填充</li>
-<li>设置填充颜色 [[UIColor blueColor] setFill];</li>
-<li>设置描边颜色 [[UIColor redColor] setStroke];</li>
-<li>不显示描边颜色，为什么?没有设置线宽</li>
-<li>设置线宽，还是不显示，为什么?因为绘制路径不对。</li>
-<li>即填充又描边CGContextDrawPath:kCGPathFillStroke。</li>
-<li>rectangle矩形</li>
-<li>circle圆：为什么传入矩形，因为圆内切与矩形</li>
-</ul>
-</li>
-</ul>
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/07/07/quartz2d-hua-yuan/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/07/03/quartz2d-hua-zhi-xian-he-qu-xian/">Quartz2d-画直线和曲线</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-07-03T18:29:36+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2014</span></span> <span class='time'>6:29 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm"> *Only override drawRect: if you perform custom drawing.</span>
-</span><span class='line'><span class="cm"> *绘图的步骤： 1.获取上下文 2.创建路径（描述路径） 3.把路径添加到上下文 4.渲染上下文</span>
-</span><span class='line'><span class="cm"> *通常在这个方法里面绘制图形</span>
-</span><span class='line'><span class="cm"> *为什么要再drawRect里面绘图，只有在这个方法里面才能获取到跟View的layer相关联的图形上下文</span>
-</span><span class='line'><span class="cm"> *什么时候调用:当这个View要显示的时候才会调用drawRect绘制图形</span>
-</span><span class='line'><span class="cm"> *注意：rect是当前控件的bounds</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="p">{</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/07/03/quartz2d-hua-zhi-xian-he-qu-xian/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/3">&larr; Older</a>
@@ -608,7 +527,7 @@
       </li>
     
       <li class="category">
-        <a class='category' href='/blog/categories/coreanimation/'>coreanimation</a> (3)
+        <a class='category' href='/blog/categories/coreanimation/'>coreanimation</a> (6)
       </li>
     
   </ul>
@@ -625,15 +544,15 @@
       </li>
     
       <li class="post">
-        <a href="/blog/2014/08/02/calayer-shi-zhong/">CALayer-时钟</a>
+        <a href="/blog/2014/08/06/coreanimation-li-zi-xiao-guo/">CoreAnimation-粒子效果</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/08/02/calayer-yin-shi-dong-hua/">CALayer-隐式动画</a>
+        <a href="/blog/2014/08/05/coreanimation-zhe-die-tu-pian-contentsrect/">CoreAnimation-折叠图片</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/08/01/calayer-shu-xing-she-zhi/">CALayer-属性设置</a>
+        <a href="/blog/2014/08/04/coreanimation-cabasicanimationhe-cakeyframeanimationhe-cagroupanimation/">CoreAnimation-CABasicAnimation和CAKeyframeAnimation和CAGroupAnimation</a>
       </li>
     
   </ul>
