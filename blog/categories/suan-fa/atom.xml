@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: 算法 | My Octopress Blog]]></title>
+  <link href="http://xiaobenmao.github.io/blog/categories/suan-fa/atom.xml" rel="self"/>
+  <link href="http://xiaobenmao.github.io/"/>
+  <updated>2015-09-07T23:01:54+08:00</updated>
+  <id>http://xiaobenmao.github.io/</id>
+  <author>
+    <name><![CDATA[Your Name]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[简单选择排序和冒泡排序]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2013/06/02/jian-dan-xuan-ze-pai-xu-he-mou-pao-pai-xu/"/>
+    <updated>2013-06-02T11:16:15+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2013/06/02/jian-dan-xuan-ze-pai-xu-he-mou-pao-pai-xu</id>
+    <content type="html"><![CDATA[<h4>简单冒泡排序和选择排序</h4>
+
+<!-- more -->
+
+
+<p>
+```</p>
+
+<h1>include <iostream></h1>
+
+<p>using namespace std;</p>
+
+<p>void sort_Func_optimize_jiaohuan(int *a ,int  length)<br/>
+{   <br/>
+    int now = 0 ;<br/>
+    for (int i = 0 ; i &lt; length  -1 ; i++ )<br/>
+    {<br/>
+        now = i;<br/>
+        for (int j = i + 1 ; j&lt; length ; j++)<br/>
+        {<br/>
+            if (a[ j ] &lt; a[ now ])<br/>
+            {<br/>
+                now = j;<br/>
+            }<br/>
+        }<br/>
+        int temp = a[i];<br/>
+        a[i] = a[now];<br/>
+        a[now] = temp;<br/>
+    }<br/>
+}</p>
+
+<p>void sort_Func_jiaohuan(int *a ,int  length)<br/>
+{<br/>
+    for (int i = 0 ; i &lt; length -1 ; i++ )<br/>
+    {<br/>
+        for (int j = i + 1 ; j&lt; length ; j++)<br/>
+        {<br/>
+            if (a[ j ] &lt; a[ i ])<br/>
+            {<br/>
+                int temp = a[i];<br/>
+                a[i] = a[j];<br/>
+                a[j] = temp;<br/>
+            }<br/>
+        }<br/>
+    }<br/>
+}</p>
+
+<p>void sort_Func_bubble(int *a ,int length)<br/>
+{</p>
+
+<pre><code>for (int i = 1 ; i &lt; length - 1 ; i ++ )  
+{  
+    for (int j = 0; j &lt; length - i ; j ++)  
+    {  
+        if (a[j] &gt; a[j + 1])  
+        {  
+            int temp = a[j + 1];  
+            a[j + 1] = a[j];  
+            a[j] = temp;  
+        }  
+    }  
+}  
+</code></pre>
+
+<p>}</p>
+
+<p>void print_arry(int *a)<br/>
+{<br/>
+    for (int i = 0 ; i &lt;= sizeof(a) ; i ++)<br/>
+    {<br/>
+        cout&lt;&lt;a[i]&lt;&lt;&ldquo; &rdquo;;<br/>
+    }<br/>
+}</p>
+
+<p>void main(){<br/>
+    int num = 0 ;<br/>
+    int arry[5] = {0};<br/>
+    int length = (sizeof(arry)/ sizeof(arry[0]));<br/>
+    for(int i = 0 ; i &lt; length ; i ++)<br/>
+    {<br/>
+        cin >> arry[i];<br/>
+    }<br/>
+    cout &lt;&lt; &ldquo;排序前：&rdquo;&lt;&lt;endl;<br/>
+    print_arry(arry);<br/>
+    sort_Func_optimize_jiaohuan(arry ,length);<br/>
+    //sort_Func_jiaohuan(arry,length);<br/>
+    //sort_Func_bubble(arry,length);<br/>
+    cout &lt;&lt; endl &lt;&lt;&ldquo;排序后:&rdquo;&lt;&lt;endl;<br/>
+    print_arry(arry);<br/>
+    system(&ldquo;pause&rdquo;);<br/>
+}</p>
+
+<p>```</p>
+]]></content>
+  </entry>
+  
+</feed>
