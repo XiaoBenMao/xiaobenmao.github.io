@@ -1,0 +1,494 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>聊天cell布局-键盘弹出和退出处理 - My World</title>
+  <meta name="author" content="嗷大喵">
+
+  
+  <meta name="description" content="聊天布局-键盘弹出和隐藏处理(方法一) 当键盘弹出时,工具条和tableView应该整体往上移,所以tableView不应该有顶部约束,否则将会被压缩. 将tableView的顶部约束删除(如果有)
+将tableView和父控件view连线,约束选择equalHeight &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://xiaobenmao.github.io/blog/2014/04/15/liao-tian-cellbu-ju-jian-pan-dan-chu-he-tui-chu-chu-li/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My World" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.useso.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.useso.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My World</a></h1>
+  
+    <h2>Your World</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="xiaobenmao.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">聊天cell布局-键盘弹出和退出处理</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-04-15T19:52:36+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>7:52 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>聊天布局-键盘弹出和隐藏处理(方法一)</h2>
+
+<ul>
+<li>当键盘弹出时,工具条和tableView应该整体往上移,所以tableView不应该有顶部约束,否则将会被压缩.
+
+<ul>
+<li>将tableView的顶部约束删除(如果有)</li>
+<li>将tableView和父控件view连线,约束选择equalHeight</li>
+<li>点击约束修改为tableView.height = superView.heitht - 44(工具条的高度)</li>
+</ul>
+</li>
+</ul>
+
+
+<!--more-->
+
+
+<p><img src="/images/tableView%E7%9A%84%E9%AB%98%E5%BA%A6%E7%BA%A6%E6%9D%9F.png" alt="tableView的高度约束" /></p>
+
+<ul>
+<li>当键盘弹出时,修改工具条和父控件之间的底部约束
+
+<ul>
+<li>当工具条的底部约束增大(减小)时,工具条和tableView会整体往上(往下)移动</li>
+<li>将该约束连线到控制器中,可以取到修改</li>
+</ul>
+</li>
+</ul>
+
+
+<p><img src="/images/%E5%BA%95%E9%83%A8%E7%BA%A6%E6%9D%9F%E8%BF%9E%E7%BA%BF.png" alt="底部约束连线" />
+- 监听键盘弹出和退出通知
+    - 键盘退出的时机设定为滚动tableView的时候</p>
+
+<p><img src="/images/%E7%9B%91%E5%90%AC%E5%88%B0%E7%9A%84%E9%94%AE%E7%9B%98%E9%80%9A%E7%9F%A5%E4%BF%A1%E6%81%AF.png" alt="监听到的键盘通知信息" /></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 监听键盘通知</span>
+</span><span class='line'>    <span class="p">[[</span><span class="bp">NSNotificationCenter</span> <span class="n">defaultCenter</span><span class="p">]</span> <span class="nl">addObserver</span><span class="p">:</span><span class="nb">self</span> <span class="nl">selector</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">keyBoardWillSHow</span><span class="p">:)</span> <span class="nl">name</span><span class="p">:</span><span class="n">UIKeyboardWillShowNotification</span> <span class="nl">object</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[[</span><span class="bp">NSNotificationCenter</span> <span class="n">defaultCenter</span><span class="p">]</span> <span class="nl">addObserver</span><span class="p">:</span><span class="nb">self</span> <span class="nl">selector</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">keyBoardWillHide</span><span class="p">:)</span> <span class="nl">name</span><span class="p">:</span><span class="n">UIKeyboardWillHideNotification</span> <span class="nl">object</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// 必须要移除监听</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">dealloc</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[[</span><span class="bp">NSNotificationCenter</span> <span class="n">defaultCenter</span><span class="p">]</span> <span class="nl">removeObserver</span><span class="p">:</span><span class="nb">self</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - 键盘处理</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">keyBoardWillSHow:</span><span class="p">(</span><span class="bp">NSNotification</span> <span class="o">*</span><span class="p">)</span><span class="nv">note</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;keyBoardWillSHow,%@&quot;</span><span class="p">,</span><span class="n">note</span><span class="p">);</span>
+</span><span class='line'>    <span class="c1">// 取得键盘弹出的时间</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">duration</span> <span class="o">=</span> <span class="p">[</span><span class="n">note</span><span class="p">.</span><span class="n">userInfo</span><span class="p">[</span><span class="n">UIKeyboardAnimationDurationUserInfoKey</span><span class="p">]</span> <span class="n">floatValue</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">// 取得键盘的高度,也就是底部约束上移的距离</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">change</span> <span class="o">=</span> <span class="p">[</span><span class="n">note</span><span class="p">.</span><span class="n">userInfo</span><span class="p">[</span><span class="n">UIKeyboardFrameBeginUserInfoKey</span><span class="p">]</span> <span class="n">CGRectValue</span><span class="p">].</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// 修改约束</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">toolbarToView_Constraint</span><span class="p">.</span><span class="n">constant</span> <span class="o">=</span> <span class="n">change</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// 增加动画,强制更新布局</span>
+</span><span class='line'>    <span class="p">[</span><span class="bp">UIView</span> <span class="nl">animateWithDuration</span><span class="p">:</span><span class="n">duration</span> <span class="nl">animations</span><span class="p">:</span><span class="o">^</span><span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">view</span> <span class="n">layoutIfNeeded</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">keyBoardWillHide:</span><span class="p">(</span><span class="bp">NSNotification</span> <span class="o">*</span><span class="p">)</span><span class="nv">note</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;keyBoardWillHide,%@&quot;</span><span class="p">,</span><span class="n">note</span><span class="p">);</span>
+</span><span class='line'>    <span class="c1">// 取得键盘退出的时间</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">duration</span> <span class="o">=</span> <span class="p">[</span><span class="n">note</span><span class="p">.</span><span class="n">userInfo</span><span class="p">[</span><span class="n">UIKeyboardAnimationDurationUserInfoKey</span><span class="p">]</span> <span class="n">floatValue</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">// 键盘退出,工具条和tableView移回原处</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">toolbarToView_Constraint</span><span class="p">.</span><span class="n">constant</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// 增加动画,强制更新</span>
+</span><span class='line'>    <span class="p">[</span><span class="bp">UIView</span> <span class="nl">animateWithDuration</span><span class="p">:</span><span class="n">duration</span> <span class="nl">animations</span><span class="p">:</span><span class="o">^</span><span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">view</span> <span class="n">layoutIfNeeded</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}];</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">scrollViewWillBeginDragging:</span><span class="p">(</span><span class="bp">UIScrollView</span> <span class="o">*</span><span class="p">)</span><span class="nv">scrollView</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 隐藏键盘:</span>
+</span><span class='line'>    <span class="c1">//[self.messageFiled resignFirstResponder];// 调用者必须为调用键盘的控件对象</span>
+</span><span class='line'>    <span class="c1">//[self.messageFiled endEditing:YES];</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">endEditing</span><span class="p">:</span><span class="nb">YES</span><span class="p">];</span><span class="c1">// 推荐,如果view上有多个键盘调用者,一句话就可以搞定</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>以上两个通知可以通过以下一个通知代替:</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// UIKeyboardWillChangeFrameNotification监听键盘的frame变化</span>
+</span><span class='line'>    <span class="p">[[</span><span class="bp">NSNotificationCenter</span> <span class="n">defaultCenter</span><span class="p">]</span> <span class="nl">addObserverForName</span><span class="p">:</span><span class="n">UIKeyboardWillChangeFrameNotification</span> <span class="nl">object</span><span class="p">:</span><span class="nb">nil</span> <span class="nl">queue</span><span class="p">:</span><span class="nb">nil</span> <span class="nl">usingBlock</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">NSNotification</span> <span class="o">*</span><span class="n">note</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;UIKeyboardWillChangeFrameNotification&quot;</span><span class="p">);</span>
+</span><span class='line'>        <span class="c1">// 取得键盘弹出的时间</span>
+</span><span class='line'>        <span class="n">CGFloat</span> <span class="n">duration</span> <span class="o">=</span> <span class="p">[</span><span class="n">note</span><span class="p">.</span><span class="n">userInfo</span><span class="p">[</span><span class="n">UIKeyboardAnimationDurationUserInfoKey</span><span class="p">]</span> <span class="n">floatValue</span><span class="p">];</span>
+</span><span class='line'>        <span class="c1">// 取得键盘最后的frame</span>
+</span><span class='line'>        <span class="bp">CGRect</span> <span class="n">rect</span> <span class="o">=</span> <span class="p">[</span><span class="n">note</span><span class="p">.</span><span class="n">userInfo</span><span class="p">[</span><span class="n">UIKeyboardFrameEndUserInfoKey</span><span class="p">]</span> <span class="n">CGRectValue</span><span class="p">];</span>
+</span><span class='line'>        <span class="c1">//键盘弹出/退出时:约束值 = 屏幕的高度 - 键盘此时的y值</span>
+</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">toolbarToView_Constraint</span><span class="p">.</span><span class="n">constant</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIScreen</span> <span class="n">mainScreen</span><span class="p">].</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">rect</span><span class="p">.</span><span class="n">origin</span><span class="p">.</span><span class="n">y</span><span class="p">;</span>
+</span><span class='line'>        <span class="c1">// 增加动画,强制更新布局</span>
+</span><span class='line'>        <span class="p">[</span><span class="bp">UIView</span> <span class="nl">animateWithDuration</span><span class="p">:</span><span class="n">duration</span> <span class="nl">animations</span><span class="p">:</span><span class="o">^</span><span class="p">{</span>
+</span><span class='line'>            <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">view</span> <span class="n">layoutIfNeeded</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}];</span>
+</span><span class='line'>    <span class="p">}];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>方法二:将约束替换为修改控制器view的y值</h3>
+
+<ul>
+<li>键盘的Y值就是控制器view的Y值</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'>    <span class="c1">// UIKeyboardWillChangeFrameNotification监听键盘的frame变化</span>
+</span><span class='line'>    <span class="p">[[</span><span class="bp">NSNotificationCenter</span> <span class="n">defaultCenter</span><span class="p">]</span> <span class="nl">addObserverForName</span><span class="p">:</span><span class="n">UIKeyboardWillChangeFrameNotification</span> <span class="nl">object</span><span class="p">:</span><span class="nb">nil</span> <span class="nl">queue</span><span class="p">:</span><span class="nb">nil</span> <span class="nl">usingBlock</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">NSNotification</span> <span class="o">*</span><span class="n">note</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;keyBoardWillHide&quot;</span><span class="p">);</span>
+</span><span class='line'>        <span class="c1">// 取得键盘弹出的时间</span>
+</span><span class='line'>        <span class="n">CGFloat</span> <span class="n">duration</span> <span class="o">=</span> <span class="p">[</span><span class="n">note</span><span class="p">.</span><span class="n">userInfo</span><span class="p">[</span><span class="n">UIKeyboardAnimationDurationUserInfoKey</span><span class="p">]</span> <span class="n">floatValue</span><span class="p">];</span>
+</span><span class='line'>        <span class="c1">// 取得键盘的高度,也就是底部约束上移的距离</span>
+</span><span class='line'>        <span class="bp">CGRect</span> <span class="n">rect</span> <span class="o">=</span> <span class="p">[</span><span class="n">note</span><span class="p">.</span><span class="n">userInfo</span><span class="p">[</span><span class="n">UIKeyboardFrameEndUserInfoKey</span><span class="p">]</span> <span class="n">CGRectValue</span><span class="p">];</span>
+</span><span class='line'>        <span class="bp">CGRect</span> <span class="n">viewRect</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">frame</span><span class="p">;</span>
+</span><span class='line'>        <span class="c1">// 键盘的y值等于self.view的y值</span>
+</span><span class='line'>        <span class="n">viewRect</span><span class="p">.</span><span class="n">origin</span><span class="p">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">rect</span><span class="p">.</span><span class="n">origin</span><span class="p">.</span><span class="n">y</span><span class="p">;</span>
+</span><span class='line'>        <span class="c1">// 增加动画,强制更新布局</span>
+</span><span class='line'>        <span class="p">[</span><span class="bp">UIView</span> <span class="nl">animateWithDuration</span><span class="p">:</span><span class="n">duration</span> <span class="nl">animations</span><span class="p">:</span><span class="o">^</span><span class="p">{</span>
+</span><span class='line'>            <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">view</span> <span class="n">layoutIfNeeded</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}];</span>
+</span><span class='line'>    <span class="p">}];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>方法三:使用transform</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'>        <span class="c1">// UIKeyboardWillChangeFrameNotification监听键盘的frame变化</span>
+</span><span class='line'>        <span class="p">[[</span><span class="bp">NSNotificationCenter</span> <span class="n">defaultCenter</span><span class="p">]</span> <span class="nl">addObserverForName</span><span class="p">:</span><span class="n">UIKeyboardWillChangeFrameNotification</span> <span class="nl">object</span><span class="p">:</span><span class="nb">nil</span> <span class="nl">queue</span><span class="p">:</span><span class="nb">nil</span> <span class="nl">usingBlock</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">NSNotification</span> <span class="o">*</span><span class="n">note</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;keyBoardWillHide&quot;</span><span class="p">);</span>
+</span><span class='line'>            <span class="c1">// 取得键盘弹出的时间</span>
+</span><span class='line'>            <span class="n">CGFloat</span> <span class="n">duration</span> <span class="o">=</span> <span class="p">[</span><span class="n">note</span><span class="p">.</span><span class="n">userInfo</span><span class="p">[</span><span class="n">UIKeyboardAnimationDurationUserInfoKey</span><span class="p">]</span> <span class="n">floatValue</span><span class="p">];</span>
+</span><span class='line'>            <span class="c1">// 取得键盘的高度,也就是底部约束上移的距离</span>
+</span><span class='line'>            <span class="bp">CGRect</span> <span class="n">rect</span> <span class="o">=</span> <span class="p">[</span><span class="n">note</span><span class="p">.</span><span class="n">userInfo</span><span class="p">[</span><span class="n">UIKeyboardFrameEndUserInfoKey</span><span class="p">]</span> <span class="n">CGRectValue</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="n">CGFloat</span> <span class="n">ty</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIScreen</span> <span class="n">mainScreen</span><span class="p">].</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">rect</span><span class="p">.</span><span class="n">origin</span><span class="p">.</span><span class="n">y</span><span class="p">;</span>
+</span><span class='line'>            <span class="nb">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">CGAffineTransformMakeTranslation</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">ty</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="p">[</span><span class="bp">UIView</span> <span class="nl">animateWithDuration</span><span class="p">:</span><span class="n">duration</span> <span class="nl">animations</span><span class="p">:</span><span class="o">^</span><span class="p">{</span>
+</span><span class='line'>                <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">view</span> <span class="n">layoutIfNeeded</span><span class="p">];</span>
+</span><span class='line'>            <span class="p">}];</span>
+</span><span class='line'>        <span class="p">}];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">嗷大喵</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-04-15T19:52:36+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>7:52 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/liao-tian-cellbu-ju/'>聊天cell布局</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/04/10/liao-tian-cellbu-ju-liao-tian-gong-ju-tiao-de-shu-ru-kuang-textfield/" title="Previous Post: 聊天cell布局-聊天工具条的输入框(TextField)">&laquo; 聊天cell布局-聊天工具条的输入框(TextField)</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/04/16/liao-tian-cellbu-ju-kong-jian-chang-yong-xing-bian-transformshu-xing-fang-fa-xuan-zhuan/" title="Next Post: 聊天cell布局-控件常用形变transform属性方法(旋转">聊天cell布局-控件常用形变transform属性方法(旋转 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>欢迎光临小站</h1>
+  <p>我的世界</p>
+  <p>新浪微博：<a href=" http://weibo.com/QQ908887023" target="_blank">我是嗷大喵</a></p>
+</section><section>
+  <h1>文章分类</h1>
+  <ul id="categories">
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/suan-fa/'>算法</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/cocos2dx-lua/'>cocos2dx-lua</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/u3d/'>u3d</a> (4)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ioswei-fen-lei/'>ios未分类</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/tableview/'>tableview</a> (14)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ji-suan-ji-ying-yu/'>计算机英语</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/liao-tian-cellbu-ju/'>聊天cell布局</a> (7)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/uipickerview/'>uipickerview</a> (5)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shu-ju-cun-chu/'>数据存储</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shi-jian-chu-li/'>事件处理</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a> (17)
+      </li>
+    
+  </ul>
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/09/06/quartz2d-hua-ju-xing/">Quartz2d-画矩形</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/">Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-hua-ban/">Quartz2d-画板</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-shou-shi-jie-suo/">Quartz2d-手势解锁</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/16/quartz2d-shou-dong-jie-ping/">Quartz2d-手动截屏</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - 嗷大喵 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

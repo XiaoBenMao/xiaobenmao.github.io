@@ -1,0 +1,372 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>tableView-数据刷新 - My World</title>
+  <meta name="author" content="嗷大喵">
+
+  
+  <meta name="description" content="数据刷新方法 重新刷新屏幕上的所有cell 没有动画效果 1
+[self.tableView reloadData]; 刷新特定行的cell 有动画效果 1
+2
+3
+4
+5
+[self.tableView reloadRowsAtIndexPaths:@[ [NSIndexPath &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://xiaobenmao.github.io/blog/2014/02/15/tableview-shu-ju-shua-xin/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My World" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.useso.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.useso.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My World</a></h1>
+  
+    <h2>Your World</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="xiaobenmao.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">tableView-数据刷新</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-02-15T02:01:28+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>2:01 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>数据刷新方法</h2>
+
+<ul>
+<li>重新刷新屏幕上的所有cell<br>
+
+<ul>
+<li>没有动画效果</li>
+</ul>
+</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">tableView</span> <span class="n">reloadData</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>刷新特定行的cell<br>
+
+<ul>
+<li>有动画效果</li>
+</ul>
+</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">tableView</span> <span class="nl">reloadRowsAtIndexPaths</span><span class="p">:</span><span class="l">@[</span>
+</span><span class='line'>        <span class="p">[</span><span class="bp">NSIndexPath</span> <span class="nl">indexPathForRow</span><span class="p">:</span><span class="mi">0</span> <span class="nl">inSection</span><span class="p">:</span><span class="mi">0</span><span class="p">],</span>
+</span><span class='line'>        <span class="p">[</span><span class="bp">NSIndexPath</span> <span class="nl">indexPathForRow</span><span class="p">:</span><span class="mi">1</span> <span class="nl">inSection</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span>
+</span><span class='line'>        <span class="l">]</span>
+</span><span class='line'>        <span class="nl">withRowAnimation</span><span class="p">:</span><span class="n">UITableViewRowAnimationLeft</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<!--more-->
+
+
+<ul>
+<li>插入特定行数的cell<br>
+
+<ul>
+<li>有动画效果</li>
+</ul>
+</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">tableView</span> <span class="nl">insertRowsAtIndexPaths</span><span class="p">:</span><span class="l">@[</span>
+</span><span class='line'>        <span class="p">[</span><span class="bp">NSIndexPath</span> <span class="nl">indexPathForRow</span><span class="p">:</span><span class="mi">0</span> <span class="nl">inSection</span><span class="p">:</span><span class="mi">0</span><span class="p">],</span>
+</span><span class='line'>        <span class="p">[</span><span class="bp">NSIndexPath</span> <span class="nl">indexPathForRow</span><span class="p">:</span><span class="mi">1</span> <span class="nl">inSection</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span>
+</span><span class='line'>        <span class="l">]</span>
+</span><span class='line'>        <span class="nl">withRowAnimation</span><span class="p">:</span><span class="n">UITableViewRowAnimationLeft</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>删除特定行数的cell<br>
+
+<ul>
+<li>有动画效果</li>
+</ul>
+</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">tableView</span> <span class="nl">deleteRowsAtIndexPaths</span><span class="p">:</span><span class="l">@[</span>
+</span><span class='line'>        <span class="p">[</span><span class="bp">NSIndexPath</span> <span class="nl">indexPathForRow</span><span class="p">:</span><span class="mi">0</span> <span class="nl">inSection</span><span class="p">:</span><span class="mi">0</span><span class="p">],</span>
+</span><span class='line'>        <span class="p">[</span><span class="bp">NSIndexPath</span> <span class="nl">indexPathForRow</span><span class="p">:</span><span class="mi">1</span> <span class="nl">inSection</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span>
+</span><span class='line'>        <span class="l">]</span>
+</span><span class='line'>        <span class="nl">withRowAnimation</span><span class="p">:</span><span class="n">UITableViewRowAnimationLeft</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>数据刷新的原则</h2>
+
+<ul>
+<li><p>通过修改模型数据，来修改tableView的展示</p>
+
+<ul>
+<li>先修改模型数据</li>
+<li>再调用数据刷新方法</li>
+</ul>
+</li>
+<li><p>不要直接修改cell上面子控件的属性</p></li>
+<li><p>如果不要求动画效果,一般使用reloadData刷新数据</p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// 刷新,删除和刷新特定行要求,删除的和刷新的行数必须要相等</span>
+</span><span class='line'><span class="c1">//- reloadRowsAtIndexPaths</span>
+</span><span class='line'><span class="c1">//- insertRowsAtIndexPaths</span>
+</span><span class='line'><span class="c1">//- insertRowsAtIndexPaths</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 移除最前面两行(注意下标)</span>
+</span><span class='line'><span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">dealsData</span> <span class="nl">removeObjectAtIndex</span><span class="p">:</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">dealsData</span> <span class="nl">removeObjectAtIndex</span><span class="p">:</span><span class="mi">0</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">嗷大喵</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-02-15T02:01:28+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>2:01 am</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/tableview/'>tableview</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/02/08/buttonnei-bu-wen-zi-he-tu-pian-wei-zhi-pai-bu/" title="Previous Post: Button内部文字和图片位置排布">&laquo; Button内部文字和图片位置排布</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/02/15/bian-cheng-ying-yu-1/" title="Next Post: 编程英语(1)">编程英语(1) &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>欢迎光临小站</h1>
+  <p>我的世界</p>
+  <p>新浪微博：<a href=" http://weibo.com/QQ908887023" target="_blank">我是嗷大喵</a></p>
+</section><section>
+  <h1>文章分类</h1>
+  <ul id="categories">
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/suan-fa/'>算法</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/cocos2dx-lua/'>cocos2dx-lua</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/u3d/'>u3d</a> (4)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ioswei-fen-lei/'>ios未分类</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/tableview/'>tableview</a> (14)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ji-suan-ji-ying-yu/'>计算机英语</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/liao-tian-cellbu-ju/'>聊天cell布局</a> (7)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/uipickerview/'>uipickerview</a> (5)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shu-ju-cun-chu/'>数据存储</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shi-jian-chu-li/'>事件处理</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a> (17)
+      </li>
+    
+  </ul>
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/09/06/quartz2d-hua-ju-xing/">Quartz2d-画矩形</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/">Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-hua-ban/">Quartz2d-画板</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-shou-shi-jie-suo/">Quartz2d-手势解锁</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/16/quartz2d-shou-dong-jie-ping/">Quartz2d-手动截屏</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - 嗷大喵 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,589 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>tableView-自定义非等高cell-xib(1) - My World</title>
+  <meta name="author" content="嗷大喵">
+
+  
+  <meta name="description" content="非等高的cell xib自定义cell
+storyboard自定义cell
+代码自定义cell（frame）
+代码自定义cell（Autolayout） \ 布局内容,返回每一行的高度为固定值 常规设置 自定义控制器类 懒加载,面向模型开发,将字典转为模型,以后数据通过模型获得 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://xiaobenmao.github.io/blog/2014/03/23/tableview-zi-ding-yi-fei-deng-gao-cell-xib-1/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My World" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.useso.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.useso.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My World</a></h1>
+  
+    <h2>Your World</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="xiaobenmao.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">tableView-自定义非等高cell-xib(1)</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-03-23T20:10:16+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2014</span></span> <span class='time'>8:10 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><ul>
+<li>非等高的cell
+
+<ul>
+<li>xib自定义cell</li>
+<li>storyboard自定义cell</li>
+<li>代码自定义cell（frame）</li>
+<li>代码自定义cell（Autolayout）</li>
+</ul>
+</li>
+</ul>
+
+
+<p>\</p>
+
+<h3>布局内容,返回每一行的高度为固定值</h3>
+
+<h3>常规设置</h3>
+
+<ul>
+<li>自定义控制器类
+
+<ul>
+<li>懒加载,面向模型开发,将字典转为模型,以后数据通过模型获得</li>
+<li>实现数据源和代理类方法</li>
+</ul>
+</li>
+</ul>
+
+
+<!--more-->
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;WQViewController.h&quot;</span>
+</span><span class='line'><span class="cp">#import &quot;WQStatusData.h&quot;</span>
+</span><span class='line'><span class="cp">#include &quot;WQStatusCell.h&quot;</span>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">WQViewController</span> <span class="p">()</span>
+</span><span class='line'><span class="cm">/**数据*/</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">NSArray</span> <span class="o">*</span><span class="n">statusData</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">WQViewController</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="nf">statusData</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_statusData</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="bp">NSArray</span> <span class="o">*</span><span class="n">arrFromPlist</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSArray</span> <span class="nl">arrayWithContentsOfFile</span><span class="p">:[[</span><span class="bp">NSBundle</span> <span class="n">mainBundle</span><span class="p">]</span> <span class="nl">pathForResource</span><span class="p">:</span><span class="s">@&quot;statuses.plist&quot;</span> <span class="nl">ofType</span><span class="p">:</span><span class="nb">nil</span><span class="p">]];</span>
+</span><span class='line'>        <span class="bp">NSMutableArray</span> <span class="o">*</span><span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">arrFromPlist</span> <span class="nl">enumerateObjectsUsingBlock</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="kt">id</span> <span class="n">obj</span><span class="p">,</span> <span class="bp">NSUInteger</span> <span class="n">idx</span><span class="p">,</span> <span class="kt">BOOL</span> <span class="o">*</span><span class="n">stop</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">WQStatusData</span> <span class="o">*</span><span class="n">statusdata</span> <span class="o">=</span> <span class="p">[</span><span class="n">WQStatusData</span> <span class="nl">statusWithDict</span><span class="p">:</span><span class="n">obj</span><span class="p">];</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">arr</span> <span class="nl">addObject</span><span class="p">:</span><span class="n">statusdata</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}];</span>
+</span><span class='line'>        <span class="n">_statusData</span> <span class="o">=</span> <span class="n">arr</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">_statusData</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="bp">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">numberOfRowsInSection:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">section</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">self</span><span class="p">.</span><span class="n">statusData</span><span class="p">.</span><span class="n">count</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">UITableViewCell</span> <span class="o">*</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="bp">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">cellForRowAtIndexPath:</span><span class="p">(</span><span class="bp">NSIndexPath</span> <span class="o">*</span><span class="p">)</span><span class="nv">indexPath</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">WQStatusCell</span> <span class="o">*</span><span class="n">cell</span> <span class="o">=</span> <span class="p">[</span><span class="n">WQStatusCell</span> <span class="nl">statusWithTableView</span><span class="p">:</span><span class="n">tableView</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">cell</span><span class="p">.</span><span class="n">statusData</span> <span class="o">=</span> <span class="n">_statusData</span><span class="p">[</span><span class="n">indexPath</span><span class="p">.</span><span class="n">row</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">cell</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> *返回每一行的高度</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="bp">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">heightForRowAtIndexPath:</span><span class="p">(</span><span class="bp">NSIndexPath</span> <span class="o">*</span><span class="p">)</span><span class="nv">indexPath</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="mi">250</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>自定义cell类(同时生成xib)
+
+<ul>
+<li>提供函数用于加载XIB文件,带有一个UITableView参数,用于cell缓冲池优化</li>
+<li>从xib向类扩展拖线,获取到自定义布局的控件</li>
+<li>提供数据接口,在获取数据的setter方法中,给控件赋值赋值</li>
+</ul>
+</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">WQViewController</span> : <span class="bp">UITableViewController</span>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'><span class="k">@class</span> <span class="nc">WQStatusData</span>;
+</span><span class='line'><span class="k">@interface</span> <span class="nc">WQStatusCell</span> : <span class="bp">UITableViewCell</span>
+</span><span class='line'><span class="cm">/** 数据*/</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="n">WQStatusData</span> <span class="o">*</span><span class="n">statusData</span><span class="p">;</span>
+</span><span class='line'><span class="p">+</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">statusWithTableView:</span><span class="p">(</span><span class="bp">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableview</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#import &quot;WQStatusCell.h&quot;</span>
+</span><span class='line'><span class="cp">#import &quot;WQStatusData.h&quot;</span>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">WQStatusCell</span><span class="p">()</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">weak</span><span class="p">,</span> <span class="k">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="bp">UIImageView</span> <span class="o">*</span><span class="n">iconImageView</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">weak</span><span class="p">,</span> <span class="k">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="bp">UILabel</span> <span class="o">*</span><span class="n">nameLabel</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">weak</span><span class="p">,</span> <span class="k">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="bp">UIImageView</span> <span class="o">*</span><span class="n">pictureImageView</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">weak</span><span class="p">,</span> <span class="k">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="bp">UIImageView</span> <span class="o">*</span><span class="n">vipImageView</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">weak</span><span class="p">,</span> <span class="k">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="bp">UILabel</span> <span class="o">*</span><span class="n">contentLabel</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">WQStatusCell</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">+</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">statusWithTableView:</span><span class="p">(</span><span class="bp">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableview</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">static</span> <span class="bp">NSString</span> <span class="o">*</span><span class="n">ID</span> <span class="o">=</span> <span class="s">@&quot;status&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">WQStatusCell</span> <span class="o">*</span><span class="n">cell</span> <span class="o">=</span> <span class="p">[</span><span class="n">tableview</span> <span class="nl">dequeueReusableCellWithIdentifier</span><span class="p">:</span><span class="n">ID</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">cell</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">cell</span> <span class="o">=</span> <span class="p">[[[</span><span class="bp">NSBundle</span> <span class="n">mainBundle</span><span class="p">]</span> <span class="nl">loadNibNamed</span><span class="p">:</span><span class="n">NSStringFromClass</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span> <span class="nl">owner</span><span class="p">:</span><span class="nb">nil</span> <span class="nl">options</span><span class="p">:</span><span class="nb">nil</span><span class="p">]</span><span class="n">lastObject</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">cell</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setStatusData:</span><span class="p">(</span><span class="n">WQStatusData</span> <span class="o">*</span><span class="p">)</span><span class="nv">statusData</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">_statusData</span> <span class="o">=</span> <span class="n">statusData</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nb">self</span><span class="p">.</span><span class="n">statusData</span><span class="p">.</span><span class="n">isVip</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">vipImageView</span><span class="p">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="nb">NO</span><span class="p">;</span>
+</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">nameLabel</span><span class="p">.</span><span class="n">textColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span><span class="k">else</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">vipImageView</span><span class="p">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="nb">YES</span><span class="p">;</span>
+</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">nameLabel</span><span class="p">.</span><span class="n">textColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">blackColor</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_statusData</span><span class="p">.</span><span class="n">picture</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">pictureImageView</span><span class="p">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="nb">NO</span><span class="p">;</span>
+</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">pictureImageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="n">_statusData</span><span class="p">.</span><span class="n">picture</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span><span class="k">else</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">pictureImageView</span><span class="p">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="nb">YES</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">iconImageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="n">_statusData</span><span class="p">.</span><span class="n">icon</span><span class="p">];</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">nameLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">_statusData</span><span class="p">.</span><span class="n">name</span><span class="p">;</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">contentLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">_statusData</span><span class="p">.</span><span class="n">text</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>storyboard中的操作</p>
+
+<ul>
+<li>普通控制器UIViewController控制器(自带一个view),添加tabView(推荐)
+
+<ul>
+<li>可以直接拖一个UITableViewController,但是里面有好多添加好的东西,不一定满足我们的要求,比如:一些需要添加一些工具栏等.</li>
+</ul>
+</li>
+<li>给控制器定义Class类型</li>
+<li>给xib中的cell定义Class类型</li>
+<li>设置cell的标示符</li>
+<li>自定义控件,并AutoLayout自动布局添加约束.</li>
+</ul>
+</li>
+<li><p>自定义数据模型类</p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;Foundation/Foundation.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">WQStatusData</span> : <span class="bp">NSObject</span>
+</span><span class='line'><span class="cm">/**头像*/</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">NSString</span> <span class="o">*</span><span class="n">icon</span><span class="p">;</span>
+</span><span class='line'><span class="cm">/**姓名*/</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">NSString</span> <span class="o">*</span><span class="n">name</span><span class="p">;</span>
+</span><span class='line'><span class="cm">/** 内容*/</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">NSString</span> <span class="o">*</span><span class="n">text</span><span class="p">;</span>
+</span><span class='line'><span class="cm">/**图片*/</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">NSString</span> <span class="o">*</span><span class="n">picture</span><span class="p">;</span>
+</span><span class='line'><span class="cm">/** vip*/</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">assign</span><span class="p">,</span> <span class="k">getter</span> <span class="o">=</span> <span class="n">isVip</span><span class="p">)</span> <span class="kt">BOOL</span> <span class="n">vip</span><span class="p">;</span>
+</span><span class='line'><span class="p">+</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">statusWithDict:</span><span class="p">(</span><span class="bp">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">dict</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">WQStatusData</span>
+</span><span class='line'><span class="p">+</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">statusWithDict:</span><span class="p">(</span><span class="bp">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">dict</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">WQStatusData</span> <span class="o">*</span><span class="n">statusData</span> <span class="o">=</span> <span class="p">[[</span><span class="n">WQStatusData</span> <span class="n">alloc</span><span class="p">]</span><span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">statusData</span> <span class="nl">setValuesForKeysWithDictionary</span><span class="p">:</span><span class="n">dict</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">statusData</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/0603/%E5%B8%83%E5%B1%80%E5%86%85%E5%AE%B9-%E6%AF%8F%E8%A1%8C%E7%AD%89%E9%AB%98.png" alt="" />
+<img src="/images/0603/%E5%B8%83%E5%B1%80%E5%86%85%E5%AE%B9-%E6%AF%8F%E8%A1%8C%E7%AD%89%E9%AB%981.png" alt="" /></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">嗷大喵</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-03-23T20:10:16+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2014</span></span> <span class='time'>8:10 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/tableview/'>tableview</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/03/19/tableview-zi-ding-yi-deng-gao-cell-dai-ma-framehe-masonryfang-shi/" title="Previous Post: tableView-自定义等高cell-(代码frame和masonry方式)">&laquo; tableView-自定义等高cell-(代码frame和masonry方式)</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/03/24/tableview-zi-ding-yi-fei-deng-gao-cell-xib-2/" title="Next Post: tableView-自定义非等高cell-xib(2)">tableView-自定义非等高cell-xib(2) &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>欢迎光临小站</h1>
+  <p>我的世界</p>
+  <p>新浪微博：<a href=" http://weibo.com/QQ908887023" target="_blank">我是嗷大喵</a></p>
+</section><section>
+  <h1>文章分类</h1>
+  <ul id="categories">
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/suan-fa/'>算法</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/cocos2dx-lua/'>cocos2dx-lua</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/u3d/'>u3d</a> (4)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ioswei-fen-lei/'>ios未分类</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/tableview/'>tableview</a> (14)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ji-suan-ji-ying-yu/'>计算机英语</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/liao-tian-cellbu-ju/'>聊天cell布局</a> (7)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/uipickerview/'>uipickerview</a> (5)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shu-ju-cun-chu/'>数据存储</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shi-jian-chu-li/'>事件处理</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a> (17)
+      </li>
+    
+  </ul>
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/09/06/quartz2d-hua-ju-xing/">Quartz2d-画矩形</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/">Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-hua-ban/">Quartz2d-画板</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-shou-shi-jie-suo/">Quartz2d-手势解锁</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/16/quartz2d-shou-dong-jie-ping/">Quartz2d-手动截屏</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - 嗷大喵 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

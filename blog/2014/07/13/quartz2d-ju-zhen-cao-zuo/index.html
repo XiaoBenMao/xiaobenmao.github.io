@@ -1,0 +1,365 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Quartz2d-矩阵操作 - My World</title>
+  <meta name="author" content="嗷大喵">
+
+  
+  <meta name="description" content="view之所以能够显示视图，是因为它的上面有layer,将来图形也是渲染到layer上面
+形变操作是对该layer的操作,从以下举例图形的旋转可以看出,旋转的时候本身中心点也改变
+添加顺序 形变操作必须要在添加路径之前
+形变操作必须在使用上下文添加图形之前 1
+2
+3
+4
+5
+6
+7
+8
+9 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://xiaobenmao.github.io/blog/2014/07/13/quartz2d-ju-zhen-cao-zuo/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My World" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.useso.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.useso.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My World</a></h1>
+  
+    <h2>Your World</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="xiaobenmao.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Quartz2d-矩阵操作</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-07-13T08:36:24+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>8:36 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="/images/%E7%9F%A9%E9%98%B5%E6%93%8D%E4%BD%9C.png" alt="" /></p>
+
+<ul>
+<li><p>view之所以能够显示视图，是因为它的上面有layer,将来图形也是渲染到layer上面</p></li>
+<li><p>形变操作是对该layer的操作,从以下举例图形的旋转可以看出,旋转的时候本身中心点也改变</p></li>
+<li><p>添加顺序</p>
+
+<ul>
+<li>形变操作必须要在添加路径之前</li>
+<li>形变操作必须在使用上下文添加图形之前</li>
+</ul>
+</li>
+</ul>
+
+
+<!--more-->
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 1.获取上下文</span>
+</span><span class='line'>    <span class="n">CGContextRef</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">UIGraphicsGetCurrentContext</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 2.描述路径</span>
+</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="nl">bezierPathWithOvalInRect</span><span class="p">:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">)];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path1</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="nl">bezierPathWithRect</span><span class="p">:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">)];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">]</span> <span class="n">set</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">// 上下文矩阵操作</span>
+</span><span class='line'>    <span class="c1">// 注意:矩阵操作必须要在添加路径之前,或者在使用上下文添加图形之前</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 平移,缩放,旋转的</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//  平移</span>
+</span><span class='line'>    <span class="c1">// 参数:上下文,x方向平移量,y方向平移量</span>
+</span><span class='line'>    <span class="n">CGContextTranslateCTM</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 缩放</span>
+</span><span class='line'>    <span class="c1">// 参数:上下文,x方向缩放量,y方向缩放量</span>
+</span><span class='line'>    <span class="n">CGContextScaleCTM</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 旋转</span>
+</span><span class='line'>    <span class="c1">// 参数:上下文,旋转度数</span>
+</span><span class='line'>    <span class="n">CGContextRotateCTM</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">M_PI_4</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 3.把路径添加上下文</span>
+</span><span class='line'>    <span class="n">CGContextAddPath</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">path</span><span class="p">.</span><span class="bp">CGPath</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">CGContextAddPath</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">path1</span><span class="p">.</span><span class="bp">CGPath</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 必须放在形变之后</span>
+</span><span class='line'>    <span class="n">CGContextAddRect</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">]</span> <span class="n">set</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 4.渲染上下文</span>
+</span><span class='line'>    <span class="n">CGContextFillPath</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/%E5%BD%A2%E5%8F%98%E5%88%9D%E5%A7%8B%E7%8A%B6%E6%80%81.png" alt="" /></p>
+
+<p><img src="/images/%E5%BD%A2%E5%8F%98%E5%B9%B3%E7%A7%BB.png" alt="" /></p>
+
+<p><img src="/images/%E5%BD%A2%E5%8F%98%E7%BC%A9%E6%94%BE.png" alt="" /></p>
+
+<p><img src="/images/%E5%BD%A2%E5%8F%98%E6%97%8B%E8%BD%AC.png" alt="" /></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">嗷大喵</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-07-13T08:36:24+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>8:36 am</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/07/12/quartz2d-tu-xing-shang-xia-wen-zhan/" title="Previous Post: Quartz2d-图形上下文栈">&laquo; Quartz2d-图形上下文栈</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/07/14/quartz2d-shui-yin/" title="Next Post: Quartz2d-水印">Quartz2d-水印 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>欢迎光临小站</h1>
+  <p>我的世界</p>
+  <p>新浪微博：<a href=" http://weibo.com/QQ908887023" target="_blank">我是嗷大喵</a></p>
+</section><section>
+  <h1>文章分类</h1>
+  <ul id="categories">
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/suan-fa/'>算法</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/cocos2dx-lua/'>cocos2dx-lua</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/u3d/'>u3d</a> (4)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ioswei-fen-lei/'>ios未分类</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/tableview/'>tableview</a> (14)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ji-suan-ji-ying-yu/'>计算机英语</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/liao-tian-cellbu-ju/'>聊天cell布局</a> (7)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/uipickerview/'>uipickerview</a> (5)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shu-ju-cun-chu/'>数据存储</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shi-jian-chu-li/'>事件处理</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a> (17)
+      </li>
+    
+  </ul>
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/09/06/quartz2d-hua-ju-xing/">Quartz2d-画矩形</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/">Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-hua-ban/">Quartz2d-画板</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-shou-shi-jie-suo/">Quartz2d-手势解锁</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/16/quartz2d-shou-dong-jie-ping/">Quartz2d-手动截屏</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - 嗷大喵 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

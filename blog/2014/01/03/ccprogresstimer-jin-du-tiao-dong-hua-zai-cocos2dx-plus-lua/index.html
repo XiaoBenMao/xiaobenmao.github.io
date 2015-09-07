@@ -1,0 +1,507 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>CCProgressTimer 进度条动画在cocos2dx+lua - My World</title>
+  <meta name="author" content="嗷大喵">
+
+  
+  <meta name="description" content="CCProgressTimer 进度条动画源代码分析红孩儿博客http://blog.csdn.net/honghaier/article/details/8281884 实现一个填充爱心的效果功能。http://blog.csdn.net/hitwhylz/article/details/ &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://xiaobenmao.github.io/blog/2014/01/03/ccprogresstimer-jin-du-tiao-dong-hua-zai-cocos2dx-plus-lua/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My World" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.useso.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.useso.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My World</a></h1>
+  
+    <h2>Your World</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="xiaobenmao.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">CCProgressTimer 进度条动画在cocos2dx+lua</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-01-03T15:18:40+08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2014</span></span> <span class='time'>3:18 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>CCProgressTimer 进度条动画源代码分析红孩儿博客<a href="http://blog.csdn.net/honghaier/article/details/8281884">http://blog.csdn.net/honghaier/article/details/8281884</a></p>
+
+<p>实现一个填充爱心的效果功能。<a href="http://blog.csdn.net/hitwhylz/article/details/21732213">http://blog.csdn.net/hitwhylz/article/details/21732213</a>
+<a href="http://www.cnblogs.com/GameDeveloper/p/3578584.html">http://www.cnblogs.com/GameDeveloper/p/3578584.html</a></p>
+
+<!--more-->
+
+
+<ul>
+<li>lua_binding绑定的函数：</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>tolua_constant(tolua_S,"kCCProgressTimerTypeRadial",kCCProgressTimerTypeRadial);  
+</span><span class='line'>      tolua_constant(tolua_S,"kCCProgressTimerTypeBar",kCCProgressTimerTypeBar);  
+</span><span class='line'>      tolua_cclass(tolua_S,"CCProgressTimer","CCProgressTimer","CCNode",NULL);  
+</span><span class='line'>      tolua_beginmodule(tolua_S,"CCProgressTimer");  
+</span><span class='line'>       tolua_function(tolua_S,"getType",tolua_Cocos2d_CCProgressTimer_getType00);  
+</span><span class='line'>       tolua_function(tolua_S,"getPercentage",tolua_Cocos2d_CCProgressTimer_getPercentage00);  
+</span><span class='line'>       tolua_function(tolua_S,"getSprite",tolua_Cocos2d_CCProgressTimer_getSprite00);  
+</span><span class='line'>       tolua_function(tolua_S,"setPercentage",tolua_Cocos2d_CCProgressTimer_setPercentage00);  
+</span><span class='line'>       tolua_function(tolua_S,"setSprite",tolua_Cocos2d_CCProgressTimer_setSprite00);  
+</span><span class='line'>       tolua_function(tolua_S,"setType",tolua_Cocos2d_CCProgressTimer_setType00);  
+</span><span class='line'>       tolua_function(tolua_S,"setReverseProgress",tolua_Cocos2d_CCProgressTimer_setReverseProgress00);  
+</span><span class='line'>       tolua_function(tolua_S,"setAnchorPoint",tolua_Cocos2d_CCProgressTimer_setAnchorPoint00);  
+</span><span class='line'>       tolua_function(tolua_S,"setColor",tolua_Cocos2d_CCProgressTimer_setColor00);  
+</span><span class='line'>       tolua_function(tolua_S,"getColor",tolua_Cocos2d_CCProgressTimer_getColor00);  
+</span><span class='line'>       tolua_function(tolua_S,"getOpacity",tolua_Cocos2d_CCProgressTimer_getOpacity00);  
+</span><span class='line'>       tolua_function(tolua_S,"setOpacity",tolua_Cocos2d_CCProgressTimer_setOpacity00);  
+</span><span class='line'>       tolua_function(tolua_S,"setOpacityModifyRGB",tolua_Cocos2d_CCProgressTimer_setOpacityModifyRGB00);  
+</span><span class='line'>       tolua_function(tolua_S,"isOpacityModifyRGB",tolua_Cocos2d_CCProgressTimer_isOpacityModifyRGB00);  
+</span><span class='line'>       tolua_function(tolua_S,"create",tolua_Cocos2d_CCProgressTimer_create00);  
+</span><span class='line'>       tolua_function(tolua_S,"getMidpoint",tolua_Cocos2d_CCProgressTimer_getMidpoint00);  
+</span><span class='line'>       tolua_function(tolua_S,"setMidpoint",tolua_Cocos2d_CCProgressTimer_setMidpoint00);  
+</span><span class='line'>       tolua_function(tolua_S,"getBarChangeRate",tolua_Cocos2d_CCProgressTimer_getBarChangeRate00);  
+</span><span class='line'>       tolua_function(tolua_S,"setBarChangeRate",tolua_Cocos2d_CCProgressTimer_setBarChangeRate00);  
+</span><span class='line'>       tolua_function(tolua_S,"isReverseDirection",tolua_Cocos2d_CCProgressTimer_isReverseDirection00);  
+</span><span class='line'>       tolua_function(tolua_S,"setReverseDirection",tolua_Cocos2d_CCProgressTimer_setReverseDirection00);  
+</span><span class='line'>      tolua_endmodule(tolua_S);  
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>游戏中血条，法力条，怒气条的创建</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>--s_progress：进度条功能名字  
+</span><span class='line'>   --l_name：放置进度条的层的名字  
+</span><span class='line'>   local function create_progress( s_progress, l_name )  
+</span><span class='line'>       --根据进度条名字取得进度条底的图片  
+</span><span class='line'>       local sProgress = tolua.cast( self.proxy:getNode('s_progress_'..s_progress), "CCSprite" )  
+</span><span class='line'>       sProgress:retain()  
+</span><span class='line'>       sProgress:removeFromParentAndCleanup( false )  
+</span><span class='line'>       --调用create工厂方法创建一个进度条实例  
+</span><span class='line'>       local progress = CCProgressTimer:create( sProgress )  
+</span><span class='line'>       sProgress:release()  
+</span><span class='line'>         
+</span><span class='line'>       --取得放置进度条底的层  
+</span><span class='line'>       local placeholder = tolua.cast( self.proxy:getNode('lay_progress_'..l_name), 'CCLayer')  
+</span><span class='line'>         
+</span><span class='line'>       progress.x = placeholder.x  
+</span><span class='line'>       progress.y = placeholder.y  
+</span><span class='line'>       --设置条形  
+</span><span class='line'>       progress:setType(kCCProgressTimerTypeBar)  
+</span><span class='line'>       --设置中点，这里是一个称为“中点”的成员变量值，但它的意义绝不是这么简单，  
+</span><span class='line'>       --如果是绕中心旋转的进度动画，它就是中心，如果是条形动画，它代表了UV随进度变化的起始位置，如果是在最左边，其值为(0,y),  
+</span><span class='line'>       --如果是在最右边，其值为(1,y),如果在最上面(x,0),如果在最下面(x,1);如果是在中心(0.5,0.5)。  
+</span><span class='line'>       progress:setMidpoint(ccp(0,1))  
+</span><span class='line'>       --是一个表示动画方向的成员变量值，如果是横向方向，则设为(1,0),如果是纵向方向，则设为(0,1);  
+</span><span class='line'>       progress:setBarChangeRate(ccp(1,0))  
+</span><span class='line'>       --初始进度为0  
+</span><span class='line'>       progress:setPercentage(0)  
+</span><span class='line'>         
+</span><span class='line'>       --取得放置整个进度条的层  
+</span><span class='line'>       self['lay_'..l_name] = tolua.cast( self.proxy:getNode('lay_'..l_name), 'CCLayer')  
+</span><span class='line'>       --将进度条添加到该层上  
+</span><span class='line'>       self['lay_'..l_name]:addChild( progress )  
+</span><span class='line'>       --设置key = progress_'..l_name 方便取值  
+</span><span class='line'>       self['progress_'..l_name]=progress  
+</span><span class='line'>   end  
+</span><span class='line'>   --创建血条  
+</span><span class='line'>   create_progress( 'hp', 'hp' )  
+</span><span class='line'>   --创建法力条  
+</span><span class='line'>   create_progress( 'mp', 'mp' )  
+</span><span class='line'>     
+</span><span class='line'>   --如果怒气最大4格  
+</span><span class='line'>   if p.max_ap == 4 then  
+</span><span class='line'>       --取得怒气条  
+</span><span class='line'>       local s_invalid = tolua.cast( self.proxy:getNode('s_progress_ap'), "CCSprite" )  
+</span><span class='line'>       s_invalid:removeFromParentAndCleanup( false )  
+</span><span class='line'>       --取得怒气条底  
+</span><span class='line'>       s_invalid = tolua.cast( self.proxy:getNode('s_back_ap'), "CCSprite" )  
+</span><span class='line'>       s_invalid:removeFromParentAndCleanup( false )  
+</span><span class='line'>       create_progress( 'ap2', 'ap' )  
+</span><span class='line'>       --5格怒气条  
+</span><span class='line'>   elseif p.max_ap == 5  
+</span><span class='line'>       or not p.max_ap then  
+</span><span class='line'>       local s_invalid = tolua.cast( self.proxy:getNode('s_progress_ap2'), "CCSprite" )  
+</span><span class='line'>       s_invalid:removeFromParentAndCleanup( false )  
+</span><span class='line'>       s_invalid = tolua.cast( self.proxy:getNode('s_back_ap2'), "CCSprite" )  
+</span><span class='line'>       s_invalid:removeFromParentAndCleanup( false )  
+</span><span class='line'>       create_progress( 'ap', 'ap' )  
+</span><span class='line'>   else  
+</span><span class='line'>       assert(false)  
+</span><span class='line'>   end  
+</span><span class='line'>   --怒气条进度，在相邻两格之间竖向表示  
+</span><span class='line'>   self.ap_mask = tolua.cast( self.proxy:getNode('s_mask_ap'), "CCSprite" )  
+</span><span class='line'>   self.ap_mask:getParent():reorderChild( self.ap_mask, 1 )  
+</span><span class='line'>   self.ap_mask:setVisible(false)  
+</span><span class='line'>   --满了时的怒气条外发光  
+</span><span class='line'>   self.ap_highlight = tolua.cast( self.proxy:getNode('s_highlight_ap'), "CCSprite" )  
+</span><span class='line'>   self.ap_highlight:setVisible(false)  
+</span><span class='line'>   
+</span><span class='line'>   </span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>不同职业需要的进度条种类也不同，效果</li>
+</ul>
+
+
+<p><img src="/images/lua-events/%E8%A1%80%E6%9D%A1%E8%83%BD%E9%87%8F%E6%9D%A1.png" alt="" /></p>
+
+<ul>
+<li>兑换或者领取功能：</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>chip_rate:setString( current_Chips_num..'/'..chip_proto.max_count )  
+</span><span class='line'>      
+</span><span class='line'>    local percent = current_Chips_num/chip_proto.max_count  
+</span><span class='line'>      
+</span><span class='line'>    progress:setPercentage( 100 * percent )  
+</span><span class='line'>      
+</span><span class='line'>    l_not_get:setVisible(  percent &lt; 100 )  
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/lua-events/%E5%85%91%E6%8D%A2%E7%89%A9%E5%93%81.png" alt="" /></p>
+
+<p>游戏开始时可以根据加载资源完成度实现进度条加载效果，有时也会放在定时器里为实现某种功能定时检测</p>
+
+<p>创建CCProgressTo或者是CCProgressFromTo动作，让CCProgressTimer执行。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>CCProgressTo(float duration, float fPercent)
+</span><span class='line'>
+</span><span class='line'>CCProgressFromTo(float duration, float fFromPercentage, float fToPercentage)
+</span><span class='line'>
+</span><span class='line'>eg：
+</span><span class='line'>local action =  XTargetedAction:create( self.progress_hp, CCProgressTo:create( 0.5, self.hp/self.max_hp*100 ) )
+</span><span class='line'>
+</span><span class='line'>self.dialog:runAction( action )</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/lua-events/%E8%BF%9B%E5%BA%A6%E6%9D%A1.png" alt="" /></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">嗷大喵</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-01-03T15:18:40+08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2014</span></span> <span class='time'>3:18 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/cocos2dx-lua/'>cocos2dx-lua</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/01/02/lua-events/" title="Previous Post: lua-events">&laquo; lua-events</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/01/03/cocos2dx3-dot-3-hellolua/" title="Next Post: cocos2dx3.3 “HelloLua”">cocos2dx3.3 “HelloLua” &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>欢迎光临小站</h1>
+  <p>我的世界</p>
+  <p>新浪微博：<a href=" http://weibo.com/QQ908887023" target="_blank">我是嗷大喵</a></p>
+</section><section>
+  <h1>文章分类</h1>
+  <ul id="categories">
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/suan-fa/'>算法</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/cocos2dx-lua/'>cocos2dx-lua</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/u3d/'>u3d</a> (4)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ioswei-fen-lei/'>ios未分类</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/tableview/'>tableview</a> (14)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ji-suan-ji-ying-yu/'>计算机英语</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/liao-tian-cellbu-ju/'>聊天cell布局</a> (7)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/uipickerview/'>uipickerview</a> (5)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shu-ju-cun-chu/'>数据存储</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shi-jian-chu-li/'>事件处理</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a> (17)
+      </li>
+    
+  </ul>
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/09/06/quartz2d-hua-ju-xing/">Quartz2d-画矩形</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/">Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-hua-ban/">Quartz2d-画板</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-shou-shi-jie-suo/">Quartz2d-手势解锁</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/16/quartz2d-shou-dong-jie-ping/">Quartz2d-手动截屏</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - 嗷大喵 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

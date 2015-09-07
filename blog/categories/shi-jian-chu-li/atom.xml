@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: 事件处理 | My World]]></title>
+  <link href="http://xiaobenmao.github.io/blog/categories/shi-jian-chu-li/atom.xml" rel="self"/>
+  <link href="http://xiaobenmao.github.io/"/>
+  <updated>2015-09-07T23:16:14+08:00</updated>
+  <id>http://xiaobenmao.github.io/</id>
+  <author>
+    <name><![CDATA[嗷大喵]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[事件处理-简单手势(2)]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/06/15/shi-jian-chu-li-jian-dan-shou-shi-2/"/>
+    <updated>2014-06-15T17:59:30+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/06/15/shi-jian-chu-li-jian-dan-shou-shi-2</id>
+    <content type="html"><![CDATA[<!--more-->
+
+
+<pre><code class="objc">#pragma mark - 旋转
+- (void)setUpRotation
+{
+    UIRotationGestureRecognizer *rotationGR = [[UIRotationGestureRecognizer alloc]initWithTarget:self action:@selector(rotationGR:)];
+
+    [_myImageView addGestureRecognizer:rotationGR];
+}
+
+/**
+ *默认传递的旋转的角度都是相对于最开始的位置
+ *旋转如果使用make则会出现第一次松手,第二次旋转的时候会跳到原始状态再从头开始转
+ *旋转不使用make,不复位的时候,假如相对原始状态从87度到89°旋转了2°,传过来89°,这时会因为是相对于上一个状态(87°)再旋转(89°),变得突然转的很快
+ *当旋转不使用make,并且复位.正常旋转:可以这么理解,每次手动旋转的偏移度数,在从回调函数穿过来的时候,会加上上一次相对于原始状态的角度,当将其清零的时候,传递过来的就是本次的偏移度数
+ */
+- (void)rotationGR:(UIRotationGestureRecognizer *)rotationgr
+{
+    // 打印旋转角度
+    NSLog(@"%f", rotationgr.rotation);
+
+    // 旋转
+    _myImageView.transform = CGAffineTransformRotate(_myImageView.transform, rotationgr.rotation);
+
+    // 复位
+    rotationgr.rotation = 0;
+}
+
+
+#pragma mark - 捏合
+- (void)setUpPinch
+{
+    UIPinchGestureRecognizer *pinchGR = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchGR:)];
+
+    [_myImageView addGestureRecognizer:pinchGR];
+}
+
+- (void)pinchGR:(UIPinchGestureRecognizer *)pinchgr
+{
+    _myImageView.transform = CGAffineTransformScale(_myImageView.transform, pinchgr.scale, pinchgr.scale);
+
+    // 复位
+
+    pinchgr.scale = 1;
+}
+
+#pragma mark - 拖拽
+- (void)setUpPan
+{
+    UIPanGestureRecognizer *panGR = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGR:)];
+
+
+    [_myImageView addGestureRecognizer:panGR];
+}
+
+- (void)panGR:(UIPanGestureRecognizer *)pangr
+{
+    // 获取手势的触摸点
+    CGPoint curP = [pangr locationInView:_myImageView];
+
+    // 移动视图
+    // 获取手势的移动，也是相对于最开始的位置
+    CGPoint transP = [pangr translationInView:_myImageView];
+
+    _myImageView.transform = CGAffineTransformTranslate(_myImageView.transform, transP.x, transP.y);
+
+    // 复位
+    [pangr setTranslation:CGPointZero inView:_myImageView];
+
+    NSLog(@"%@",NSStringFromCGPoint(curP));
+}
+
+#pragma mark - 点击
+- (void)setUpTap
+{
+    // 点击手势
+    UITapGestureRecognizer *tapGR = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapGR:)];
+
+    // 需要点击次数
+    tapGR.numberOfTapsRequired = 1;
+    // 需要几根手指触摸
+    tapGR.numberOfTouchesRequired = 2;
+
+    // 添加手势
+    [_myImageView addGestureRecognizer:tapGR];
+}
+
+- (void)tapGR:(UITapGestureRecognizer *)tapgr
+{
+    // 打印该手势几个触摸点
+    NSLog(@"%zd",tapgr.numberOfTouches);
+}
+
+#pragma mark - 轻扫
+/**
+ *如果以后想要一个控件支持多个方向的轻扫，必须创建多个轻扫手势，一个轻扫手势只支持一个方向
+ *默认轻扫的方向是往右
+ */
+- (void)setUpSwipe
+{
+    // 轻扫手势
+    UISwipeGestureRecognizer *swipeGR = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(swipeGR:)];
+
+    // 方向向右
+    swipeGR.direction = UISwipeGestureRecognizerDirectionRight;
+
+    // 添加手势
+    [_myImageView addGestureRecognizer:swipeGR];
+
+
+    // 轻扫手势
+    UISwipeGestureRecognizer *swipeGR1 = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(swipeGR:)];
+
+    //方向向上
+    swipeGR1.direction = UISwipeGestureRecognizerDirectionUp;
+
+    // 添加手势
+    [_myImageView addGestureRecognizer:swipeGR1];
+
+}
+
+- (void)swipeGR:(UISwipeGestureRecognizer *)swipegr
+{
+    NSLog(@"swipeGR");
+}
+
+#pragma mark - 长按
+- (void)setUplongPress
+{
+    // 长按手势
+    UILongPressGestureRecognizer *longGR = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(longGR:)];
+
+    // 长按最短时间
+    longGR.minimumPressDuration = 1;
+
+    // 添加手势
+    [_myImageView addGestureRecognizer:longGR];
+}
+
+- (void)longGR:(UILongPressGestureRecognizer *)longgr
+{
+    NSLog(@"longer");
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[事件处理-简单手势(1)]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/06/15/shi-jian-chu-li-jian-dan-shou-shi-1/"/>
+    <updated>2014-06-15T16:59:26+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/06/15/shi-jian-chu-li-jian-dan-shou-shi-1</id>
+    <content type="html"><![CDATA[<p><img src="/images/%E7%9B%91%E5%90%AC%E8%A7%A6%E6%91%B8%E4%BA%8B%E4%BB%B6%E7%9A%84%E5%81%9A%E6%B3%95.png" alt="" /></p>
+
+<!--more-->
+
+
+<p><img src="/images/UIGestureRecognizer.png" alt="" /></p>
+
+<p><img src="/images/%E6%89%8B%E5%8A%BF%E4%B8%BE%E4%BE%8B.png" alt="" /></p>
+
+<p><img src="/images/%E6%89%8B%E5%8A%BF%E8%AF%86%E5%88%AB%E7%9A%84%E7%8A%B6%E6%80%81.png" alt="" /></p>
+
+<ul>
+<li>手势代理方法</li>
+</ul>
+
+
+<pre><code class="objc">#pragma mark - 手势代理
+// 是否允许接收手指的触摸点,可以用来指定父控件局部不可点击
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch{
+    // 获取当前的触摸点
+    CGPoint curP = [touch locationInView:_myImageView];
+
+    if (curP.x &lt; _myImageView.bounds.size.width * 0.5) {
+        return NO;
+    }else{
+        return YES;
+    }
+}
+
+// 是否允许同时支持多个手势，默认是不支持多个手势
+// 返回yes表示支持多个手势
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return YES;
+}
+</code></pre>
+
+<p><img src="/images/%E6%89%8B%E5%8A%BF%E7%8A%B6%E6%80%81%E5%8F%98%E5%8C%96.png" alt="" /></p>
+]]></content>
+  </entry>
+  
+</feed>

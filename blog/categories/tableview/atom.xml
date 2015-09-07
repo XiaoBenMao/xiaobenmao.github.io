@@ -1,0 +1,1184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Tableview | My World]]></title>
+  <link href="http://xiaobenmao.github.io/blog/categories/tableview/atom.xml" rel="self"/>
+  <link href="http://xiaobenmao.github.io/"/>
+  <updated>2015-09-07T23:16:14+08:00</updated>
+  <id>http://xiaobenmao.github.io/</id>
+  <author>
+    <name><![CDATA[嗷大喵]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[tableView-自定义非等高cell-xib(2)]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/03/24/tableview-zi-ding-yi-fei-deng-gao-cell-xib-2/"/>
+    <updated>2014-03-24T19:10:29+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/03/24/tableview-zi-ding-yi-fei-deng-gao-cell-xib-2</id>
+    <content type="html"><![CDATA[<ul>
+<li>方法一:
+
+<ul>
+<li>返回每行的真实高度,创建临时cell(不能够利用缓冲池重用优化),浪费大量内存
+
+<ul>
+<li>heightForRowAtIndexPath:返回每一行的高度
+
+<ul>
+<li>此方法中调用cellForRowAtIndexPath会造成死循环(通过行号先获取cell,会先创建cell,在创建之前会先获取高度,又会调用当前方法&hellip;)</li>
+</ul>
+</li>
+<li>cellForRowAtIndexPath:创建每一行cell</li>
+<li>前的调用在创建之前,而且有多少行就会调用多少次,所以开始返回的高度都是0;</li>
+<li>解决方法:临时创建cell,并给里面的控件赋值,强制布局,显示出来,返回该行真实高度.
+
+<ul>
+<li>layoutIfNeeded:强制布局,当给控件赋值的时候,控件或许没有布局好,这时候的高度是不准确的,当强制布局后,控件真正显示出来,这时候是真实的高度</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<!--more-->
+
+
+<pre><code class="objc">/**
+ *返回每一行的高度
+ */
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+
+    WQStatusCell *cell = [WQStatusCell statusWithTableView:tableView];
+    cell.statusData = self.statusData[indexPath.row];
+    [cell layoutIfNeeded ];
+    NSLog(@"%zd,%f",indexPath.row,cell.rowHeight);
+    return cell.rowHeight;
+}
+</code></pre>
+
+<ul>
+<li><p>estimatedHeightForRowAtIndexPath:该函数返回估计的每行的高度,返回值可以给一个估计的固定的值</p>
+
+<ul>
+<li>实现该代理方法后,会改变heightForRowAtIndexPath函数的调用顺序.</li>
+<li>开始调用此方法,之后每调用cellForRowAtIndexPath创建一个cell后,紧接着调用heightForRowAtIndexPath方法</li>
+<li>heightForRowAtIndexPath取到的是布局后的cell,此时cell上控件没有布局好,所以取到的高度是不正确的.</li>
+</ul>
+</li>
+<li><p>方法二:</p>
+
+<ul>
+<li>可以在自定义cell类中增加一个rowHeight方法,然后实现其getter方法.</li>
+<li>在创建cell的时候先强制自动布局,然后获取后保存在一个可变数组中,返回高度</li>
+</ul>
+</li>
+</ul>
+
+
+<pre><code class="objc">
+
+
+/** row高度*/
+@property (nonatomic, assign) CGFloat rowHeight;
+
+- (CGFloat )rowHeight{
+
+    if (self.pictureImageView.hidden) {
+        _rowHeight = CGRectGetMaxY(self.contentLabel.frame) + 10;
+    }else
+    {
+        _rowHeight = CGRectGetMaxY(self.pictureImageView.frame) + 10;
+    }
+    return _rowHeight;
+}
+
+
+/** 存放所有cell的高度 */
+@property (strong, nonatomic) NSMutableDictionary *heights;
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    XMGStatusCell *cell = [WQStatusCell cellWithTableView:tableView];
+    cell.status = self.statuses[indexPath.row];
+    // 强制布局
+    [cell layoutIfNeeded];
+    // 存储高度
+    self.heights[@(indexPath.row)] = @(cell.height);
+    return cell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    XMGStatus *staus = self.statuses[indexPath.row];
+    return staus.cellHeight;
+}
+</code></pre>
+
+<ul>
+<li><p>方法三:</p>
+
+<ul>
+<li>在自定义数据模型类中增加一个cellHeight属性</li>
+<li>在自定义cell类的数据模型setter方法中,先强制布局,然后获取cell的真实高度,赋值给数据模型的cellHeight.(控制器 和 cell类中的数据模型是指针传递,指向同一内存空间),同时控制器中模型数据数组中的rowHieght值也更新,</li>
+<li>在控制器中先估计高度值,然后每创建一个cell,根据下标获取真实高度值</li>
+</ul>
+</li>
+<li><p>数据模型类:</p></li>
+</ul>
+
+
+<pre><code class="objc">#import &lt;UIKit/UIKit.h&gt;
+
+@interface XMGStatus : NSObject
+@property (strong, nonatomic) NSString *name;
+@property (strong, nonatomic) NSString *text;
+@property (strong, nonatomic) NSString *icon;
+@property (strong, nonatomic) NSString *picture;
+@property (assign, nonatomic, getter=isVip) BOOL vip;
+
+/** cell的高度 */
+@property (assign, nonatomic) CGFloat cellHeight;
+
++ (instancetype)statusWithDict:(NSDictionary *)dict;
+@end
+
+#import "XMGStatus.h"
+
+@implementation XMGStatus
++ (instancetype)statusWithDict:(NSDictionary *)dict
+{
+    XMGStatus *status = [[self alloc] init];
+    [status setValuesForKeysWithDictionary:dict];
+    return status;
+}
+@end
+</code></pre>
+
+<ul>
+<li>cell类</li>
+</ul>
+
+
+<pre><code class="objc">#import &lt;UIKit/UIKit.h&gt;
+@class XMGStatus;
+
+@interface XMGStatusCell : UITableViewCell
++ (instancetype)cellWithTableView:(UITableView *)tableView;
+
+/** 微博模型数据 */
+@property (nonatomic, strong) XMGStatus *status;
+@end
+
+#import "XMGStatusCell.h"
+#import "XMGStatus.h"
+
+@interface XMGStatusCell()
+@property (weak, nonatomic) IBOutlet UIImageView *iconView;
+@property (weak, nonatomic) IBOutlet UILabel *nameLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *vipView;
+@property (weak, nonatomic) IBOutlet UILabel *contentLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *pictureView;
+
+@end
+
+@implementation XMGStatusCell
+
++ (instancetype)cellWithTableView:(UITableView *)tableView
+{
+    static NSString *ID = @"status";
+    XMGStatusCell *cell = [tableView dequeueReusableCellWithIdentifier:ID];
+    if (cell == nil) {
+        cell = [[[NSBundle mainBundle] loadNibNamed:NSStringFromClass(self) owner:nil options:nil] lastObject];
+    }
+    return cell;
+}
+
+- (void)awakeFromNib
+{
+    // 设置label每一行文字的最大宽度
+    // 为了保证计算出来的数值 跟 真正显示出来的效果 一致
+    self.contentLabel.preferredMaxLayoutWidth = [UIScreen mainScreen].bounds.size.width - 20;
+}
+
+- (void)setStatus:(XMGStatus *)status
+{
+    _status = status;
+
+    if (status.isVip) {
+        self.nameLabel.textColor = [UIColor orangeColor];
+        self.vipView.hidden = NO;
+    } else {
+        self.nameLabel.textColor = [UIColor blackColor];
+        self.vipView.hidden = YES;
+    }
+
+    self.nameLabel.text = status.name;
+    self.iconView.image = [UIImage imageNamed:status.icon];
+    if (status.picture) {
+        self.pictureView.hidden = NO;
+        self.pictureView.image = [UIImage imageNamed:status.picture];
+    } else {
+        self.pictureView.hidden = YES;
+    }
+    self.contentLabel.text = status.text;
+
+    // 强制布局
+    [self layoutIfNeeded];
+
+    // 计算cell的高度
+    if (self.pictureView.hidden) { // 没有配图
+        status.cellHeight = CGRectGetMaxY(self.contentLabel.frame) + 10;
+    } else { // 有配图
+        status.cellHeight = CGRectGetMaxY(self.pictureView.frame) + 10;
+    }
+}
+
+@end
+</code></pre>
+
+<ul>
+<li>控制器类</li>
+</ul>
+
+
+<pre><code class="objc">
+#import &lt;UIKit/UIKit.h&gt;
+
+@interface XMGStatusesViewController : UITableViewController
+
+@end
+
+
+#import "XMGStatusesViewController.h"
+#import "XMGStatus.h"
+#import "XMGStatusCell.h"
+
+@interface XMGStatusesViewController ()
+@property (strong, nonatomic) NSArray *statuses;
+@end
+
+@implementation XMGStatusesViewController
+
+- (NSArray *)statuses
+{
+    if (_statuses == nil) {
+        // 加载plist中的字典数组
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"statuses.plist" ofType:nil];
+        NSArray *dictArray = [NSArray arrayWithContentsOfFile:path];
+
+        // 字典数组 -&gt; 模型数组
+        NSMutableArray *statusArray = [NSMutableArray array];
+        for (NSDictionary *dict in dictArray) {
+            XMGStatus *status = [XMGStatus statusWithDict:dict];
+            [statusArray addObject:status];
+        }
+
+        _statuses = statusArray;
+    }
+    return _statuses;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+
+}
+
+#pragma mark - Table view data source
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.statuses.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    XMGStatusCell *cell = [XMGStatusCell cellWithTableView:tableView];
+    cell.status = self.statuses[indexPath.row];
+    return cell;
+}
+
+#pragma mark - 代理方法
+/**
+ *  返回每一行的高度
+ */
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    XMGStatus *staus = self.statuses[indexPath.row];
+
+    return staus.cellHeight;
+}
+
+/**
+ * 返回每一行的估计高度
+ * 只要返回了估计高度，那么就会先调用tableView:cellForRowAtIndexPath:方法创建cell，再调用tableView:heightForRowAtIndexPath:方法获取cell的真实高度
+ */
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 200;
+}
+@end
+</code></pre>
+
+<ul>
+<li>注意点:
+
+<ul>
+<li>当cell上又控件需要满足一定的条件隐藏和显示或者这改变颜色时,在不满足条件时需要改回去,
+
+<ul>
+<li>比如一个imageView用来显示qq空间动态配图,当一个用户没有配图时,该控件隐藏,当循环利用到另一行cell用来显示另一条动态,但是有配图,此时也不会显示,所以要先显示.</li>
+</ul>
+</li>
+</ul>
+
+
+<pre><code class="``objc">  if (status.picture){
+          self.pictureView.hidden = NO;
+          self.pictureView.image = [UIImage             imageNamed:status.picture];
+  } else {
+          self.pictureView.hidden = YES;
+  }
+</code></pre>
+
+<ul>
+<li>当给cell里的控件设置数据或者设置约束需要取到控件的范围或者高度等值时,为了得到布局后显示在cell上的准确值,每次都需要通过layoutIfNeeded强制布局.
+
+<ul>
+<li>约束前会用到宽高度或者范围值要先强制更新</li>
+<li>当约束后再取到高度或范围要重新强制布局</li>
+</ul>
+</li>
+<li>当label没有设置文字的最大宽度的时候,底部会显示一部分空隙,原因是每一行末尾有时因不能放下一个字或者单词而换行,造成计算误差.当设置每一行文字最大宽度后准确显示</li>
+</ul>
+
+
+<pre><code class="```objc">  // 设置label每一行文字的最大宽度
+  // 为了保证计算出来的数值 跟 真正显示出来的效果 一致
+  // 不设置可能因为单行末尾因为不足以显示一个字或者单词而换行造成误差,label底部空出一段高度
+  self.contentLabel.preferredMaxLayoutWidth = [UIScreen mainScreen].bounds.size.width - 20;
+</code></pre>
+
+<p>  <img src="/images/0603/%E6%9C%AA%E8%AE%BE%E7%BD%AElabel%E6%96%87%E5%AD%97%E6%9C%80%E5%A4%A7%E5%AE%BD%E5%BA%A6.png" alt="未设置lable文字最大宽度" />
+  <img src="/images/0603/%E8%AE%BE%E7%BD%AElabel%E6%96%87%E5%AD%97%E6%9C%80%E5%A4%A7%E5%AE%BD%E5%BA%A6.png" alt="设置lable文字最大宽度" /></p></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[tableView-自定义非等高cell-xib(1)]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/03/23/tableview-zi-ding-yi-fei-deng-gao-cell-xib-1/"/>
+    <updated>2014-03-23T20:10:16+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/03/23/tableview-zi-ding-yi-fei-deng-gao-cell-xib-1</id>
+    <content type="html"><![CDATA[<ul>
+<li>非等高的cell
+
+<ul>
+<li>xib自定义cell</li>
+<li>storyboard自定义cell</li>
+<li>代码自定义cell（frame）</li>
+<li>代码自定义cell（Autolayout）</li>
+</ul>
+</li>
+</ul>
+
+
+<p>\</p>
+
+<h3>布局内容,返回每一行的高度为固定值</h3>
+
+<h3>常规设置</h3>
+
+<ul>
+<li>自定义控制器类
+
+<ul>
+<li>懒加载,面向模型开发,将字典转为模型,以后数据通过模型获得</li>
+<li>实现数据源和代理类方法</li>
+</ul>
+</li>
+</ul>
+
+
+<!--more-->
+
+
+<pre><code class="objc">#import "WQViewController.h"
+#import "WQStatusData.h"
+#include "WQStatusCell.h"
+@interface WQViewController ()
+/**数据*/
+@property (nonatomic, strong) NSArray *statusData;
+@end
+
+@implementation WQViewController
+
+
+
+- (NSArray *)statusData
+{
+
+    if (_statusData == nil) {
+        NSArray *arrFromPlist = [NSArray arrayWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"statuses.plist" ofType:nil]];
+        NSMutableArray *arr = [NSMutableArray array];
+        [arrFromPlist enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            WQStatusData *statusdata = [WQStatusData statusWithDict:obj];
+            [arr addObject:statusdata];
+        }];
+        _statusData = arr;
+    }
+        return _statusData;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return self.statusData.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    WQStatusCell *cell = [WQStatusCell statusWithTableView:tableView];
+    cell.statusData = _statusData[indexPath.row];
+    return cell;
+}
+/**
+ *返回每一行的高度
+ */
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 250;
+}
+- (void)viewDidLoad {
+    [super viewDidLoad];
+}
+
+@end
+</code></pre>
+
+<ul>
+<li>自定义cell类(同时生成xib)
+
+<ul>
+<li>提供函数用于加载XIB文件,带有一个UITableView参数,用于cell缓冲池优化</li>
+<li>从xib向类扩展拖线,获取到自定义布局的控件</li>
+<li>提供数据接口,在获取数据的setter方法中,给控件赋值赋值</li>
+</ul>
+</li>
+</ul>
+
+
+<pre><code class="objc">#import &lt;UIKit/UIKit.h&gt;
+
+@interface WQViewController : UITableViewController
+@end
+
+#import &lt;UIKit/UIKit.h&gt;
+@class WQStatusData;
+@interface WQStatusCell : UITableViewCell
+/** 数据*/
+@property (nonatomic, strong) WQStatusData *statusData;
++ (instancetype)statusWithTableView:(UITableView *)tableview;
+@end
+
+#import "WQStatusCell.h"
+#import "WQStatusData.h"
+@interface WQStatusCell()
+@property (weak, nonatomic) IBOutlet UIImageView *iconImageView;
+@property (weak, nonatomic) IBOutlet UILabel *nameLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *pictureImageView;
+@property (weak, nonatomic) IBOutlet UIImageView *vipImageView;
+
+@property (weak, nonatomic) IBOutlet UILabel *contentLabel;
+@end
+
+@implementation WQStatusCell
+
++ (instancetype)statusWithTableView:(UITableView *)tableview
+{
+    static NSString *ID = @"status";
+    WQStatusCell *cell = [tableview dequeueReusableCellWithIdentifier:ID];
+    if (cell == nil) {
+        cell = [[[NSBundle mainBundle] loadNibNamed:NSStringFromClass(self) owner:nil options:nil]lastObject];
+    }
+    return cell;
+}
+
+- (void)setStatusData:(WQStatusData *)statusData
+{
+    _statusData = statusData;
+
+    if (self.statusData.isVip) {
+        self.vipImageView.hidden = NO;
+        self.nameLabel.textColor = [UIColor redColor];
+    }else
+    {
+        self.vipImageView.hidden = YES;
+        self.nameLabel.textColor = [UIColor blackColor];
+    }
+    if (_statusData.picture) {
+        self.pictureImageView.hidden = NO;
+        self.pictureImageView.image = [UIImage imageNamed:_statusData.picture];
+    }else
+    {
+        self.pictureImageView.hidden = YES;
+    }
+    self.iconImageView.image = [UIImage imageNamed:_statusData.icon];
+    self.nameLabel.text = _statusData.name;
+    self.contentLabel.text = _statusData.text;
+}
+@end
+</code></pre>
+
+<ul>
+<li><p>storyboard中的操作</p>
+
+<ul>
+<li>普通控制器UIViewController控制器(自带一个view),添加tabView(推荐)
+
+<ul>
+<li>可以直接拖一个UITableViewController,但是里面有好多添加好的东西,不一定满足我们的要求,比如:一些需要添加一些工具栏等.</li>
+</ul>
+</li>
+<li>给控制器定义Class类型</li>
+<li>给xib中的cell定义Class类型</li>
+<li>设置cell的标示符</li>
+<li>自定义控件,并AutoLayout自动布局添加约束.</li>
+</ul>
+</li>
+<li><p>自定义数据模型类</p></li>
+</ul>
+
+
+<pre><code class="objc">#import &lt;Foundation/Foundation.h&gt;
+
+@interface WQStatusData : NSObject
+/**头像*/
+@property (nonatomic, strong) NSString *icon;
+/**姓名*/
+@property (nonatomic, strong) NSString *name;
+/** 内容*/
+@property (nonatomic, strong) NSString *text;
+/**图片*/
+@property (nonatomic, strong) NSString *picture;
+/** vip*/
+@property (nonatomic, assign, getter = isVip) BOOL vip;
++ (instancetype)statusWithDict:(NSDictionary *)dict;
+@end
+
+@implementation WQStatusData
++ (instancetype)statusWithDict:(NSDictionary *)dict
+{
+    WQStatusData *statusData = [[WQStatusData alloc]init];
+    [statusData setValuesForKeysWithDictionary:dict];
+    return statusData;
+}
+@end
+</code></pre>
+
+<p><img src="/images/0603/%E5%B8%83%E5%B1%80%E5%86%85%E5%AE%B9-%E6%AF%8F%E8%A1%8C%E7%AD%89%E9%AB%98.png" alt="" />
+<img src="/images/0603/%E5%B8%83%E5%B1%80%E5%86%85%E5%AE%B9-%E6%AF%8F%E8%A1%8C%E7%AD%89%E9%AB%981.png" alt="" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[tableView-自定义等高cell-(代码frame和masonry方式)]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/03/19/tableview-zi-ding-yi-deng-gao-cell-dai-ma-framehe-masonryfang-shi/"/>
+    <updated>2014-03-19T17:31:54+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/03/19/tableview-zi-ding-yi-deng-gao-cell-dai-ma-framehe-masonryfang-shi</id>
+    <content type="html"><![CDATA[<h3>代码自定义cell方法</h3>
+
+<ul>
+<li><code>代码自定义cell(使用frame)</code>
+
+<ul>
+<li>1.创建一个继承自UITableViewCell的子类，比如WQDealCell
+
+<ul>
+<li>在initWithStyle:reuseIdentifier:方法中
+
+<ul>
+<li>添加子控件</li>
+<li>设置子控件的初始化属性（比如文字颜色、字体）</li>
+</ul>
+</li>
+<li>在layoutSubviews方法中设置子控件的frame</li>
+<li>需要提供一个模型属性，重写模型的set方法，在这个方法中设置模型数据到子控件</li>
+</ul>
+</li>
+<li>2.在控制器中
+
+<ul>
+<li>利用registerClass&hellip;方法注册WQDealCell类</li>
+<li>利用重用标识找到cell（如果没有注册类，就需要手动创建cell）</li>
+<li>给cell传递模型数据</li>
+<li>也可以将创建获得cell的代码封装起来（比如cellWithTableView:方法）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<!--more-->
+
+
+<pre><code class="objc">#import &lt;UIKit/UIKit.h&gt;
+@class WQdealsData;
+@interface WQTableViewCell : UITableViewCell
+
+/**数据模型接口*/
+@property (nonatomic, strong) WQdealsData *dealData;
++ (instancetype)tableViewCellWithTableView:(UITableView *)tableView;
+@end
+
+#import "WQTableViewCell.h"
+#import "WQdealsData.h"
+@interface WQTableViewCell ()
+
+/**图片*/
+@property (nonatomic, strong) UIImageView *iconImageView;
+/**标题*/
+@property (nonatomic, strong) UILabel *titleLabel;
+/**价格*/
+@property (nonatomic, strong) UILabel *priceLabel;
+/**购买人数*/
+@property (nonatomic, strong) UILabel *buyCountLabel;
+@end
+@implementation WQTableViewCell
+
++ (instancetype)tableViewCellWithTableView:(UITableView *)tableView
+{
+    static NSString *ID = @"deals";
+    WQTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ID];
+
+    // 当使用注册方法优化cell创建的时候,cell永远不为nil,不进入该方法
+    if (cell == nil) {
+        cell = [[WQTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
+    }
+    return cell;
+}
+
+// 1.在initWithStyle:reuseIdentifier:方法中添加子控件,背景色用于测试添加位置是否正确
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+{
+    if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
+        // 添加imageView
+        self.iconImageView = [[UIImageView alloc]init];
+        _iconImageView.backgroundColor = [UIColor redColor];
+        [self.contentView addSubview:self.iconImageView];
+        // 添加title
+        self.titleLabel = [[UILabel alloc]init];
+        //self.titleLabel.backgroundColor = [UIColor blueColor];
+        //self.titleLabel.textColor = [UIColor redColor];
+        [self.contentView addSubview:self.titleLabel];
+        // 添加price
+        self.priceLabel = [[UILabel alloc]init];
+        //self.priceLabel.backgroundColor = [UIColor orangeColor];
+        self.priceLabel.textColor = [UIColor redColor];
+        [self.contentView addSubview:self.priceLabel];
+        // 添加buyCount
+        self.buyCountLabel = [[UILabel alloc]init];
+        //self.buyCountLabel.backgroundColor = [UIColor grayColor];
+        self.buyCountLabel.textColor = [UIColor redColor];
+        self.buyCountLabel.textAlignment = NSTextAlignmentRight;
+        [self.contentView addSubview:self.buyCountLabel];
+    }
+    return self;
+}
+// 3,在数据模型接口setter方法中,给控件赋值
+- (void)setDealData:(WQdealsData *)dealData
+{
+    _dealData = dealData;
+    self.iconImageView.image = [UIImage imageNamed:_dealData.icon];
+    self.titleLabel.text = _dealData.title;
+    self.priceLabel.text = [NSString stringWithFormat:@"%@￥", _dealData.price];
+    self.buyCountLabel.text = [NSString stringWithFormat:@"%@人已购买", _dealData.buyCount];
+}
+// 2.在layoutSubviews方法中设置子控件的frame
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+
+    CGFloat contentW = self.contentView.frame.size.width;
+    CGFloat contentH = self.contentView.frame.size.height;
+
+    CGFloat margin = 10;
+
+    // imageView
+    CGFloat iconX = margin;
+    CGFloat iconY = margin;
+    CGFloat iconW = 100;
+    CGFloat iconH = contentH - margin * 2;
+    self.iconImageView.frame = CGRectMake(iconX, iconY, iconW, iconH);
+
+    // title
+    CGFloat titleX = CGRectGetMaxX(self.iconImageView.frame) + margin;
+    CGFloat titleY = margin;
+    CGFloat titleW = contentW - titleX - margin;
+    CGFloat titleH = 20;
+    self.titleLabel.frame = CGRectMake(titleX, titleY, titleW, titleH);
+
+    // price
+    CGFloat priceX = titleX;
+    CGFloat priceY = margin * 2 + titleH;
+    CGFloat priceW = 80;
+    CGFloat priceH = contentH - margin * 3 - titleH;
+    self.priceLabel.frame = CGRectMake(priceX, priceY, priceW, priceH);
+
+    // buyCount
+    CGFloat buyCountX = CGRectGetMaxX(self.priceLabel.frame);
+    CGFloat buyCountY = priceY;
+    CGFloat buyCountW = contentW - buyCountX - margin;
+    CGFloat buyCountH = priceH;
+    self.buyCountLabel.frame = CGRectMake(buyCountX, buyCountY, buyCountW, buyCountH);
+
+}
+
+// "WQTableViewController.h" 控制器中创建cell,控制器不需要知道cell具体实现,只创建传入数据即可
+</code></pre>
+
+<ul>
+<li><code>代码自定义cell(使用autolayout)</code>
+
+<ul>
+<li>1.创建一个继承自UITableViewCell的子类，比如WQDealCell
+
+<ul>
+<li>在initWithStyle:reuseIdentifier:方法中
+
+<ul>
+<li>添加子控件</li>
+<li>添加子控件的约束（建议使用<code>Masonry</code>）</li>
+<li>设置子控件的初始化属性（比如文字颜色、字体）</li>
+</ul>
+</li>
+<li>需要提供一个模型属性，重写模型的set方法，在这个方法中设置模型数据到子控件</li>
+</ul>
+</li>
+<li>2.在控制器中
+
+<ul>
+<li>利用registerClass&hellip;方法注册WQDealCell类</li>
+<li>利用重用标识找到cell（如果没有注册类，就需要手动创建cell）</li>
+<li>给cell传递模型数据</li>
+<li>也可以将创建获得cell的代码封装起来（比如cellWithTableView:方法）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<pre><code class="objc">
+//两个宏定义一定要在头文件之前,因为masonry实现文件里需要用到
+
+//define this constant if you want to use Masonry without the 'mas_' prefix
+#define MAS_SHORTHAND
+//define this constant if you want to enable auto-boxing for default syntax
+#define MAS_SHORTHAND_GLOBALS
+#import "Masonry.h"
+
+//创建完子控件后,直接添加约束
+// 1.在initWithStyle:reuseIdentifier:方法中添加子控件,背景色用于测试添加位置是否正确
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+{
+
+    if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
+
+        CGFloat margin = 10;
+        // 添加imageView
+        self.iconImageView = [[UIImageView alloc]init];
+        [self.contentView addSubview:self.iconImageView];
+
+        // 添加约束
+        [self.iconImageView makeConstraints:^(MASConstraintMaker *make) {
+            make.top.left.offset(margin);
+            make.bottom.offset(- margin);
+            make.width.equalTo(100);
+        }];
+
+        // 添加title
+        self.titleLabel = [[UILabel alloc]init];
+        [self.contentView addSubview:self.titleLabel];
+
+        // 添加约束
+        [self.titleLabel makeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(self.iconImageView.right).offset(margin);
+            make.top.offset(margin);
+            make.right.offset(- margin);
+        }];
+
+        // 添加price
+        self.priceLabel = [[UILabel alloc]init];
+        self.priceLabel.textColor = [UIColor redColor];
+        [self.contentView addSubview:self.priceLabel];
+
+        // 添加约束
+        [self.priceLabel makeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(self.titleLabel.left);
+            make.width.equalTo(80);
+            make.bottom.offset(-margin);
+        }];
+        // 添加buyCount
+        self.buyCountLabel = [[UILabel alloc]init];
+        self.buyCountLabel.textColor = [UIColor redColor];
+        self.buyCountLabel.textAlignment = NSTextAlignmentRight;
+        [self.contentView addSubview:self.buyCountLabel];
+
+        // 添加约束
+        [self.buyCountLabel makeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(self.priceLabel.right).offset(margin);
+            make.right.equalTo(- margin);
+            make.bottom.equalTo(self.priceLabel.bottom);
+        }];
+    }
+    return self;
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[tableView-自定义等高cell-(xib方式)]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/03/18/tableview-zi-ding-yi-deng-gao-cell-xibfang-shi/"/>
+    <updated>2014-03-18T09:31:32+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/03/18/tableview-zi-ding-yi-deng-gao-cell-xibfang-shi</id>
+    <content type="html"><![CDATA[<h3><code>xib自定义cell</code></h3>
+
+<ul>
+<li>1.创建一个继承自UITableViewCell的子类，比如WQDealCell<br></li>
+<li>2.创建一个xib文件（文件名建议跟cell的类名一样），比如WQDealCell.xib
+
+<ul>
+<li>拖拽一个UITableViewCell出来</li>
+<li>修改cell的class为XMGDealCell</li>
+<li>设置cell的重用标识</li>
+<li>往cell中添加需要用到的子控件</li>
+</ul>
+</li>
+<li>3.在控制器中
+
+<ul>
+<li>利用registerNib&hellip;方法注册xib文件</li>
+<li>利用重用标识找到cell（如果没有注册xib文件，就需要手动去加载xib文件）</li>
+<li>给cell传递模型数据<br>
+<!--more--></li>
+</ul>
+</li>
+<li><p>4.在WQDealCell中</p>
+
+<ul>
+<li>将xib中的子控件连线到类扩展中</li>
+<li>需要提供一个模型属性，重写模型的set方法，在这个方法中设置模型数据到子控件上</li>
+<li>也可以将创建获得cell的代码封装起来（比如cellWithTableView:方法）</li>
+</ul>
+</li>
+<li><p>当在控制器中提前注册后,cell在dequeueReusableCellWithIdentifier缓冲池找不到后,系统会自动创建带有该标识符的cell,后面cell始终不为nil</p></li>
+<li>当不注册的时候,需要手动加载xib文件</li>
+</ul>
+
+
+<pre><code class="`objc">// 提前注册xib,一般在初始化方法中
+ [self.tableView registerNib:[UINib nibWithNibName:NSStringFromClass([WQTableViewCell class]) bundle:[NSBundle mainBundle]] forCellReuseIdentifier:ID];
+
+// 手动加载xib文件,在创建cell方法中
+// 当使用注册方法优化cell创建的时候,cell永远不为nil,不进入该方法
+    if (cell == nil) {
+        cell = [[[NSBundle mainBundle] loadNibNamed:NSStringFromClass(self) owner:nil options:nil] lastObject];
+    }
+</code></pre>
+
+<ul>
+<li>代码:</li>
+</ul>
+
+
+<pre><code class="objc">#import &lt;UIKit/UIKit.h&gt;
+@class WQdealsData;
+@interface WQTableViewCell : UITableViewCell
+/**cell的数据模型*/
+@property (nonatomic, strong)  WQdealsData *dealData;
++ (instancetype)tableViewCellWithTableView:(UITableView *)tableView;
+@end
+
+#import "WQTableViewCell.h"
+#import "WQdealsData.h"
+
+@interface WQTableViewCell()
+@property (weak, nonatomic) IBOutlet UIImageView *iconImageView;
+@property (weak, nonatomic) IBOutlet UILabel *titleLabel;
+@property (weak, nonatomic) IBOutlet UILabel *priceLabel;
+@property (weak, nonatomic) IBOutlet UILabel *buyCountLabel;
+@end
+@implementation WQTableViewCell
+
++ (instancetype)tableViewCellWithTableView:(UITableView *)tableView
+{
+    static NSString *ID = @"deals";
+    WQTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ID];
+    cell = [[[NSBundle mainBundle] loadNibNamed:NSStringFromClass(self) owner:nil options:nil] lastObject];
+    // 当使用注册方法优化cell创建的时候,cell永远不为nil,不进入该方法
+    if (cell == nil) {
+
+    }
+    return cell;
+}
+
+- (void)setDealData:(WQdealsData *)dealData
+{
+    _dealData = dealData;
+    self.iconImageView.image = [UIImage imageNamed:self.dealData.icon];
+    self.titleLabel.text = self.dealData.title;
+    self.priceLabel.text = [NSString stringWithFormat:@"%@￥", self.dealData.price];
+    self.buyCountLabel.text = [NSString stringWithFormat:@"%@人已购买", self.dealData.buyCount];
+
+}
+@end
+</code></pre>
+
+<pre><code class="objc">#import "WQDealsTableViewController.h"
+#import "WQdealsData.h"
+#import "WQTableViewCell.h"
+@interface WQDealsTableViewController ()
+/**数据模型*/
+@property (nonatomic, strong) NSArray *dealsData;
+
+@end
+
+@implementation WQDealsTableViewController
+NSString *ID = @"deals";
+- (void)viewDidLoad {
+    [super viewDidLoad];
+//    [self.tableView registerNib:[UINib nibWithNibName:NSStringFromClass([WQTableViewCell class]) bundle:[NSBundle mainBundle]] forCellReuseIdentifier:ID];
+}
+/** 懒加载*/
+- (NSArray *)dealsData
+{
+    NSArray *dataArrayFromPlist = [NSArray arrayWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"deals.plist" ofType:nil]];
+    NSMutableArray *dataArray = [NSMutableArray array];
+    [dataArrayFromPlist enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        WQdealsData *dealsdata = [WQdealsData dealsWithDict:obj];
+        [dataArray addObject:dealsdata];
+    }];
+    _dealsData = dataArray;
+    return _dealsData;
+}
+
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return self.dealsData.count;
+}
+/** 创建cell*/
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // 创建自定义的tableViewCell
+    WQTableViewCell *cell = [WQTableViewCell tableViewCellWithTableView:tableView];
+    // 向自定的tableViewCell中传入数据
+    cell.dealData = self.dealsData[indexPath.row];
+    return cell;
+}
+@end
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[tableView-自定义等高cell(storyboard方式)]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/03/17/tableview-zi-ding-yi-deng-gao-cell-storyboardfang-shi/"/>
+    <updated>2014-03-17T14:30:14+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/03/17/tableview-zi-ding-yi-deng-gao-cell-storyboardfang-shi</id>
+    <content type="html"><![CDATA[<ul>
+<li>自定义控制器类
+
+<ul>
+<li>1.创建一个继承自UITableViewController的子类，比如WQDealsTableViewController</li>
+<li><img src="/images/0603/%E8%87%AA%E5%AE%9A%E4%B9%89tableview%E6%8E%A7%E5%88%B6%E5%99%A8.png" alt="" /></li>
+<li>2.实现需要的数据源和代理方法.</li>
+<li>3.实现懒加载,获取数据模型.</li>
+<li>4.创建自定义cell.</li>
+</ul>
+</li>
+</ul>
+
+
+<!--more-->
+
+
+<pre><code class="objc">#import "WQDealsTableViewController.h"
+#import "WQdealsData.h"
+#import "WQTableViewCell.h"
+@interface WQDealsTableViewController ()
+/**数据模型*/
+@property (nonatomic, strong) NSArray *dealsData;
+
+@end
+
+@implementation WQDealsTableViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+
+}
+/** 懒加载*/
+- (NSArray *)dealsData
+{
+    if(_dealsData == nil)
+    {
+        NSArray *dataArrayFromPlist = [NSArray arrayWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"deals.plist" ofType:nil]];
+    NSMutableArray *dataArray = [NSMutableArray array];
+    [dataArrayFromPlist enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        WQdealsData *dealsdata = [WQdealsData dealsWithDict:obj];
+        [dataArray addObject:dealsdata];
+    }];
+    _dealsData = dataArray;
+    }
+    return _dealsData;
+}
+
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return self.dealsData.count;
+}
+/** 创建cell*/
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // 创建自定义的tableViewCell
+    WQTableViewCell *cell = [WQTableViewCell tableViewCellWithTableView:tableView];
+    // 向自定的tableViewCell中传入数据
+    cell.dealData = self.dealsData[indexPath.row];
+    return cell;
+}
+@end
+</code></pre>
+
+<ul>
+<li>自定义cell类
+
+<ul>
+<li>1.创建一个继承自UITableViewCell的子类，比如WQTableViewCell</li>
+<li>2.定义一个数据模型接口,用于传入数据</li>
+<li>3.定义一个类方法,用于创建cell,带有一个从控制器中传入的参数tableview,用于缓冲池的优化.并返回创建好的cell.</li>
+</ul>
+</li>
+</ul>
+
+
+<pre><code class="objc">
+#import &lt;UIKit/UIKit.h&gt;
+@class WQdealsData;
+@interface WQTableViewCell : UITableViewCell
+/**cell的数据模型*/
+@property (nonatomic, strong)  WQdealsData *dealData;
++ (instancetype)tableViewCellWithTableView:(UITableView *)tableView;
+@end
+
+
+#import "WQTableViewCell.h"
+#import "WQdealsData.h"
+@interface WQTableViewCell()
+@property (weak, nonatomic) IBOutlet UIImageView *iconImageView;
+@property (weak, nonatomic) IBOutlet UILabel *titleLabel;
+@property (weak, nonatomic) IBOutlet UILabel *priceLabel;
+@property (weak, nonatomic) IBOutlet UILabel *buyCountLabel;
+
+@end
+@implementation WQTableViewCell
+
++ (instancetype)tableViewCellWithTableView:(UITableView *)tableView
+{
+    static NSString *ID = @"deals";
+    WQTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ID];
+    // 当使用注册方法载入xib或者在sotoryboard中的cell设置标示符来优化cell创建的时候,cell永远不为nil,不进入该方法
+    if (cell == nil) {
+        cell = [[WQTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
+    }
+    return cell;
+}
+
+- (void)setDealData:(WQdealsData *)dealData
+{
+    _dealData = dealData;
+    self.iconImageView.image = [UIImage imageNamed:self.dealData.icon];
+    self.titleLabel.text = self.dealData.title;
+    self.priceLabel.text = [NSString stringWithFormat:@"%@￥", self.dealData.price];
+    self.buyCountLabel.text = [NSString stringWithFormat:@"%@人已购买", self.dealData.buyCount];
+
+}
+</code></pre>
+
+<ul>
+<li><p>storyboard中的操作</p>
+
+<ul>
+<li>1.在storyboard中创建一个tableViewController控制器
+
+<ul>
+<li>可以直接拖动一个tableViewController控制器</li>
+<li>也可以先拖一个普通控制器,添加tableView控件,然后再添加tableViewCell控件</li>
+<li>设为初始控制器</li>
+<li><img src="/images/0603/%E8%AE%BE%E4%B8%BA%E5%88%9D%E5%A7%8B%E6%8E%A7%E5%88%B6%E5%99%A8.png" alt="" /></li>
+</ul>
+</li>
+<li>2.为tableViewController定义类型(自定义控制器类继承自tableViewController)</li>
+<li><img src="/images/0603/%E4%B8%BAstoryboard%E6%8E%A7%E5%88%B6%E5%99%A8%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B.png" alt="" /></li>
+<li>2.在tableViewCell中自定义控件布局
+
+<ul>
+<li>完成AutoLayout自动布局,即添加约束</li>
+</ul>
+</li>
+<li><img src="/images/0603/%E8%87%AA%E5%AE%9A%E4%B9%89cell%E4%B8%AD%E6%8E%A7%E4%BB%B6.png" alt="" /></li>
+<li>3.设置cell的重用标识</li>
+<li><img src="/images/0603/%E8%AE%BE%E7%BD%AEcell%E7%9A%84%E6%A0%87%E8%AF%86%E7%AC%A6.png" alt="" /></li>
+<li>4.为tableViewCell定义类型(需要自定义cell类)</li>
+<li>5.将cell中的控件拖线到自定义cell类中,在获取数据模型时,,可以在其setter方法中取到控件赋值</li>
+</ul>
+</li>
+<li><p>定义数据模型类(补充)</p></li>
+</ul>
+
+
+<pre><code class="objc">#import &lt;Foundation/Foundation.h&gt;
+
+@interface WQdealsData : NSObject
+/**图片*/
+@property (nonatomic, strong) NSString *icon;
+/**标题*/
+@property (nonatomic, strong) NSString *title;
+/**购买数*/
+@property (nonatomic, strong) NSString *buyCount;
+/** 价格*/
+@property (nonatomic, strong) NSString *price;
++ (instancetype)dealsWithDict:(NSDictionary *)dict;
+@end
+
+#import "WQdealsData.h"
+
+@implementation WQdealsData
++ (instancetype)dealsWithDict:(NSDictionary *)dict
+{
+    WQdealsData *dealsData = [[WQdealsData alloc]init];
+    /*
+     *等价于以下:
+     *dealsData.icon = dict[@"icon"];
+     *dealsData.title = dict[@"title"];
+     *dealsData.price = dict[@"price"];
+     *dealsData.buyCount = dict[@"buyCount"];
+     */
+    // KVC - Key Value Coding
+    [dealsData setValuesForKeysWithDictionary:dict];
+    return dealsData;
+}
+@end
+</code></pre>
+
+<p><img src="/images/0603/deals%E8%BF%90%E8%A1%8C%E5%9B%BE.png" alt="" /></p>
+]]></content>
+  </entry>
+  
+</feed>

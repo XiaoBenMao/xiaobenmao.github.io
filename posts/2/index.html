@@ -1,0 +1,652 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>My World</title>
+  <meta name="author" content="嗷大喵">
+
+  
+  <meta name="description" content=" ">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://xiaobenmao.github.io/posts/2/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My World" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.useso.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.useso.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My World</a></h1>
+  
+    <h2>Your World</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="xiaobenmao.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/07/12/quartz2d-tu-xing-shang-xia-wen-zhan/">Quartz2d-图形上下文栈</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-07-12T20:32:55+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>8:32 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/%E5%9B%BE%E5%BD%A2%E4%B8%8A%E4%B8%8B%E6%96%87%E6%A0%88.png" alt="" /></p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/07/12/quartz2d-tu-xing-shang-xia-wen-zhan/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/07/11/quartz2d-hui-zhi-tu-pian-he-mo-fang-uiimageview/">Quartz2d-绘制图片和模仿UIImageView</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-07-11T17:31:01+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:31 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 超出裁剪区域的内容全部裁剪掉</span>
+</span><span class='line'>    <span class="c1">// 注意：裁剪必须放在绘制之前</span>
+</span><span class='line'>    <span class="n">UIRectClip</span><span class="p">(</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="s">@&quot;阿狸头像&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 默认绘制的内容尺寸跟图片尺寸一样大</span>
+</span><span class='line'>    <span class="c1">//[image drawAtPoint:CGPointZero];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 在矩形区域内拉伸</span>
+</span><span class='line'>    <span class="c1">//[image drawInRect:rect];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 将图片原比例平铺</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">image</span> <span class="nl">drawAsPatternInRect</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="n">bounds</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/07/11/quartz2d-hui-zhi-tu-pian-he-mo-fang-uiimageview/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/07/10/quartz2d-hui-zhi-wen-zi/">Quartz2d-绘制文字</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-07-10T12:30:33+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:30 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/%E7%94%BB%E6%96%87%E5%AD%97.png" alt="" /></p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/07/10/quartz2d-hui-zhi-wen-zi/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/07/09/quartz2d-hua-bing-xing-tu-he-zhu-zhuang-tu/">Quartz2d-画饼形图和柱状图</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-07-09T11:30:24+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>11:30 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><ul>
+<li>绘制饼图
+
+<ul>
+<li>分析 -> 找规律 -> 得出startA,endA,angle的结论</li>
+<li>startA = endA angle = 比例 * 总度数360° endA = startA + angle</li>
+<li>angle = 自己 / 100.0 * 360</li>
+<li>一个一个扇形画</li>
+</ul>
+</li>
+</ul>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/07/09/quartz2d-hua-bing-xing-tu-he-zhu-zhuang-tu/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/07/08/quartz2d-mo-fang-xia-zai-jin-du/">Quartz2d-模仿下载进度</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-07-08T08:30:05+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>8:30 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><ul>
+<li>画下载进度</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'>   <span class="cm">/**</span>
+</span><span class='line'><span class="cm">重绘-下载进度条(setNeedsDisplay) 画图分析:</span>
+</span><span class='line'><span class="cm">    * 分析有几个控件：UISliderView,自定义view用来画图,UILabel</span>
+</span><span class='line'><span class="cm">    * 分析思路：滑动UISliderView的时候，把UISliderView的值传给自定义view,改变的显示。</span>
+</span><span class='line'><span class="cm">    * 怎么监听UISliderView，valueChange事件</span>
+</span><span class='line'><span class="cm">    * 自定义view搞一个属性接收滑动的值</span>
+</span><span class='line'><span class="cm">    * 接下来先搞label,因为他比较简单，做东西，先从简单的着手。</span>
+</span><span class='line'><span class="cm">    * 懒加载label,位置居中，文字居中</span>
+</span><span class='line'><span class="cm">    * label怎么显示?重写progress的set方法,有数据就展示在label上。</span>
+</span><span class='line'><span class="cm">    * 绘制圆弧，PPT分析，从哪开始画圆弧。</span>
+</span><span class='line'><span class="cm">    * 每次转多少°？ 角度 = 进度 * M_PI * 2</span>
+</span><span class='line'><span class="cm">    * startAngle = -M_PI_2</span>
+</span><span class='line'><span class="cm">    * endAngle = -M_PI_2 + 进度 * M_PI * 2</span>
+</span><span class='line'><span class="cm">    * 不会及时更新视图显示?为什么，因为drawRect只会在视图显示的时候调用一次。</span>
+</span><span class='line'><span class="cm">    * 怎么重绘？setNeedsDisplay</span>
+</span><span class='line'><span class="cm">    * 手动调用drawRect方法，不行，因为你自己不能创建上下文，必须系统调用来调用</span>
+</span><span class='line'><span class="cm">    * setNeedsDisplay：在view上做一个重绘的标记，在下一次绘图的周期来临，就会先创建好上下文，然后自动调用drawRect重绘。</span>
+</span><span class='line'><span class="cm">    */</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/07/08/quartz2d-mo-fang-xia-zai-jin-du/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/07/07/quartz2d-hua-yuan/">Quartz2d-画圆</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-07-07T13:08:11+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>1:08 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><ul>
+<li>ShapeView:绘制图形
+
+<ul>
+<li>triangle三角形（画图分析）</li>
+<li>关闭路径closePath：从路径的终点连接到起点</li>
+<li>填充路径CGContextFillPath：有了封闭的路径就能填充</li>
+<li>设置填充颜色 [[UIColor blueColor] setFill];</li>
+<li>设置描边颜色 [[UIColor redColor] setStroke];</li>
+<li>不显示描边颜色，为什么?没有设置线宽</li>
+<li>设置线宽，还是不显示，为什么?因为绘制路径不对。</li>
+<li>即填充又描边CGContextDrawPath:kCGPathFillStroke。</li>
+<li>rectangle矩形</li>
+<li>circle圆：为什么传入矩形，因为圆内切与矩形</li>
+</ul>
+</li>
+</ul>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/07/07/quartz2d-hua-yuan/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/07/03/quartz2d-hua-zhi-xian-he-qu-xian/">Quartz2d-画直线和曲线</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-07-03T18:29:36+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2014</span></span> <span class='time'>6:29 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> *Only override drawRect: if you perform custom drawing.</span>
+</span><span class='line'><span class="cm"> *绘图的步骤： 1.获取上下文 2.创建路径（描述路径） 3.把路径添加到上下文 4.渲染上下文</span>
+</span><span class='line'><span class="cm"> *通常在这个方法里面绘制图形</span>
+</span><span class='line'><span class="cm"> *为什么要再drawRect里面绘图，只有在这个方法里面才能获取到跟View的layer相关联的图形上下文</span>
+</span><span class='line'><span class="cm"> *什么时候调用:当这个View要显示的时候才会调用drawRect绘制图形</span>
+</span><span class='line'><span class="cm"> *注意：rect是当前控件的bounds</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="p">{</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/07/03/quartz2d-hua-zhi-xian-he-qu-xian/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/07/01/quartz2d-jian-jie/">Quartz2d-简介</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-07-01T17:29:23+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2014</span></span> <span class='time'>5:29 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/%E4%BB%80%E4%B9%88%E6%98%AFQuartz2d.png" alt="" /></p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/07/01/quartz2d-jian-jie/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/06/15/shi-jian-chu-li-jian-dan-shou-shi-2/">事件处理-简单手势(2)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-06-15T17:59:30+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:59 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"></div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/06/15/shi-jian-chu-li-jian-dan-shou-shi-2/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/06/15/shi-jian-chu-li-jian-dan-shou-shi-1/">事件处理-简单手势(1)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-06-15T16:59:26+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>4:59 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/%E7%9B%91%E5%90%AC%E8%A7%A6%E6%91%B8%E4%BA%8B%E4%BB%B6%E7%9A%84%E5%81%9A%E6%B3%95.png" alt="" /></p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/06/15/shi-jian-chu-li-jian-dan-shou-shi-1/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/posts/3">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/index.html">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>欢迎光临小站</h1>
+  <p>我的世界</p>
+  <p>新浪微博：<a href=" http://weibo.com/QQ908887023" target="_blank">我是嗷大喵</a></p>
+</section><section>
+  <h1>文章分类</h1>
+  <ul id="categories">
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/suan-fa/'>算法</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/cocos2dx-lua/'>cocos2dx-lua</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/u3d/'>u3d</a> (4)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ioswei-fen-lei/'>ios未分类</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/tableview/'>tableview</a> (14)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ji-suan-ji-ying-yu/'>计算机英语</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/liao-tian-cellbu-ju/'>聊天cell布局</a> (7)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/uipickerview/'>uipickerview</a> (5)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shu-ju-cun-chu/'>数据存储</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shi-jian-chu-li/'>事件处理</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a> (17)
+      </li>
+    
+  </ul>
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/09/06/quartz2d-hua-ju-xing/">Quartz2d-画矩形</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/">Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-hua-ban/">Quartz2d-画板</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-shou-shi-jie-suo/">Quartz2d-手势解锁</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/16/quartz2d-shou-dong-jie-ping/">Quartz2d-手动截屏</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - 嗷大喵 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

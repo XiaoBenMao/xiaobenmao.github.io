@@ -1,0 +1,395 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Quartz2d-截屏(指定控件) - My World</title>
+  <meta name="author" content="嗷大喵">
+
+  
+  <meta name="description" content="- 为UIImage增加一个分类,返回截取指定控件的图片 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15 /* *屏幕截图简介: *屏幕截图:把屏幕的内容截屏生成一张新的图片 * 通常开发中，都是把控制器的内容截屏，生成新的图片 * 控制器怎么显示？根据view * &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://xiaobenmao.github.io/blog/2014/07/15/quartz2d-jie-ping-zhi-ding-kong-jian/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My World" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.useso.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.useso.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My World</a></h1>
+  
+    <h2>Your World</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="xiaobenmao.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Quartz2d-截屏(指定控件)</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-07-15T17:38:26+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:38 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><!--more-->
+
+
+<p><img src="/images/%E6%88%AA%E5%8F%96%E5%B1%8F%E5%B9%95.png" alt="" /></p>
+
+<p><img src="/images/%E6%88%AA%E5%B1%8F.png" alt="" /></p>
+
+<p><img src="/images/%E6%88%AA%E5%B1%8F1.png" alt="" />
+- 为UIImage增加一个分类,返回截取指定控件的图片</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'>   <span class="cm">/*</span>
+</span><span class='line'><span class="cm">    *屏幕截图简介:</span>
+</span><span class='line'><span class="cm">    *屏幕截图:把屏幕的内容截屏生成一张新的图片</span>
+</span><span class='line'><span class="cm">    * 通常开发中，都是把控制器的内容截屏，生成新的图片</span>
+</span><span class='line'><span class="cm">    * 控制器怎么显示？根据view</span>
+</span><span class='line'><span class="cm">    * view怎么显示? 根据layer图层</span>
+</span><span class='line'><span class="cm">    * 把layer渲染到位图上下文</span>
+</span><span class='line'><span class="cm">    * 注意：图层只能用渲染，图片和文字可以用draw</span>
+</span><span class='line'><span class="cm">    * 渲染在哪?新的图片</span>
+</span><span class='line'><span class="cm">    * 开启图片上下文,和视图一样的尺寸</span>
+</span><span class='line'><span class="cm">    * 写入桌面</span>
+</span><span class='line'><span class="cm">    * 抽分类</span>
+</span><span class='line'><span class="cm">    */</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nl">renderInContext</span><span class="p">:</span><span class="err">把调用者控件的</span><span class="n">layer</span><span class="err">渲染到当前位图上下文</span><span class="n">ctx</span><span class="err">中</span><span class="p">,</span><span class="err">进行操作</span><span class="p">,</span><span class="err">可以获取图片</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="bp">UIImage</span> <span class="nl">(Image)</span>
+</span><span class='line'><span class="c1">// 控件截屏</span>
+</span><span class='line'><span class="p">+</span> <span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">imageWithCaputureView:</span><span class="p">(</span><span class="bp">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nv">view</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#import &quot;UIImage+Image.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="bp">UIImage</span> <span class="nl">(Image)</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">+</span> <span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">imageWithCaputureView:</span><span class="p">(</span><span class="bp">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nv">view</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 开启位图上下文</span>
+</span><span class='line'>    <span class="n">UIGraphicsBeginImageContextWithOptions</span><span class="p">(</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">,</span> <span class="nb">NO</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 获取上下文</span>
+</span><span class='line'>    <span class="n">CGContextRef</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">UIGraphicsGetCurrentContext</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 把控件上的图层渲染到上下文,layer只能渲染</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">view</span><span class="p">.</span><span class="n">layer</span> <span class="nl">renderInContext</span><span class="p">:</span><span class="n">ctx</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 生成一张图片</span>
+</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="n">UIGraphicsGetImageFromCurrentImageContext</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 关闭上下文</span>
+</span><span class='line'>    <span class="n">UIGraphicsEndImageContext</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">image</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 使用</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 生成一张新的图片</span>
+</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span>  <span class="p">[</span><span class="bp">UIImage</span> <span class="nl">imageWithCaputureView</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// image转data</span>
+</span><span class='line'>    <span class="c1">// compressionQuality： 图片质量 1:最高质量</span>
+</span><span class='line'>     <span class="bp">NSData</span> <span class="o">*</span><span class="n">data</span> <span class="o">=</span> <span class="n">UIImageJPEGRepresentation</span><span class="p">(</span><span class="n">image</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 将截屏保存在指定路径,桌面</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">data</span> <span class="nl">writeToFile</span><span class="p">:</span><span class="s">@&quot;/Users/mac/Desktop/view.png&quot;</span> <span class="nl">atomically</span><span class="p">:</span><span class="nb">YES</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">嗷大喵</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-07-15T17:38:26+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:38 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/07/15/quartz2d-tu-pian-jian-cai-dai-you-bian-kuang/" title="Previous Post: Quartz2d-图片剪裁(带有边框)">&laquo; Quartz2d-图片剪裁(带有边框)</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/07/16/quartz2d-tu-pian-ca-chu-gei-mei-zi-tuo-yi-fu/" title="Next Post: Quartz2d-图片擦除(给妹子脱衣服)">Quartz2d-图片擦除(给妹子脱衣服) &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>欢迎光临小站</h1>
+  <p>我的世界</p>
+  <p>新浪微博：<a href=" http://weibo.com/QQ908887023" target="_blank">我是嗷大喵</a></p>
+</section><section>
+  <h1>文章分类</h1>
+  <ul id="categories">
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/suan-fa/'>算法</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/cocos2dx-lua/'>cocos2dx-lua</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/u3d/'>u3d</a> (4)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ioswei-fen-lei/'>ios未分类</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/tableview/'>tableview</a> (14)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ji-suan-ji-ying-yu/'>计算机英语</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/liao-tian-cellbu-ju/'>聊天cell布局</a> (7)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/uipickerview/'>uipickerview</a> (5)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shu-ju-cun-chu/'>数据存储</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shi-jian-chu-li/'>事件处理</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a> (17)
+      </li>
+    
+  </ul>
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/09/06/quartz2d-hua-ju-xing/">Quartz2d-画矩形</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/">Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-hua-ban/">Quartz2d-画板</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-shou-shi-jie-suo/">Quartz2d-手势解锁</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/16/quartz2d-shou-dong-jie-ping/">Quartz2d-手动截屏</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - 嗷大喵 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

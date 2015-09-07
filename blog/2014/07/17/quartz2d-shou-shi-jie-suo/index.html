@@ -1,0 +1,1026 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Quartz2d-手势解锁 - My World</title>
+  <meta name="author" content="嗷大喵">
+
+  
+  <meta name="description" content="1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+/**
+4&gt; 手势解锁 * &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://xiaobenmao.github.io/blog/2014/07/17/quartz2d-shou-shi-jie-suo/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My World" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.useso.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.useso.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My World</a></h1>
+  
+    <h2>Your World</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="xiaobenmao.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Quartz2d-手势解锁</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-07-17T11:39:07+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>11:39 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><!--more-->
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm">4&gt; 手势解锁</span>
+</span><span class='line'><span class="cm">    * 演示实例程序</span>
+</span><span class='line'><span class="cm">    * 分析界面有几个控件：背景：UIImageView 白色圆圈：按钮（点击他，会出现另外一种图片，按钮可以设置不同状态下的图片。）单独视图：(画线是有范围的，当超出view就不能画线了)</span>
+</span><span class='line'><span class="cm">    * HMLoadView:自定义视图，在视图一创建的时候，就添加9个按钮。</span>
+</span><span class='line'><span class="cm">    * 在initWithCoder，initWithFrame方法添加按钮。</span>
+</span><span class='line'><span class="cm">    * 九宫格布局：</span>
+</span><span class='line'><span class="cm">        tolcol = 3</span>
+</span><span class='line'><span class="cm">        计算row,col 按钮的x，y跟col,row有关系，col = i % tolcol row = i / tolcol</span>
+</span><span class='line'><span class="cm">        计算边距 margin = (view.bounds.size.width - tolcol * btnW) / (tolcol + 1)</span>
+</span><span class='line'><span class="cm">        btnX = margin + (btnW + margin) * col</span>
+</span><span class='line'><span class="cm">        btnY = (btnW + margin) * row</span>
+</span><span class='line'><span class="cm">    * 圆的选中</span>
+</span><span class='line'><span class="cm">      * 点击按钮就为选中的图片怎么做？监听按钮点击。</span>
+</span><span class='line'><span class="cm">      * 不能addTarget: 不能及时显示选中图片。</span>
+</span><span class='line'><span class="cm">      * 监听touchBegin,判断点在不在按钮的frame上。</span>
+</span><span class='line'><span class="cm">      * touchBegin不调用？原因：事件交给按钮处理，应该把事件交给解锁视图。让按钮不接收事件。</span>
+</span><span class='line'><span class="cm">      * 设置按钮不允许交互，2个用处：1.不接收事件 2.取消高亮效果 一举两得</span>
+</span><span class='line'><span class="cm">    * 遍历所有按钮，看触摸点在哪个按钮上，就选中谁，CGRectContainsPoint 传入的参数必须是同一个坐标系</span>
+</span><span class='line'><span class="cm">      * 实现touchMove方法：因为手指移动的时候，也需要判断点在不在按钮上。</span>
+</span><span class='line'><span class="cm">      * 抽方法，因为touchMove的方法里，也需要做同样的事情。</span>
+</span><span class='line'><span class="cm">            1&gt; pointWithTouches 根据touches集合取出触摸点</span>
+</span><span class='line'><span class="cm">            2&gt; buttonWithPoint 根据触摸点，获取触摸按钮</span>
+</span><span class='line'><span class="cm">   * 圆的连线</span>
+</span><span class='line'><span class="cm">     * 哪些需要连线？被选中按钮之间都需要连线，还有一个多余的线</span>
+</span><span class='line'><span class="cm">     * 先把选中的按钮全部连线？为什么，因为多余的那根线是从最后一个按钮的圆心开始画，手指移动在哪就画哪。</span>
+</span><span class='line'><span class="cm">     * 搞个数组保存下所有选中按钮，在drawRect方法中遍历所有按钮，连线</span>
+</span><span class='line'><span class="cm">     * UIBezierPath画线，不需要上下文。</span>
+</span><span class='line'><span class="cm">     * 需要多少个UIBezierPath对象？一个，路径都是连续的，不相连的，才需要创建新的UIBezierPath。</span>
+</span><span class='line'><span class="cm">     * 遍历数组，描述路径</span>
+</span><span class='line'><span class="cm">        1&gt; 起点：第一个按钮的圆心</span>
+</span><span class='line'><span class="cm">        2&gt; 添加一根线到其他按钮的圆心</span>
+</span><span class='line'><span class="cm">     * 设置路径的颜色和线宽</span>
+</span><span class='line'><span class="cm">     * 什么时候渲染？把所有路径都描述完就，渲染一次就够了。</span>
+</span><span class='line'><span class="cm">     * [path stroke] 就能渲染到视图上了。</span>
+</span><span class='line'><span class="cm">     * 画多余的那根线，记住手指移动的位置。</span>
+</span><span class='line'><span class="cm">     * setNeedDisplay 没有画出来线?因为drawRect只会调用一次，需要每次手指移动的时候，都需要重绘。</span>
+</span><span class='line'><span class="cm">     * touchBegin不调用setNeedDisplay?那时候重绘也没用，只有起点。</span>
+</span><span class='line'><span class="cm">     * lineJoinStyle：有尖尖的东西，线段连接样式的问题，设置为平的。</span>
+</span><span class='line'><span class="cm">     * 已经选中的按钮，不需要再次选中，和画线</span>
+</span><span class='line'><span class="cm">     * 手指抬起，取消所有选中按钮，并且清空数组，清空线条</span>
+</span><span class='line'><span class="cm">     * drawRect判断下没有选中数组，不需要画线。</span>
+</span><span class='line'><span class="cm">     * 如何判断用户是否输入正确?给选中按钮绑定tag,遍历所有选中按钮，把tag拼接成一个字符串。</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">*/</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>自定义View用来添加按钮</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;LockView.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">LockView</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">LockView</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 加载完xib的时候调用</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">awakeFromNib</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 创建9个按钮</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span> <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">9</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="bp">UIButton</span> <span class="o">*</span><span class="n">btn</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIButton</span> <span class="nl">buttonWithType</span><span class="p">:</span><span class="n">UIButtonTypeCustom</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// 不允许用户交互，按钮就不能点击，也就不能达到高亮状态</span>
+</span><span class='line'>        <span class="n">btn</span><span class="p">.</span><span class="n">userInteractionEnabled</span> <span class="o">=</span> <span class="nb">NO</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">[</span><span class="n">btn</span> <span class="nl">setImage</span><span class="p">:[</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="s">@&quot;gesture_node_normal&quot;</span><span class="p">]</span> <span class="nl">forState</span><span class="p">:</span><span class="n">UIControlStateNormal</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">[</span><span class="n">btn</span> <span class="nl">setImage</span><span class="p">:[</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="s">@&quot;gesture_node_highlighted&quot;</span><span class="p">]</span> <span class="nl">forState</span><span class="p">:</span><span class="n">UIControlStateSelected</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">btn</span><span class="p">.</span><span class="n">tag</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">[</span><span class="nb">self</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">btn</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 为什么要在这个方法布局子控件，因为只要一调用这个方法，就表示父控件的尺寸确定</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">layoutSubviews</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">layoutSubviews</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">NSUInteger</span> <span class="n">count</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">subviews</span><span class="p">.</span><span class="n">count</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">cols</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">w</span> <span class="o">=</span> <span class="mi">74</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">h</span> <span class="o">=</span> <span class="mi">74</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">margin</span> <span class="o">=</span> <span class="p">(</span><span class="nb">self</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">-</span> <span class="n">cols</span> <span class="o">*</span> <span class="n">w</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">cols</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">row</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="bp">NSUInteger</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="bp">UIButton</span> <span class="o">*</span><span class="n">btn</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">subviews</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</span><span class='line'>        <span class="c1">// 获取当前按钮的列数</span>
+</span><span class='line'>        <span class="n">col</span> <span class="o">=</span> <span class="n">i</span> <span class="o">%</span> <span class="n">cols</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">row</span> <span class="o">=</span> <span class="n">i</span> <span class="o">/</span> <span class="n">cols</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">x</span> <span class="o">=</span> <span class="n">margin</span> <span class="o">+</span> <span class="n">col</span> <span class="o">*</span> <span class="p">(</span><span class="n">margin</span> <span class="o">+</span> <span class="n">w</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">y</span> <span class="o">=</span> <span class="n">row</span> <span class="o">*</span> <span class="p">(</span><span class="n">margin</span> <span class="o">+</span> <span class="n">w</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">btn</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/%E6%89%8B%E5%8A%BF%E8%A7%A3%E9%94%81-%E6%B7%BB%E5%8A%A0%E6%8C%89%E9%92%AE.png" alt="" /></p>
+
+<ul>
+<li><p>通过控件添加手势
+<img src="/images/%E6%89%8B%E5%8A%BF%E8%A7%A3%E9%94%81-%E6%8E%A7%E4%BB%B6%E6%B7%BB%E5%8A%A0%E6%89%8B%E5%8A%BF.png" alt="" /></p></li>
+<li><p>手指移动到按钮上使,选中按钮(取消按钮的高亮状态)</p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">pan:</span><span class="p">(</span><span class="bp">UIPanGestureRecognizer</span> <span class="o">*</span><span class="p">)</span><span class="nv">pan</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 获取触摸点</span>
+</span><span class='line'>    <span class="n">CGpoint</span> <span class="n">curP</span> <span class="o">=</span> <span class="p">[</span><span class="n">pan</span> <span class="nl">locationInView</span><span class="p">:</span><span class="nb">self</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 判断触摸点在不在按钮上</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="bp">UIButton</span> <span class="o">*</span><span class="n">btn</span> <span class="k">in</span> <span class="nb">self</span><span class="p">.</span><span class="n">subviews</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// 点在不在某个范围内</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">CGRectContainsPoint</span><span class="p">(</span><span class="n">btn</span><span class="p">.</span><span class="n">frame</span><span class="p">,</span> <span class="n">curP</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="c1">// 点在按钮上</span>
+</span><span class='line'>            <span class="n">btn</span><span class="p">.</span><span class="n">selected</span> <span class="o">=</span> <span class="nb">YES</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/%E6%89%8B%E5%8A%BF%E8%A7%A3%E9%94%81-%E9%80%89%E4%B8%AD%E6%8C%89%E9%92%AE.png" alt="" /></p>
+
+<ul>
+<li>选中按钮之间连线
+
+<ul>
+<li>将选中按钮添加到可变数组中保存</li>
+<li>每一次有选中的按钮就重绘画线</li>
+</ul>
+</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">NSMutableArray</span> <span class="o">*</span><span class="n">selectedsBtn</span><span class="p">;</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">NSMutableArray</span> <span class="o">*</span><span class="p">)</span><span class="nf">selectedsBtn</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_selectedsBtn</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">_selectedsBtn</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">_selectedsBtn</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">pan:</span><span class="p">(</span><span class="bp">UIPanGestureRecognizer</span> <span class="o">*</span><span class="p">)</span><span class="nv">pan</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 获取触摸点</span>
+</span><span class='line'>    <span class="n">_curP</span> <span class="o">=</span> <span class="p">[</span><span class="n">pan</span> <span class="nl">locationInView</span><span class="p">:</span><span class="nb">self</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 判断触摸点在不在按钮上</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="bp">UIButton</span> <span class="o">*</span><span class="n">btn</span> <span class="k">in</span> <span class="nb">self</span><span class="p">.</span><span class="n">subviews</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// 点在不在某个范围内,并且按钮没有被选中</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">CGRectContainsPoint</span><span class="p">(</span><span class="n">btn</span><span class="p">.</span><span class="n">frame</span><span class="p">,</span> <span class="n">_curP</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">btn</span><span class="p">.</span><span class="n">selected</span> <span class="o">==</span> <span class="nb">NO</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="c1">// 点在按钮上</span>
+</span><span class='line'>            <span class="n">btn</span><span class="p">.</span><span class="n">selected</span> <span class="o">=</span> <span class="nb">YES</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="c1">// 保存到数组中</span>
+</span><span class='line'>            <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">selectedsBtn</span> <span class="nl">addObject</span><span class="p">:</span><span class="n">btn</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="c1">// 重绘</span>
+</span><span class='line'>            <span class="p">[</span><span class="nb">self</span> <span class="n">setNeedsDisplay</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 只要调用这个方法，就会把之前绘制的东西全部清掉，重新绘制</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 没有选中按钮，不需要连线</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nb">self</span><span class="p">.</span><span class="n">selectedsBtn</span><span class="p">.</span><span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 把所有选中按钮中心点连线</span>
+</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="n">bezierPath</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">NSUInteger</span> <span class="n">count</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">selectedsBtn</span><span class="p">.</span><span class="n">count</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// 把所有选中按钮之间都连好线</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="bp">UIButton</span> <span class="o">*</span><span class="n">btn</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">selectedsBtn</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="c1">// 设置起点</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">path</span> <span class="nl">moveToPoint</span><span class="p">:</span><span class="n">btn</span><span class="p">.</span><span class="n">center</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">path</span> <span class="nl">addLineToPoint</span><span class="p">:</span><span class="n">btn</span><span class="p">.</span><span class="n">center</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[[</span><span class="bp">UIColor</span> <span class="n">greenColor</span><span class="p">]</span> <span class="n">set</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">path</span><span class="p">.</span><span class="n">lineWidth</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">path</span><span class="p">.</span><span class="n">lineJoinStyle</span> <span class="o">=</span> <span class="n">kCGLineJoinRound</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="n">stroke</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>连线到触摸点</li>
+<li>当手指抬起时,清空数组重绘,<code>系统默认手势抬起时会重绘</code></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;LockView.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">LockView</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">NSMutableArray</span> <span class="o">*</span><span class="n">selectedsBtn</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">assign</span><span class="p">)</span> <span class="bp">CGPoint</span> <span class="n">curP</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">LockView</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">NSMutableArray</span> <span class="o">*</span><span class="p">)</span><span class="nf">selectedsBtn</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_selectedsBtn</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">_selectedsBtn</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">_selectedsBtn</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">pan:</span><span class="p">(</span><span class="bp">UIPanGestureRecognizer</span> <span class="o">*</span><span class="p">)</span><span class="nv">pan</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 获取触摸点</span>
+</span><span class='line'>    <span class="n">_curP</span> <span class="o">=</span> <span class="p">[</span><span class="n">pan</span> <span class="nl">locationInView</span><span class="p">:</span><span class="nb">self</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 判断触摸点在不在按钮上</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="bp">UIButton</span> <span class="o">*</span><span class="n">btn</span> <span class="k">in</span> <span class="nb">self</span><span class="p">.</span><span class="n">subviews</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// 点在不在某个范围内,并且按钮没有被选中</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">CGRectContainsPoint</span><span class="p">(</span><span class="n">btn</span><span class="p">.</span><span class="n">frame</span><span class="p">,</span> <span class="n">_curP</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">btn</span><span class="p">.</span><span class="n">selected</span> <span class="o">==</span> <span class="nb">NO</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="c1">// 点在按钮上</span>
+</span><span class='line'>            <span class="n">btn</span><span class="p">.</span><span class="n">selected</span> <span class="o">=</span> <span class="nb">YES</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="c1">// 保存到数组中</span>
+</span><span class='line'>            <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">selectedsBtn</span> <span class="nl">addObject</span><span class="p">:</span><span class="n">btn</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 重绘</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">setNeedsDisplay</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">pan</span><span class="p">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">UIGestureRecognizerStateEnded</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// 创建可变字符串</span>
+</span><span class='line'>        <span class="bp">NSMutableString</span> <span class="o">*</span><span class="n">strM</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSMutableString</span> <span class="n">string</span><span class="p">];</span>
+</span><span class='line'>         <span class="c1">// 保存输入密码</span>
+</span><span class='line'>        <span class="k">for</span> <span class="p">(</span><span class="bp">UIButton</span> <span class="o">*</span><span class="n">btn</span> <span class="k">in</span> <span class="nb">self</span><span class="p">.</span><span class="n">selectedsBtn</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="p">[</span><span class="n">strM</span> <span class="nl">appendFormat</span><span class="p">:</span><span class="s">@&quot;%ld&quot;</span><span class="p">,</span><span class="n">btn</span><span class="p">.</span><span class="n">tag</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span><span class="n">strM</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// 还原界面</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// 取消所有按钮的选中</span>
+</span><span class='line'>        <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">selectedsBtn</span> <span class="nl">makeObjectsPerformSelector</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">setSelected</span><span class="p">:)</span> <span class="nl">withObject</span><span class="p">:</span><span class="l">@(</span><span class="nb">NO</span><span class="l">)</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// 清除画线,把选中按钮清空</span>
+</span><span class='line'>        <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">selectedsBtn</span> <span class="n">removeAllObjects</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// 加载完xib的时候调用</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">awakeFromNib</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 创建9个按钮</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span> <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">9</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="bp">UIButton</span> <span class="o">*</span><span class="n">btn</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIButton</span> <span class="nl">buttonWithType</span><span class="p">:</span><span class="n">UIButtonTypeCustom</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// 不允许用户交互，按钮就不能点击，也就不能达到高亮状态</span>
+</span><span class='line'>        <span class="n">btn</span><span class="p">.</span><span class="n">userInteractionEnabled</span> <span class="o">=</span> <span class="nb">NO</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">[</span><span class="n">btn</span> <span class="nl">setImage</span><span class="p">:[</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="s">@&quot;gesture_node_normal&quot;</span><span class="p">]</span> <span class="nl">forState</span><span class="p">:</span><span class="n">UIControlStateNormal</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">[</span><span class="n">btn</span> <span class="nl">setImage</span><span class="p">:[</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="s">@&quot;gesture_node_highlighted&quot;</span><span class="p">]</span> <span class="nl">forState</span><span class="p">:</span><span class="n">UIControlStateSelected</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">btn</span><span class="p">.</span><span class="n">tag</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">[</span><span class="nb">self</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">btn</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 为什么要在这个方法布局子控件，因为只要一调用这个方法，就表示父控件的尺寸确定</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">layoutSubviews</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">layoutSubviews</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">NSUInteger</span> <span class="n">count</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">subviews</span><span class="p">.</span><span class="n">count</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">cols</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">w</span> <span class="o">=</span> <span class="mi">74</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">h</span> <span class="o">=</span> <span class="mi">74</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">margin</span> <span class="o">=</span> <span class="p">(</span><span class="nb">self</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">-</span> <span class="n">cols</span> <span class="o">*</span> <span class="n">w</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">cols</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">row</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="bp">NSUInteger</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="bp">UIButton</span> <span class="o">*</span><span class="n">btn</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">subviews</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</span><span class='line'>        <span class="c1">// 获取当前按钮的列数</span>
+</span><span class='line'>        <span class="n">col</span> <span class="o">=</span> <span class="n">i</span> <span class="o">%</span> <span class="n">cols</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">row</span> <span class="o">=</span> <span class="n">i</span> <span class="o">/</span> <span class="n">cols</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">x</span> <span class="o">=</span> <span class="n">margin</span> <span class="o">+</span> <span class="n">col</span> <span class="o">*</span> <span class="p">(</span><span class="n">margin</span> <span class="o">+</span> <span class="n">w</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">y</span> <span class="o">=</span> <span class="n">row</span> <span class="o">*</span> <span class="p">(</span><span class="n">margin</span> <span class="o">+</span> <span class="n">w</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">btn</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 只要调用这个方法，就会把之前绘制的东西全部清掉，重新绘制</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 没有选中按钮，不需要连线</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nb">self</span><span class="p">.</span><span class="n">selectedsBtn</span><span class="p">.</span><span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 把所有选中按钮中心点连线</span>
+</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="n">bezierPath</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">NSUInteger</span> <span class="n">count</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">selectedsBtn</span><span class="p">.</span><span class="n">count</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// 把所有选中按钮之间都连好线</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="bp">UIButton</span> <span class="o">*</span><span class="n">btn</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">selectedsBtn</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="c1">// 设置起点</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">path</span> <span class="nl">moveToPoint</span><span class="p">:</span><span class="n">btn</span><span class="p">.</span><span class="n">center</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">path</span> <span class="nl">addLineToPoint</span><span class="p">:</span><span class="n">btn</span><span class="p">.</span><span class="n">center</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 连线到手指的触摸点</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="nl">addLineToPoint</span><span class="p">:</span><span class="n">_curP</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[[</span><span class="bp">UIColor</span> <span class="n">greenColor</span><span class="p">]</span> <span class="n">set</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">path</span><span class="p">.</span><span class="n">lineWidth</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">path</span><span class="p">.</span><span class="n">lineJoinStyle</span> <span class="o">=</span> <span class="n">kCGLineJoinRound</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="n">stroke</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/%E6%89%8B%E5%8A%BF%E8%A7%A3%E9%94%81-%E8%A7%A3%E9%94%81" alt="" /></p>
+
+<ul>
+<li>判断是连线否正确
+
+<ul>
+<li>在添加按钮时,添加tag值,在手势抬起状态,判断选中按钮数组里的拼接的tag值和保存的是否相同</li>
+</ul>
+</li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">嗷大喵</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-07-17T11:39:07+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>11:39 am</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/07/16/quartz2d-shou-dong-jie-ping/" title="Previous Post: Quartz2d-手动截屏">&laquo; Quartz2d-手动截屏</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/07/17/quartz2d-hua-ban/" title="Next Post: Quartz2d-画板">Quartz2d-画板 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>欢迎光临小站</h1>
+  <p>我的世界</p>
+  <p>新浪微博：<a href=" http://weibo.com/QQ908887023" target="_blank">我是嗷大喵</a></p>
+</section><section>
+  <h1>文章分类</h1>
+  <ul id="categories">
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/suan-fa/'>算法</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/cocos2dx-lua/'>cocos2dx-lua</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/u3d/'>u3d</a> (4)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ioswei-fen-lei/'>ios未分类</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/tableview/'>tableview</a> (14)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ji-suan-ji-ying-yu/'>计算机英语</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/liao-tian-cellbu-ju/'>聊天cell布局</a> (7)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/uipickerview/'>uipickerview</a> (5)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shu-ju-cun-chu/'>数据存储</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shi-jian-chu-li/'>事件处理</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a> (17)
+      </li>
+    
+  </ul>
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/09/06/quartz2d-hua-ju-xing/">Quartz2d-画矩形</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/">Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-hua-ban/">Quartz2d-画板</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-shou-shi-jie-suo/">Quartz2d-手势解锁</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/16/quartz2d-shou-dong-jie-ping/">Quartz2d-手动截屏</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - 嗷大喵 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

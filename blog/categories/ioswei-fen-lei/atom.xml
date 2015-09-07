@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Ios未分类 | My World]]></title>
+  <link href="http://xiaobenmao.github.io/blog/categories/ioswei-fen-lei/atom.xml" rel="self"/>
+  <link href="http://xiaobenmao.github.io/"/>
+  <updated>2015-09-07T23:16:14+08:00</updated>
+  <id>http://xiaobenmao.github.io/</id>
+  <author>
+    <name><![CDATA[嗷大喵]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Button内部文字和图片位置排布]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/02/08/buttonnei-bu-wen-zi-he-tu-pian-wei-zhi-pai-bu/"/>
+    <updated>2014-02-08T09:54:42+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/02/08/buttonnei-bu-wen-zi-he-tu-pian-wei-zhi-pai-bu</id>
+    <content type="html"><![CDATA[<h3>按钮内部文字(titleLabel)和图片(imageView)的位置排布方式</h3>
+
+<ul>
+<li>方式一
+
+<ul>
+<li>当一个类继承或者是UIButton类的时候可以调用以下方法对titleLabel和imageView进行位置排布</li>
+</ul>
+
+
+<p> <!--more--></p></li>
+</ul>
+
+
+<pre><code>
+- (CGRect)imageRectForContentRect:(CGRect)contentRect
+{
+    return CGRectMake(0, 0, contentRect.size.width, contentRect.size.height);
+}
+
+- (CGRect)titleRectForContentRect:(CGRect)contentRect
+{
+    return CGRectMake(0, 30, 70, 30);
+}
+</code></pre>
+
+<ul>
+<li>方式二
+
+<ul>
+<li>在方式一种有时候需要用到共同的数值,比如屏幕的高宽等,或者彼此的数据,需要重新计算,不如在一个方法中完成</li>
+<li>layoutSubviews是UIView中的方法,当外部的frame赋值或者改变时,会自动调用此方法</li>
+</ul>
+</li>
+</ul>
+
+
+<pre><code class="objc">- (void)layoutSubviews
+{
+    [super layoutSubviews];
+
+    CGFloat buttonW = self.frame.size.width;
+    CGFloat buttonH = self.frame.size.height;
+
+    CGFloat imageH = buttonW - 10;
+    self.imageView.frame = CGRectMake(0, 0, buttonW, imageH);
+
+    self.titleLabel.frame = CGRectMake(0, imageH, buttonW, buttonH - imageH);
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,397 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Quartz2d-绘图中的定时器(CADisplayLink和NSTimer) - My World</title>
+  <meta name="author" content="嗷大喵">
+
+  
+  <meta name="description" content="NSSTimer 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+/** *(NSTimeInterval)ti:多少秒调用一次,单位秒 *(id)aTarget:给谁添加定时器 *(SEL)aSelector:回调函数,每次调用所要做的事情 *(id)userInfo:此参数可以为nil &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://xiaobenmao.github.io/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My World" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.useso.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.useso.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My World</a></h1>
+  
+    <h2>Your World</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="xiaobenmao.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-09-02T18:32:01+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>2</span><span class='date-suffix'>nd</span>, <span class='date-year'>2015</span></span> <span class='time'>6:32 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><!--more-->
+
+
+<p><img src="images/Quartz2d%E7%9A%84%E5%AE%9A%E6%97%B6%E5%99%A8.png" alt="" /></p>
+
+<ul>
+<li>NSSTimer</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> *(NSTimeInterval)ti:多少秒调用一次,单位秒</span>
+</span><span class='line'><span class="cm"> *(id)aTarget:给谁添加定时器</span>
+</span><span class='line'><span class="cm"> *(SEL)aSelector:回调函数,每次调用所要做的事情</span>
+</span><span class='line'><span class="cm"> *(id)userInfo:此参数可以为nil，当定时器失效时，由你指定的对象保留和释放该定时器。</span>
+</span><span class='line'><span class="cm"> *(BOOL)yesOrNo:是否循环</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="p">+</span> <span class="p">(</span><span class="bp">NSTimer</span> <span class="o">*</span><span class="p">)</span><span class="nf">scheduledTimerWithTimeInterval:</span><span class="p">(</span><span class="n">NSTimeInterval</span><span class="p">)</span><span class="nv">ti</span> <span class="nf">target:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">aTarget</span> <span class="nf">selector:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">aSelector</span> <span class="nf">userInfo:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">userInfo</span> <span class="nf">repeats:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">yesOrNo</span><span class="p">;</span>
+</span><span class='line'><span class="c1">//启动 Timer</span>
+</span><span class='line'><span class="err">–</span> <span class="n">fire</span>
+</span><span class='line'><span class="c1">//停止 Timer</span>
+</span><span class='line'><span class="err">–</span> <span class="n">invalidate</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>NSTimer初始化器接受调用方法逻辑之间的间隔作为它的其中一个参数，预设一秒执行30次。CADisplayLink默认每秒运行60次，通过它的frameInterval属性改变每秒运行帧数，如设置为2，意味CADisplayLink每隔一帧运行一次，有效的逻辑每秒运行30次。</p></li>
+<li><p>NSTimer接受另一个参数是否重复，而把CADisplayLink设置为重复（默认重复？）直到它失效。</p></li>
+<li><p>还有一个区别在于，NSTimer一旦初始化它就开始运行，而CADisplayLink需要将显示链接添加到一个运行循环中，即用于处理系统事件的一个Cocoa Touch结构。</p></li>
+<li><p>NSTimer 我们通常会用在背景计算，更新一些数值资料，而如果牵涉到画面的更新，动画过程的演变，我们通常会用CADisplayLink。</p></li>
+<li><p>但是要使用CADisplayLink，需要加入QuartzCore.framework及#import &lt;QuartzCore/CADisplayLink.h></p></li>
+<li><p>CADisplayLink在Quartz2d中的使用</p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DrawView.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">static</span> <span class="n">CGFloat</span> <span class="n">_snowY</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">DrawView</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 如果以后想绘制东西到view上面，必须在drawRect方法里面，不管有没有手动获取到上下文</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 修改雪花y值</span>
+</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span>  <span class="p">[</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="s">@&quot;雪花&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 画图</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">image</span> <span class="nl">drawAtPoint</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">_snowY</span><span class="p">)];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">_snowY</span> <span class="o">+=</span> <span class="mi">10</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// 当掉出屏幕底部时,修改y值,重新在顶部画出来</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_snowY</span> <span class="o">&gt;</span> <span class="n">rect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">_snowY</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 如果在绘图的时候需要用到定时器，通常</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// NSTimer很少用于绘图，因为调度优先级比较低，并不会准时调用</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">awakeFromNib</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 创建定时器</span>
+</span><span class='line'>    <span class="c1">//[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(timeChange) userInfo:nil repeats:YES];</span>
+</span><span class='line'>    <span class="bp">CADisplayLink</span> <span class="o">*</span><span class="n">link</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CADisplayLink</span> <span class="nl">displayLinkWithTarget</span><span class="p">:</span><span class="nb">self</span> <span class="nl">selector</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="n">timeChange</span><span class="p">)];</span>
+</span><span class='line'>    <span class="c1">// 设定每隔几帧调用一次</span>
+</span><span class='line'>    <span class="n">link</span><span class="p">.</span><span class="n">frameInterval</span> <span class="o">=</span> <span class="mi">30</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// 添加主运行循环</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">link</span> <span class="nl">addToRunLoop</span><span class="p">:[</span><span class="bp">NSRunLoop</span> <span class="n">mainRunLoop</span><span class="p">]</span> <span class="nl">forMode</span><span class="p">:</span><span class="n">NSDefaultRunLoopMode</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// CADisplayLink:每次屏幕刷新的时候就会调用，屏幕一般一秒刷新60次</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">timeChange</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 注意：这个方法并不会马上调用drawRect,其实这个方法只是给当前控件添加刷新的标记，等下一次屏幕刷新的时候才会调用drawRect</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">setNeedsDisplay</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">嗷大喵</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-09-02T18:32:01+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>2</span><span class='date-suffix'>nd</span>, <span class='date-year'>2015</span></span> <span class='time'>6:32 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/07/17/quartz2d-hua-ban/" title="Previous Post: Quartz2d-画板">&laquo; Quartz2d-画板</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2015/09/06/quartz2d-hua-ju-xing/" title="Next Post: Quartz2d-画矩形">Quartz2d-画矩形 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>欢迎光临小站</h1>
+  <p>我的世界</p>
+  <p>新浪微博：<a href=" http://weibo.com/QQ908887023" target="_blank">我是嗷大喵</a></p>
+</section><section>
+  <h1>文章分类</h1>
+  <ul id="categories">
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/suan-fa/'>算法</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/cocos2dx-lua/'>cocos2dx-lua</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/u3d/'>u3d</a> (4)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ioswei-fen-lei/'>ios未分类</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/tableview/'>tableview</a> (14)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ji-suan-ji-ying-yu/'>计算机英语</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/liao-tian-cellbu-ju/'>聊天cell布局</a> (7)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/uipickerview/'>uipickerview</a> (5)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shu-ju-cun-chu/'>数据存储</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shi-jian-chu-li/'>事件处理</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a> (17)
+      </li>
+    
+  </ul>
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/09/06/quartz2d-hua-ju-xing/">Quartz2d-画矩形</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/">Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-hua-ban/">Quartz2d-画板</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-shou-shi-jie-suo/">Quartz2d-手势解锁</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/16/quartz2d-shou-dong-jie-ping/">Quartz2d-手动截屏</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - 嗷大喵 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

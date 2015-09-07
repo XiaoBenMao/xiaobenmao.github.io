@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: U3d | My World]]></title>
+  <link href="http://xiaobenmao.github.io/blog/categories/u3d/atom.xml" rel="self"/>
+  <link href="http://xiaobenmao.github.io/"/>
+  <updated>2015-09-07T23:16:14+08:00</updated>
+  <id>http://xiaobenmao.github.io/</id>
+  <author>
+    <name><![CDATA[嗷大喵]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[U3D 按下“w”键使人物开始运动，放开则停止]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/01/10/u3d-an-xia-w-jian-shi-ren-wu-kai-shi-yun-dong-,fang-kai-ze-ting-zhi/"/>
+    <updated>2014-01-10T16:17:21+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/01/10/u3d-an-xia-w-jian-shi-ren-wu-kai-shi-yun-dong-,fang-kai-ze-ting-zhi</id>
+    <content type="html"><![CDATA[<pre><code>1设置好人物Avatar  
+2创建Animator  
+3配置好BlendTree：事件参数组件用作动画状态机来实现播放不同的动画剪辑  
+4添加脚本PlayerMove.cs  
+5实现当按下w时，人物由站立从走到跑，放开w键时，运动停止回到站立状态  
+</code></pre>
+
+<p> <!--more--></p>
+
+<pre><code>    uusing UnityEngine;  
+    using System.Collections;  
+
+    public class PlayerMove : MonoBehaviour {  
+
+        // Use this for initialization  
+        public Vector3 targetPoint;  
+        public float moveSpeed;  
+        Animator animator;  
+        int SpeedFloat;  
+
+        void Awake () {  
+            animator = GetComponent&lt;Animator&gt; ();  
+            SpeedFloat = Animator.StringToHash("Speed");  
+
+            /* 
+            int SpeedFloate = Animator.StringToHash("Speed"); 
+            Animator animator = GetComponent&lt;Animator&gt; (); 
+            animator.SetFloat (SpeedFloate, 2f); 
+            */  
+        }  
+
+        // Update is called once per frame  
+        void Update () {  
+            moveAnimation ();  
+        }  
+        void moveAnimation(){  
+            /* 
+            if (Input.GetKeyDown(KeyCode.W)) { 
+
+                 //id The id of the parameter. The id is generated using Animator::StringToHash. 
+                     //value The new value for the parameter. 
+                     //dampTime The time allowed to parameter to reach the value. 
+                     //deltaTime The current frame deltaTime. 
+
+                animator.SetFloat(SpeedFloat,2f,0.04f,Time.deltaTime);  
+            } 
+            */  
+            if (Input.GetKey (KeyCode.W)) {  
+                animator.SetFloat(SpeedFloat,2f,1f,Time.deltaTime);  
+            }  
+            if (Input.GetKeyUp (KeyCode.W)) {  
+                animator.SetFloat(SpeedFloat,0);      
+            }  
+        }  
+    }  
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[U3D 小球跟随鼠标在地上滚动（一)]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/01/04/u3d-xiao-qiu-gen-sui-shu-biao-zai-di-shang-gun-dong-(%5B%3F%5D/"/>
+    <updated>2014-01-04T17:38:20+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/01/04/u3d-xiao-qiu-gen-sui-shu-biao-zai-di-shang-gun-dong-([?]</id>
+    <content type="html"><![CDATA[<p>新建一个plane作为地面Land，一个小球。给小球增加Rigidbody组件，设置一个阻力值Drag，此处我们设为1。</p>
+
+<p>然后给小球增加一个script，此处为moveController.cs</p>
+
+<!--more-->
+
+
+<pre><code>    using UnityEngine;  
+    using System.Collections;  
+
+    public class moveController : MonoBehaviour {  
+
+        public float speed; //  小球运动速度  
+
+        Vector3 targetPos;  //  目标位置  
+
+        void Awake () {  
+            targetPos = transform.position;  
+        }  
+
+        void Update () {  
+            GetTargetPos ();  
+            //  判断小球有没有到达目标点  
+            if (Vector3.Distance (targetPos, transform.position) &gt;= 0.05f) {  
+                //  使小球朝向目标点  
+                transform.LookAt (targetPos);  
+                //  使小球运动  
+                transform.Translate (Vector3.forward * speed * Time.deltaTime);  
+            }  
+        }  
+
+        //  获取目标点  
+        void GetTargetPos () {  
+            //  1.  监听鼠标点击事件  
+            if (Input.GetMouseButtonDown (0)) {  
+                //  2.  获取从摄像机向鼠标当前位置发出的射线  
+                Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);  
+                //  3.  创建一个用于保存碰撞信息的变量  
+                RaycastHit hitInfo = new RaycastHit ();  
+                //  4.  调用函数发射射线检测有没有碰撞到游戏对象  
+                if (Physics.Raycast (ray, out hitInfo)) {  
+                //  5.  判断发生碰撞的游戏对象是不是地板  
+                    if (hitInfo.collider.gameObject.name == "Land") {  
+                //  6.  如果是地板，获取碰撞点的坐标  
+                        targetPos = hitInfo.point;  
+                //  修改目标点的 Y 值  
+                        targetPos.y = transform.position.y;  
+                        Debug.Log ("targetPos" + targetPos);  
+                    }  
+                }  
+            }  
+        }  
+    }  
+</code></pre>
+
+<p><img src="/images/U3D/%E5%B0%8F%E7%90%831.png" alt="" />
+<img src="/images/U3D/%E5%B0%8F%E7%90%832.png" alt="" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[U3D 小球跟随鼠标在地上滚动（二)]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/01/04/u3d-xiao-qiu-gen-sui-shu-biao-zai-di-shang-gun-dong-(er/"/>
+    <updated>2014-01-04T16:12:23+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/01/04/u3d-xiao-qiu-gen-sui-shu-biao-zai-di-shang-gun-dong-(er</id>
+    <content type="html"><![CDATA[<p>利用刚体到方法实现小球的移动，会因为惯性等因素，使小球控制精度降低</p>
+
+<!--more-->
+
+
+<pre><code>
+       using UnityEngine;  
+    using System.Collections;  
+
+    public class moveController : MonoBehaviour {  
+
+        public int moveSpeed;  
+        Vector3 targetPoint;  
+
+        // Use this for initialization  
+        void Awake () {  
+            targetPoint =  transform.position;  
+        }  
+
+        // Update is called once per frame  
+        void Update () {  
+            getTargetPoint ();  
+        }  
+        void FixedUpdate()  
+        {         
+                    //单位华，取得单位向量  
+            Vector3 targetForce = (targetPoint - transform.position).normalized;  
+            //利用刚体方法实现小球到滚动  
+                    rigidbody.AddForce (targetForce*moveSpeed);  
+        }  
+
+        void getTargetPoint(){  
+            Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);  
+            RaycastHit hitInfo = new RaycastHit();  
+            if(Input.GetMouseButtonDown(0)){  
+                if(Physics.Raycast(ray,out hitInfo) ){  
+
+                    if(hitInfo.collider.gameObject.name == "Land")  
+                    {  
+                        targetPoint = hitInfo.point;  
+                        Debug.Log("targetPoint:"+targetPoint);  
+                    }  
+                }  
+            }  
+        }  
+    }     
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[U3D Ray射线的创建和碰撞检测]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/01/04/u3d-rayshe-xian-de-chuang-jian-he-peng-zhuang-jian-ce/"/>
+    <updated>2014-01-04T15:30:19+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/01/04/u3d-rayshe-xian-de-chuang-jian-he-peng-zhuang-jian-ce</id>
+    <content type="html"><![CDATA[<pre><code>    using UnityEngine;  
+    using System.Collections;  
+
+    public class CubeController : MonoBehaviour {  
+
+        // Use this for initialization  
+        void Awake () {  
+            //创建一条射线  
+            //Ray ray = new Ray (new Vector3 (1f, 1f, 1f), Vector3.up);  
+        }  
+
+        // Update is called once per frame  
+        void Update () {  
+
+            /* 
+            //创建一条从主摄像机到鼠标触摸点的射线 
+            Ray ray1 = Camera.main.ScreenPointToRay (Input.mousePosition); 
+            //发射射线并进行碰撞检测 
+            bool isCollision = Physics.Raycast (ray1); 
+            if (isCollision) { 
+                Debug.Log("ray1"); 
+            } 
+            */  
+            if (Input.GetMouseButtonDown (0)) {  
+                Ray ray2 = Camera.main.ScreenPointToRay(Input.mousePosition);  
+                //RaycastHit  是一个结构体对象，返回储存的碰撞信息  
+                RaycastHit hitInfo = new RaycastHit();  
+                if( Physics.Raycast(ray2,out hitInfo)){  
+                    if (hitInfo.collider.gameObject.name == "Cube"){  
+                        Debug.Log("hit_point = "+hitInfo.point);  
+                    }  
+                }  
+            }  
+        }  
+    }  
+    //新建一个Cube，inspector的Layer属性自定义个一个名为Cube的层。当鼠标点击在Cube上时会发生碰撞，并打印碰撞点。  
+</code></pre>
+
+<p><img src="/images/U3D/Ray%E5%B0%84%E7%BA%BF%E5%88%9B%E5%BB%BA%E5%92%8C%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8.png" alt="" /></p>
+]]></content>
+  </entry>
+  
+</feed>

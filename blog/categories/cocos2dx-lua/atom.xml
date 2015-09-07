@@ -1,0 +1,705 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Cocos2dx-lua | My World]]></title>
+  <link href="http://xiaobenmao.github.io/blog/categories/cocos2dx-lua/atom.xml" rel="self"/>
+  <link href="http://xiaobenmao.github.io/"/>
+  <updated>2015-09-07T23:16:14+08:00</updated>
+  <id>http://xiaobenmao.github.io/</id>
+  <author>
+    <name><![CDATA[嗷大喵]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[cocos2dx3.3 “HelloLua”]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/01/03/cocos2dx3-dot-3-hellolua/"/>
+    <updated>2014-01-03T17:24:37+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/01/03/cocos2dx3-dot-3-hellolua</id>
+    <content type="html"><![CDATA[<p>引擎初始界面"HelloLua"代码解析</p>
+
+<!--more-->
+
+
+<pre><code>  --此处是资源文件的目录  
+    cc.FileUtils:getInstance():addSearchPath("src")  
+    cc.FileUtils:getInstance():addSearchPath("res")  
+
+    -- CC_USE_DEPRECATED_API = true  
+    require "cocos.init"  
+
+    -- cclog   
+    cclog = function(...)  
+        print(string.format(...))  
+    end  
+
+    -- for CCLuaEngine traceback 输出绑定执行函数发生错误的信息  
+    --http://book.luaer.cn/_55.htm  错误信息和回跟踪（Tracebacks）  
+    function __G__TRACKBACK__(msg)  
+        cclog("----------------------------------------")  
+        cclog("LUA ERROR: " .. tostring(msg) .. "\n")  
+        cclog(debug.traceback())  
+        cclog("----------------------------------------")  
+        return msg  
+    end  
+
+    local function main()  
+        --设置脚本回收参数，避免内存泄漏   
+        collectgarbage("collect")  
+        -- avoid memory leak  
+        collectgarbage("setpause", 100)  
+        collectgarbage("setstepmul", 5000)  
+
+        -- initialize director 初始化导演类（单例）  
+        local director = cc.Director:getInstance()  
+        --获取OpenGL实例  
+        local glview = director:getOpenGLView()  
+        --如果glview为nil，设置运行窗口名称 和 大小即frameSize  
+        if nil == glview then  
+            glview = cc.GLViewImpl:createWithRect("HelloLua", cc.rect(0,0,900,640))  
+            --设置OpenGL视图  
+            director:setOpenGLView(glview)  
+        end  
+        --设置designSize即可视窗口大小  
+        glview:setDesignResolutionSize(480, 320, cc.ResolutionPolicy.NO_BORDER)  
+
+        --turn on display FPS打开帧频显示，在窗口右下角显示的数据  
+        director:setDisplayStats(true)  
+        --设置每秒显示的帧数，默认一秒60帧  
+        --set FPS. the default value is 1.0/60 if you don't call this  
+        director:setAnimationInterval(1.0 / 60)  
+
+        local schedulerID = 0  
+        --support debug  
+        local targetPlatform = cc.Application:getInstance():getTargetPlatform()  
+        if (cc.PLATFORM_OS_IPHONE == targetPlatform) or (cc.PLATFORM_OS_IPAD == targetPlatform) or  
+           (cc.PLATFORM_OS_ANDROID == targetPlatform) or (cc.PLATFORM_OS_WINDOWS == targetPlatform) or  
+           (cc.PLATFORM_OS_MAC == targetPlatform) then  
+            cclog("result is ")  
+            --require('debugger')()  
+
+        end  
+        --引入文件hello2， require会搜索目录加载文件，require会判断是否文件已经加载避免重复加载同一文件  
+        require "hello2"  
+        cclog("result is " .. myadd(1, 1))  
+
+        ---------------  
+        --获取可视区域  
+        local visibleSize = cc.Director:getInstance():getVisibleSize()  
+        --逻辑区域大小的（0，0）点在屏幕上的位置，即getVisibleOrigin里面的（0，0）点在整个屏幕的位置，这个点的作用通常在于处理相对坐标。  
+        local origin = cc.Director:getInstance():getVisibleOrigin()  
+
+        -- add the moving dog增加移动的dog  
+        local function createDog()  
+            local frameWidth = 105  
+            local frameHeight = 95  
+
+            -- create dog animate创建一个动作  
+            --将图片加到纹理缓存中，并返回该图片CCTexture2D 对象  
+            local textureDog = cc.Director:getInstance():getTextureCache():addImage("dog.png")  
+            --设置所要取得纹理的矩形显示区域  
+            local rect = cc.rect(0, 0, frameWidth, frameHeight)  
+            --通过纹理和显示区域创建精灵帧，即返回CCSpriteFrame 对象  
+            --CCSpriteFrame // 用来定义动画层的每一帧，定义好厚以CCAction的形式作用到一个CCSprite上来呈现动画效果  
+            local frame0 = cc.SpriteFrame:createWithTexture(textureDog, rect)  
+            rect = cc.rect(frameWidth, 0, frameWidth, frameHeight)  
+            local frame1 = cc.SpriteFrame:createWithTexture(textureDog, rect)  
+            --创建精灵对象，实现纹理显示  
+            local spriteDog = cc.Sprite:createWithSpriteFrame(frame0)  
+            spriteDog.isPaused = false  
+            --设置dog位置  
+            spriteDog:setPosition(origin.x, origin.y + visibleSize.height / 4 * 3)  
+            cclog(origin.x)  
+    --[[  
+            local animFrames = CCArray:create()  
+
+            animFrames:addObject(frame0)  
+            animFrames:addObject(frame1)  
+    ]]--  
+            --用序列帧创建一个动画  
+            local animation = cc.Animation:createWithSpriteFrames({frame0,frame1}, 0.5)  
+            --用动画创建一个动作  
+            local animate = cc.Animate:create(animation);  
+            --重复执行这个动作，即dog走路的动作  
+            spriteDog:runAction(cc.RepeatForever:create(animate))  
+
+            -- moving dog at every frame  
+            --每帧调用此函数，不停的改变dog的横坐标  
+            local function tick()  
+                if spriteDog.isPaused then return end  
+                local x, y = spriteDog:getPosition()  
+                --如果往左超过屏幕，则横坐标设为可是区域的原点横坐标，设为最左边  
+                if x &gt; origin.x + visibleSize.width then  
+                    x = origin.x  
+                else  
+                    x = x + 1  
+                end  
+
+                spriteDog:setPositionX(x)  
+            end  
+            --函数原型“scheduleScriptFunc(unsigned int nHandler, float fInterval, bool bPaused)  
+            --第一个参数是你要注册的回调函数，第二个是执行该函数循环的间隔，第三个参数是是否暂停。  
+            schedulerID = cc.Director:getInstance():getScheduler():scheduleScriptFunc(tick, 0, false)  
+
+            return spriteDog  
+        end  
+
+        -- create farm 创建农场  
+        local function createLayerFarm()  
+            --创建一个层  
+            local layerFarm = cc.Layer:create()  
+
+            -- add in farm background  
+            --添加背景图片  
+            local bg = cc.Sprite:create("farm.jpg")  
+            bg:setPosition(origin.x + visibleSize.width / 2 + 80, origin.y + visibleSize.height / 2)  
+            layerFarm:addChild(bg)  
+
+            -- add land sprite  
+            --添加土地  
+            for i = 0, 3 do  
+                for j = 0, 1 do  
+                    local spriteLand = cc.Sprite:create("land.png")  
+                    --每一块土地的位置  
+                    spriteLand:setPosition(200 + j * 180 - i % 2 * 90, 10 + i * 95 / 2)  
+                    layerFarm:addChild(spriteLand)  
+                end  
+            end  
+
+            -- add crop 添加农作物  
+            local frameCrop = cc.SpriteFrame:create("crop.png", cc.rect(0, 0, 105, 95))  
+            for i = 0, 3 do  
+                for j = 0, 1 do  
+                    local spriteCrop = cc.Sprite:createWithSpriteFrame(frameCrop);  
+                    spriteCrop:setPosition(10 + 200 + j * 180 - i % 2 * 90, 30 + 10 + i * 95 / 2)  
+                    layerFarm:addChild(spriteCrop)  
+                end  
+            end  
+
+            -- add moving dog调用上面的函数添加移动的dog  
+            local spriteDog = createDog()  
+            layerFarm:addChild(spriteDog)  
+
+            -- handing touch events  
+            --处理触摸时间  
+            local touchBeginPoint = nil  
+            --开始触摸函数，手指点击屏幕  
+            local function onTouchBegan(touch, event)  
+                --返回当前触摸位置在OpenGL坐标 ，该坐标系原点在屏幕左下角，x轴向右，y轴向上。  
+                local location = touch:getLocation()  
+                cclog("onTouchBegan: %0.2f, %0.2f", location.x, location.y)  
+                --保存开始的触摸点  
+                touchBeginPoint = {x = location.x, y = location.y}  
+                --dog暂停  
+                spriteDog.isPaused = true  
+                -- CCTOUCHBEGAN event must return true  
+                --返回true吞噬触摸事件，不会传下去  
+                return true  
+            end  
+            --触摸移动中，手指未离开屏幕移动  
+            local function onTouchMoved(touch, event)  
+                local location = touch:getLocation()  
+                cclog("onTouchMoved: %0.2f, %0.2f", location.x, location.y)  
+                if touchBeginPoint then  
+                    --获取农场的坐标  
+                    local cx, cy = layerFarm:getPosition()  
+                    --手指在x和y轴上的位移，即农场坐标加上移动触摸点和开始触摸点的x，y增量代表农场的移动  
+                    layerFarm:setPosition(cx + location.x - touchBeginPoint.x,  
+                                          cy + location.y - touchBeginPoint.y)  
+                    --移动中的点设为开始触摸点，就会得到位移  
+                    touchBeginPoint = {x = location.x, y = location.y}  
+                end  
+            end  
+            --触摸结束，手指离开屏幕  
+            local function onTouchEnded(touch, event)  
+                local location = touch:getLocation()  
+                cclog("onTouchEnded: %0.2f, %0.2f", location.x, location.y)  
+                touchBeginPoint = nil  
+                --dog恢复移动  
+                spriteDog.isPaused = false  
+            end  
+
+            --创建一个触摸监听  
+            --EventListenerTouchOneByOne 单点触摸  
+            --EventListenerTouchAllAtOnce 多点触摸  
+            local listener = cc.EventListenerTouchOneByOne:create()  
+            --注册相应的事件回调：绑定对象，hanler表里是事件类型，事件类型  
+            listener:registerScriptHandler(onTouchBegan,cc.Handler.EVENT_TOUCH_BEGAN )  
+            listener:registerScriptHandler(onTouchMoved,cc.Handler.EVENT_TOUCH_MOVED )  
+            listener:registerScriptHandler(onTouchEnded,cc.Handler.EVENT_TOUCH_ENDED )  
+            local eventDispatcher = layerFarm:getEventDispatcher()  
+            --将监听事件加到事件调度器中（EventListener* listener, Node* node）  
+            eventDispatcher:addEventListenerWithSceneGraphPriority(listener, layerFarm)  
+
+            local function onNodeEvent(event)  
+                --如果离开  
+               if "exit" == event then  
+                   cc.Director:getInstance():getScheduler():unscheduleScriptEntry(schedulerID)  
+               end  
+            end  
+            --注册node事件  
+            layerFarm:registerScriptHandler(onNodeEvent)  
+
+            return layerFarm  
+        end  
+
+
+        -- create menu  
+        local function createLayerMenu()  
+            --创建一个层  
+            local layerMenu = cc.Layer:create()  
+
+            local menuPopup, menuTools, effectID  
+            --关闭按钮回调  
+            local function menuCallbackClosePopup()  
+                -- stop test sound effect  
+                cc.SimpleAudioEngine:getInstance():stopEffect(effectID)  
+                --如果关闭，弹出框菜单栏隐藏  
+                menuPopup:setVisible(false)  
+            end  
+            --打开按钮回调  
+            local function menuCallbackOpenPopup()  
+                -- loop test sound effect  
+                --加载声效  
+                local effectPath = cc.FileUtils:getInstance():fullPathForFilename("effect1.wav")  
+                --播放  
+                effectID = cc.SimpleAudioEngine:getInstance():playEffect(effectPath)  
+                --如果打开，弹出框菜单栏显示  
+                menuPopup:setVisible(true)  
+            end  
+
+            -- add a popup menu  
+            --按钮的normal和selected状态  
+            local menuPopupItem = cc.MenuItemImage:create("menu2.png", "menu2.png")  
+            menuPopupItem:setPosition(0, 0)  
+            --为该按钮注册按下关闭回调函数  
+            menuPopupItem:registerScriptTapHandler(menuCallbackClosePopup)  
+            --创建菜单栏（此处为示例中的弹出框）  
+            menuPopup = cc.Menu:create(menuPopupItem)  
+            menuPopup:setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2)  
+            menuPopup:setVisible(false)  
+            layerMenu:addChild(menuPopup)  
+
+            --增加，左下方“除草”按钮，调用弹出框菜单栏  
+            -- add the left-bottom "tools" menu to invoke menuPopup  
+            local menuToolsItem = cc.MenuItemImage:create("menu1.png", "menu1.png")  
+            menuToolsItem:setPosition(0, 0)  
+            --为“除草”按钮注册回调函数  
+            menuToolsItem:registerScriptTapHandler(menuCallbackOpenPopup)  
+            --菜单栏  
+            menuTools = cc.Menu:create(menuToolsItem)  
+            local itemWidth = menuToolsItem:getContentSize().width  
+            local itemHeight = menuToolsItem:getContentSize().height  
+            menuTools:setPosition(origin.x + itemWidth/2, origin.y + itemHeight/2)  
+            layerMenu:addChild(menuTools)  
+
+            return layerMenu  
+        end  
+        --加载声音  
+        -- play background music, preload effect  
+        local bgMusicPath = cc.FileUtils:getInstance():fullPathForFilename("background.mp3")  
+        cc.SimpleAudioEngine:getInstance():playMusic(bgMusicPath, true)  
+        local effectPath = cc.FileUtils:getInstance():fullPathForFilename("effect1.wav")  
+        cc.SimpleAudioEngine:getInstance():preloadEffect(effectPath)  
+
+        -- run  
+        --创建场景，并将调用上面的函数，将农场层和菜单层添加到场景中  
+        local sceneGame = cc.Scene:create()  
+        sceneGame:addChild(createLayerFarm())  
+        sceneGame:addChild(createLayerMenu())  
+
+        --如果之前有正在运行的场景则场景切换，否则运行该场景  
+        if cc.Director:getInstance():getRunningScene() then  
+            cc.Director:getInstance():replaceScene(sceneGame)  
+        else  
+            cc.Director:getInstance():runWithScene(sceneGame)  
+        end  
+
+    end  
+
+
+    local status, msg = xpcall(main, __G__TRACKBACK__)  
+    if not status then  
+        error(msg)  
+    end  
+    --[[  
+     在 Lua 编程，以避免引发这些错误和处理错误，需要使用的功能 pcall 或 xpcall。  
+
+    pcall (f, arg1, ...)函数调用保护模式所要求的功能。如果函数f 出现了一些错误，但不会引发错误。它只是返回错误的状态。使用pcall 一个简单的例子如下所示。  
+
+    function myfunction ()  
+       n = n/nil  
+    end  
+
+    if pcall(myfunction) then  
+       print("Success")  
+    else  
+        print("Failure")  
+    end  
+
+    当我们运行上面的程序，会得到下面的输出。  
+
+    Failure  
+
+    xpcall (f, err) 函数调用所要求的功能，还设置了错误处理程序。f 任何错误不传播; 相反，xpcall 捕获错误，要求与原来的错误对象Err函数，并返回一个状态代码。  
+    function myfunction ()  
+       n = n/nil  
+    end  
+
+    function myerrorhandler( err )  
+       print( "ERROR:", err )  
+    end  
+
+    status = xpcall( myfunction, myerrorhandler )  
+    print( status)  
+
+    当我们运行上面的程序，会得到下面的输出。  
+
+    ERROR:  test2.lua:2: attempt to perform arithmetic on global 'n' (a nil value)  
+    false  
+
+    作为一个程序员最重要的是要确保正确的错误处理。使用错误处理可以确保超出边界条件意想不到的条件，而不会干扰该程序的用户进行处理。  
+
+    ]]  
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CCProgressTimer 进度条动画在cocos2dx+lua]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/01/03/ccprogresstimer-jin-du-tiao-dong-hua-zai-cocos2dx-plus-lua/"/>
+    <updated>2014-01-03T15:18:40+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/01/03/ccprogresstimer-jin-du-tiao-dong-hua-zai-cocos2dx-plus-lua</id>
+    <content type="html"><![CDATA[<p>CCProgressTimer 进度条动画源代码分析红孩儿博客<a href="http://blog.csdn.net/honghaier/article/details/8281884">http://blog.csdn.net/honghaier/article/details/8281884</a></p>
+
+<p>实现一个填充爱心的效果功能。<a href="http://blog.csdn.net/hitwhylz/article/details/21732213">http://blog.csdn.net/hitwhylz/article/details/21732213</a>
+<a href="http://www.cnblogs.com/GameDeveloper/p/3578584.html">http://www.cnblogs.com/GameDeveloper/p/3578584.html</a></p>
+
+<!--more-->
+
+
+<ul>
+<li>lua_binding绑定的函数：</li>
+</ul>
+
+
+<pre><code>tolua_constant(tolua_S,"kCCProgressTimerTypeRadial",kCCProgressTimerTypeRadial);  
+      tolua_constant(tolua_S,"kCCProgressTimerTypeBar",kCCProgressTimerTypeBar);  
+      tolua_cclass(tolua_S,"CCProgressTimer","CCProgressTimer","CCNode",NULL);  
+      tolua_beginmodule(tolua_S,"CCProgressTimer");  
+       tolua_function(tolua_S,"getType",tolua_Cocos2d_CCProgressTimer_getType00);  
+       tolua_function(tolua_S,"getPercentage",tolua_Cocos2d_CCProgressTimer_getPercentage00);  
+       tolua_function(tolua_S,"getSprite",tolua_Cocos2d_CCProgressTimer_getSprite00);  
+       tolua_function(tolua_S,"setPercentage",tolua_Cocos2d_CCProgressTimer_setPercentage00);  
+       tolua_function(tolua_S,"setSprite",tolua_Cocos2d_CCProgressTimer_setSprite00);  
+       tolua_function(tolua_S,"setType",tolua_Cocos2d_CCProgressTimer_setType00);  
+       tolua_function(tolua_S,"setReverseProgress",tolua_Cocos2d_CCProgressTimer_setReverseProgress00);  
+       tolua_function(tolua_S,"setAnchorPoint",tolua_Cocos2d_CCProgressTimer_setAnchorPoint00);  
+       tolua_function(tolua_S,"setColor",tolua_Cocos2d_CCProgressTimer_setColor00);  
+       tolua_function(tolua_S,"getColor",tolua_Cocos2d_CCProgressTimer_getColor00);  
+       tolua_function(tolua_S,"getOpacity",tolua_Cocos2d_CCProgressTimer_getOpacity00);  
+       tolua_function(tolua_S,"setOpacity",tolua_Cocos2d_CCProgressTimer_setOpacity00);  
+       tolua_function(tolua_S,"setOpacityModifyRGB",tolua_Cocos2d_CCProgressTimer_setOpacityModifyRGB00);  
+       tolua_function(tolua_S,"isOpacityModifyRGB",tolua_Cocos2d_CCProgressTimer_isOpacityModifyRGB00);  
+       tolua_function(tolua_S,"create",tolua_Cocos2d_CCProgressTimer_create00);  
+       tolua_function(tolua_S,"getMidpoint",tolua_Cocos2d_CCProgressTimer_getMidpoint00);  
+       tolua_function(tolua_S,"setMidpoint",tolua_Cocos2d_CCProgressTimer_setMidpoint00);  
+       tolua_function(tolua_S,"getBarChangeRate",tolua_Cocos2d_CCProgressTimer_getBarChangeRate00);  
+       tolua_function(tolua_S,"setBarChangeRate",tolua_Cocos2d_CCProgressTimer_setBarChangeRate00);  
+       tolua_function(tolua_S,"isReverseDirection",tolua_Cocos2d_CCProgressTimer_isReverseDirection00);  
+       tolua_function(tolua_S,"setReverseDirection",tolua_Cocos2d_CCProgressTimer_setReverseDirection00);  
+      tolua_endmodule(tolua_S);  
+</code></pre>
+
+<ul>
+<li>游戏中血条，法力条，怒气条的创建</li>
+</ul>
+
+
+<pre><code>    --s_progress：进度条功能名字  
+       --l_name：放置进度条的层的名字  
+       local function create_progress( s_progress, l_name )  
+           --根据进度条名字取得进度条底的图片  
+           local sProgress = tolua.cast( self.proxy:getNode('s_progress_'..s_progress), "CCSprite" )  
+           sProgress:retain()  
+           sProgress:removeFromParentAndCleanup( false )  
+           --调用create工厂方法创建一个进度条实例  
+           local progress = CCProgressTimer:create( sProgress )  
+           sProgress:release()  
+
+           --取得放置进度条底的层  
+           local placeholder = tolua.cast( self.proxy:getNode('lay_progress_'..l_name), 'CCLayer')  
+
+           progress.x = placeholder.x  
+           progress.y = placeholder.y  
+           --设置条形  
+           progress:setType(kCCProgressTimerTypeBar)  
+           --设置中点，这里是一个称为“中点”的成员变量值，但它的意义绝不是这么简单，  
+           --如果是绕中心旋转的进度动画，它就是中心，如果是条形动画，它代表了UV随进度变化的起始位置，如果是在最左边，其值为(0,y),  
+           --如果是在最右边，其值为(1,y),如果在最上面(x,0),如果在最下面(x,1);如果是在中心(0.5,0.5)。  
+           progress:setMidpoint(ccp(0,1))  
+           --是一个表示动画方向的成员变量值，如果是横向方向，则设为(1,0),如果是纵向方向，则设为(0,1);  
+           progress:setBarChangeRate(ccp(1,0))  
+           --初始进度为0  
+           progress:setPercentage(0)  
+
+           --取得放置整个进度条的层  
+           self['lay_'..l_name] = tolua.cast( self.proxy:getNode('lay_'..l_name), 'CCLayer')  
+           --将进度条添加到该层上  
+           self['lay_'..l_name]:addChild( progress )  
+           --设置key = progress_'..l_name 方便取值  
+           self['progress_'..l_name]=progress  
+       end  
+       --创建血条  
+       create_progress( 'hp', 'hp' )  
+       --创建法力条  
+       create_progress( 'mp', 'mp' )  
+
+       --如果怒气最大4格  
+       if p.max_ap == 4 then  
+           --取得怒气条  
+           local s_invalid = tolua.cast( self.proxy:getNode('s_progress_ap'), "CCSprite" )  
+           s_invalid:removeFromParentAndCleanup( false )  
+           --取得怒气条底  
+           s_invalid = tolua.cast( self.proxy:getNode('s_back_ap'), "CCSprite" )  
+           s_invalid:removeFromParentAndCleanup( false )  
+           create_progress( 'ap2', 'ap' )  
+           --5格怒气条  
+       elseif p.max_ap == 5  
+           or not p.max_ap then  
+           local s_invalid = tolua.cast( self.proxy:getNode('s_progress_ap2'), "CCSprite" )  
+           s_invalid:removeFromParentAndCleanup( false )  
+           s_invalid = tolua.cast( self.proxy:getNode('s_back_ap2'), "CCSprite" )  
+           s_invalid:removeFromParentAndCleanup( false )  
+           create_progress( 'ap', 'ap' )  
+       else  
+           assert(false)  
+       end  
+       --怒气条进度，在相邻两格之间竖向表示  
+       self.ap_mask = tolua.cast( self.proxy:getNode('s_mask_ap'), "CCSprite" )  
+       self.ap_mask:getParent():reorderChild( self.ap_mask, 1 )  
+       self.ap_mask:setVisible(false)  
+       --满了时的怒气条外发光  
+       self.ap_highlight = tolua.cast( self.proxy:getNode('s_highlight_ap'), "CCSprite" )  
+       self.ap_highlight:setVisible(false)  
+</code></pre>
+
+<ul>
+<li>不同职业需要的进度条种类也不同，效果</li>
+</ul>
+
+
+<p><img src="/images/lua-events/%E8%A1%80%E6%9D%A1%E8%83%BD%E9%87%8F%E6%9D%A1.png" alt="" /></p>
+
+<ul>
+<li>兑换或者领取功能：</li>
+</ul>
+
+
+<pre><code class="">chip_rate:setString( current_Chips_num..'/'..chip_proto.max_count )  
+
+    local percent = current_Chips_num/chip_proto.max_count  
+
+    progress:setPercentage( 100 * percent )  
+
+    l_not_get:setVisible(  percent &lt; 100 )  
+</code></pre>
+
+<p><img src="/images/lua-events/%E5%85%91%E6%8D%A2%E7%89%A9%E5%93%81.png" alt="" /></p>
+
+<p>游戏开始时可以根据加载资源完成度实现进度条加载效果，有时也会放在定时器里为实现某种功能定时检测</p>
+
+<p>创建CCProgressTo或者是CCProgressFromTo动作，让CCProgressTimer执行。</p>
+
+<pre><code>CCProgressTo(float duration, float fPercent)
+
+CCProgressFromTo(float duration, float fFromPercentage, float fToPercentage)
+
+eg：
+local action =  XTargetedAction:create( self.progress_hp, CCProgressTo:create( 0.5, self.hp/self.max_hp*100 ) )
+
+self.dialog:runAction( action )
+</code></pre>
+
+<p><img src="/images/lua-events/%E8%BF%9B%E5%BA%A6%E6%9D%A1.png" alt="" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Lua-events]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/01/02/lua-events/"/>
+    <updated>2014-01-02T11:43:00+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/01/02/lua-events</id>
+    <content type="html"><![CDATA[<!-- more -->
+
+
+<p>
+- events.lua</p>
+
+<pre><code>    module('model',package.seeall)  
+
+    t_events = {  
+        ["on_dlg_opened"] = {}  
+        ,["on_dlg_closed"] = {}  
+        ,['guide'] = {}  
+        ,["on_page_opened"] = {}  
+    }  
+
+    --register_event  
+    --event：event name  
+    --f：callback function  
+    --o: the target or object  
+    function register_event(event,f,o)  
+
+        for i,v in ipairs( t_events[event] ) do  
+            --if registered, return  
+            if v[1] == f and ( ( #v == 1 and o == nil ) or v[2] == o ) then  
+                return;  
+            end  
+        end  
+        --if the event is not registered ,we insert the event into the "t_events"  
+        -- v = t_events[event] ,v[1] = f ,v[2] = o  
+        table.insert( t_events[event], {f,o} )  
+    end  
+    --unregister_event  
+    function unregister_event(event,f,o)  
+        for i,v in pairs( t_events[event] ) do  
+            if v[1] == f and ( ( #v == 1 and o == nil ) or v[2] == o ) then  
+                table.remove( t_events[event], i )  
+                break;  
+            end  
+        end  
+    end  
+
+    --event call  
+    --e:event name  
+    --...:variable parameter  
+    function post_event( e, ... )  
+        log_debug('post_event '..e)  
+        --count   
+        local i = 1  
+        --get the key by event name from "t_events"  
+        local t = table.clone( t_events[e] )  
+        --if "t" is not empty  
+        while i &lt;= #t do  
+            --we design the structure of this table "t" when registered this event "e".  
+            --key[1] = f,key[2] = target  
+            local v = t[i]  
+            --if target is not nil   
+            if v[2] then  
+                --invoke the callback function   
+                --v[1]:function name,v[2]:target,...：the variable parameter  
+                --the style of invocation:function（target，arg1,arg2,...）  
+                local removed = v[1](v[2], ...)  
+                --if removed ,unregister_event   
+                if removed then  
+                    unregister_event(e,v[1],v[2])  
+                end  
+            else  
+                --if targer is nil ,invoke the callback function  
+                local removed = v[1](...)  
+                if removed then  
+                    unregister_event(e,v[1])  
+                end  
+            end  
+            i = i + 1  
+        end  
+    end  
+
+    log_debug( "model.events.lua run!" )   
+</code></pre>
+
+<ul>
+<li>表的格式</li>
+</ul>
+
+
+<p><img src="/images/lua-events/20150120135024625.png" alt="" /></p>
+
+<h3>使用</h3>
+
+<ul>
+<li>我们在背包界面想实现点击一个品质按钮，然后弹出一个选择框（面板），可以选择各种品质等</li>
+</ul>
+
+
+<p><img src="/images/lua-events/20150120141614573.png" alt="" /></p>
+
+<ul>
+<li><p>此功能包括两个模块，背包模块和弹出框模块</p></li>
+<li><p>在背包模块的初始化函数中添加，品质按钮及回调函数：</p></li>
+<li><p>bag.lua</p></li>
+</ul>
+
+
+<pre><code>    --品质  
+    self.m_quality_bag = tolua.cast(self.proxy:getNode("m_quality_bag"),"CCMenuItemImage")  
+    &lt;pre name="code" class="cpp"&gt;ui.dlg_base.add_menu_callback(m,self,self.on_filter_click,"qualityfilter")  
+    --注册选择后的监听事件  
+    &lt;pre name="code" class="cpp"&gt;self._model.register_event("on_filter_quality_result",self.on_filter_quality_result,self)  
+</code></pre>
+
+<ul>
+<li>按钮回调函数</li>
+</ul>
+
+
+<pre><code>    function class:on_filter_click( btn ,event ,clickType)  
+
+        if clickType == "typefilter"then  
+
+            controller.active_dialog('dlg_bag_filter')  
+
+        elseif clickType == "qualityfilter" then  
+
+            controller.active_dialog("dlg_bag_quality")  
+        end   
+    end  
+
+    --事件回调函数  
+    &lt;pre name="code" class="cpp"&gt;function class:on_filter_quality_result( filterType )  
+
+        self.quality_filter = filter_quality[ filterType ]   
+        self.view_dirty = true  
+
+        self.filters[self.filterquality]:setVisible(false)  
+        self.filters[filterType]:setVisible(true)  
+        self.m_quality_bag:setVisible(false)  
+        self.filterquality = filterType  
+    end  
+</code></pre>
+
+<ul>
+<li>当关闭背包界面时，注销事件</li>
+</ul>
+
+
+<pre><code class="">    function class:close_dialog( )  
+        self._model.unregister_event("on_filter_quality_result",self.on_filter_quality_result,self)  
+    end 
+</code></pre>
+
+<p><img src="/images/lua-events/20150120141622357.png" alt="" /></p>
+
+<ul>
+<li>bag_quality.lua</li>
+</ul>
+
+
+<pre><code>     for k,v in pairs (filterQuality) do  
+       temp = tolua.cast(self.proxy:getNode(k),"CCMenuItemImage")  
+       ui.dlg_base.add_menu_callback(temp,self, self.on_filtercamp_click,v)  
+     end  
+
+    function class:on_filtercamp_click( btn, enent, filterType )  
+        controller.deactive_dialog(self.type)  
+        --点击面板上的不同品质按钮，调用注册的事件回调函数，并传递参数  
+        self._model.post_event("on_filter_quality_result",filterType)  
+    end  
+</code></pre>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,367 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>U3D 小球跟随鼠标在地上滚动（一) - My World</title>
+  <meta name="author" content="嗷大喵">
+
+  
+  <meta name="description" content="新建一个plane作为地面Land，一个小球。给小球增加Rigidbody组件，设置一个阻力值Drag，此处我们设为1。 然后给小球增加一个script，此处为moveController.cs 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://xiaobenmao.github.io/blog/2014/01/04/u3d-xiao-qiu-gen-sui-shu-biao-zai-di-shang-gun-dong-(%5B%3F%5D/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My World" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.useso.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.useso.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My World</a></h1>
+  
+    <h2>Your World</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="xiaobenmao.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">U3D 小球跟随鼠标在地上滚动（一)</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-01-04T17:38:20+08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>4</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:38 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>新建一个plane作为地面Land，一个小球。给小球增加Rigidbody组件，设置一个阻力值Drag，此处我们设为1。</p>
+
+<p>然后给小球增加一个script，此处为moveController.cs</p>
+
+<!--more-->
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>using UnityEngine;  
+</span><span class='line'>using System.Collections;  
+</span><span class='line'>  
+</span><span class='line'>public class moveController : MonoBehaviour {  
+</span><span class='line'>  
+</span><span class='line'>    public float speed; //  小球运动速度  
+</span><span class='line'>      
+</span><span class='line'>    Vector3 targetPos;  //  目标位置  
+</span><span class='line'>      
+</span><span class='line'>    void Awake () {  
+</span><span class='line'>        targetPos = transform.position;  
+</span><span class='line'>    }  
+</span><span class='line'>      
+</span><span class='line'>    void Update () {  
+</span><span class='line'>        GetTargetPos ();  
+</span><span class='line'>        //  判断小球有没有到达目标点  
+</span><span class='line'>        if (Vector3.Distance (targetPos, transform.position) &gt;= 0.05f) {  
+</span><span class='line'>            //  使小球朝向目标点  
+</span><span class='line'>            transform.LookAt (targetPos);  
+</span><span class='line'>            //  使小球运动  
+</span><span class='line'>            transform.Translate (Vector3.forward * speed * Time.deltaTime);  
+</span><span class='line'>        }  
+</span><span class='line'>    }  
+</span><span class='line'>      
+</span><span class='line'>    //  获取目标点  
+</span><span class='line'>    void GetTargetPos () {  
+</span><span class='line'>        //  1.  监听鼠标点击事件  
+</span><span class='line'>        if (Input.GetMouseButtonDown (0)) {  
+</span><span class='line'>            //  2.  获取从摄像机向鼠标当前位置发出的射线  
+</span><span class='line'>            Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);  
+</span><span class='line'>            //  3.  创建一个用于保存碰撞信息的变量  
+</span><span class='line'>            RaycastHit hitInfo = new RaycastHit ();  
+</span><span class='line'>            //  4.  调用函数发射射线检测有没有碰撞到游戏对象  
+</span><span class='line'>            if (Physics.Raycast (ray, out hitInfo)) {  
+</span><span class='line'>            //  5.  判断发生碰撞的游戏对象是不是地板  
+</span><span class='line'>                if (hitInfo.collider.gameObject.name == "Land") {  
+</span><span class='line'>            //  6.  如果是地板，获取碰撞点的坐标  
+</span><span class='line'>                    targetPos = hitInfo.point;  
+</span><span class='line'>            //  修改目标点的 Y 值  
+</span><span class='line'>                    targetPos.y = transform.position.y;  
+</span><span class='line'>                    Debug.Log ("targetPos" + targetPos);  
+</span><span class='line'>                }  
+</span><span class='line'>            }  
+</span><span class='line'>        }  
+</span><span class='line'>    }  
+</span><span class='line'>}  
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/U3D/%E5%B0%8F%E7%90%831.png" alt="" />
+<img src="/images/U3D/%E5%B0%8F%E7%90%832.png" alt="" /></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">嗷大喵</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-01-04T17:38:20+08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>4</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:38 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/u3d/'>u3d</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/01/04/u3d-xiao-qiu-gen-sui-shu-biao-zai-di-shang-gun-dong-(er/" title="Previous Post: U3D 小球跟随鼠标在地上滚动（二)">&laquo; U3D 小球跟随鼠标在地上滚动（二)</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/01/10/u3d-an-xia-w-jian-shi-ren-wu-kai-shi-yun-dong-,fang-kai-ze-ting-zhi/" title="Next Post: U3D 按下“w”键使人物开始运动，放开则停止">U3D 按下“w”键使人物开始运动，放开则停止 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>欢迎光临小站</h1>
+  <p>我的世界</p>
+  <p>新浪微博：<a href=" http://weibo.com/QQ908887023" target="_blank">我是嗷大喵</a></p>
+</section><section>
+  <h1>文章分类</h1>
+  <ul id="categories">
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/suan-fa/'>算法</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/cocos2dx-lua/'>cocos2dx-lua</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/u3d/'>u3d</a> (4)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ioswei-fen-lei/'>ios未分类</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/tableview/'>tableview</a> (14)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ji-suan-ji-ying-yu/'>计算机英语</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/liao-tian-cellbu-ju/'>聊天cell布局</a> (7)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/uipickerview/'>uipickerview</a> (5)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shu-ju-cun-chu/'>数据存储</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shi-jian-chu-li/'>事件处理</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a> (17)
+      </li>
+    
+  </ul>
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/09/06/quartz2d-hua-ju-xing/">Quartz2d-画矩形</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/">Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-hua-ban/">Quartz2d-画板</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-shou-shi-jie-suo/">Quartz2d-手势解锁</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/16/quartz2d-shou-dong-jie-ping/">Quartz2d-手动截屏</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - 嗷大喵 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

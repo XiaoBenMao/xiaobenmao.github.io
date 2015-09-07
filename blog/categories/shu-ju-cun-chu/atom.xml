@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: 数据存储 | My World]]></title>
+  <link href="http://xiaobenmao.github.io/blog/categories/shu-ju-cun-chu/atom.xml" rel="self"/>
+  <link href="http://xiaobenmao.github.io/"/>
+  <updated>2015-09-07T23:16:14+08:00</updated>
+  <id>http://xiaobenmao.github.io/</id>
+  <author>
+    <name><![CDATA[嗷大喵]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[存储-归档和解档]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/05/03/cun-chu-gui-dang-he-jie-dang/"/>
+    <updated>2014-05-03T15:38:07+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/05/03/cun-chu-gui-dang-he-jie-dang</id>
+    <content type="html"><![CDATA[<h4>NSKeyedArchiver</h4>
+
+<ul>
+<li>归档可以存储自定义对象</li>
+<li><p>如果对象是NSString、NSDictionary、NSArray、NSData、NSNumber等类型，可以直接用NSKeyedArchiver进行归档和恢复</p></li>
+<li><p>不是所有的对象都可以直接用这种方法进行归档，只有遵守了NSCoding协议的对象才可以</p></li>
+</ul>
+
+
+<!--more-->
+
+
+<pre><code class="objc">#import &lt;Foundation/Foundation.h&gt;
+
+// 自定对象用于归档和解档,遵守NSCoding协议,实现协议方法
+@interface WQContactData : NSObject&lt;NSCoding&gt;
+/** 姓名*/
+@property (nonatomic, strong) NSString *name;
+/** 手机号*/
+@property (nonatomic, strong) NSString *phoneNum;
+@property (nonatomic, assign) int age;
++ (instancetype)contactWithName:(NSString *)name andPhoneNum:(NSString *)phonenum;
+@end
+</code></pre>
+
+<ul>
+<li>NSCoding协议有2个方法,要归档和解档的对象要实现这两个方法:</li>
+<li>方法一:encodeWithCoder:
+
+<ul>
+<li>每次归档对象时，都会调用这个方法。一般在这个方法里面指定如何归档对象中的每个实例变量，可以使用encodeObject:forKey:方法归档实例变量</li>
+</ul>
+</li>
+</ul>
+
+
+<pre><code class="objc">static NSString *nameKey = @"name";
+static NSString *phoneKey = @"phone";
+static NSString *phoneKey = @"age";
+// 什么时候调用:自定义归档对象的时候
+// 作用: 用来描述当前对象那些属性需要归档
+- (void)encodeWithCoder:(NSCoder *)aDecoder
+{
+    [aDecoder encodeObject:_name forKey:nameKey];
+    [aDecoder encodeObject:_phoneNum forKey:phoneKey];
+    [aDecoder encodeInt:age forKey:ageKey];
+}
+}
+</code></pre>
+
+<ul>
+<li>方法二:initWithCoder:
+
+<ul>
+<li>每次从文件中恢复(解码)对象时，都会调用这个方法。一般在这个方法里面指定如何解码文件中的数据为对象的实例变量，可以使用decodeObject:forKey方法解码实例变量</li>
+</ul>
+</li>
+</ul>
+
+
+<pre><code class="objc">// 什么时候调用:解档文件的时候,比如自定义对象,xib,storyboard及控件等
+// 作用: 用来描述当前对象里那些属性需要解档
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    if (self = [super init]) {
+        _name = [aDecoder decodeObjectForKey:nameKey];
+        _phoneNum = [aDecoder decodeObjectForKey:phoneKey];
+        _age = [aDecoder decodeObjectForKey:nameKey];
+    }
+    return self;
+}
+
+
+/**
+ 如果父类也遵守了NSCoding协议，请注意：应该在encodeWithCoder:方法中加上一句
+ [super encodeWithCode:encode];
+ 确保继承的实例变量也能被编码，即也能被归档
+ 应该在initWithCoder:方法中加上一句
+ self = [super initWithCoder:decoder];
+ 确保继承的实例变量也能被解码，即也能被恢复
+
+ 只要父类遵守了NSCoding,就调用[super initWithCoder:aCoder],先初始化父类.
+
+ 通过代码初始化的时候,调用init方法,会调用initWithFrame
+*/
+</code></pre>
+
+<ul>
+<li>归档和解档</li>
+</ul>
+
+
+<pre><code class="objc">// 方法原型:
++ (BOOL)archiveRootObject:(id)rootObject toFile:(NSString *)path;
++ (id)unarchiveObjectWithFile:(NSString *)path;
+
+// 归档
+// 文件路径中的文件名后缀可以自定义,为加密后的文件打不开
+[NSKeyedArchiver archiveRootObject:self.contactsData toFile:WQFilePath];
+// 解档
+_contactsData = [NSKeyedUnarchiver unarchiveObjectWithFile:WQFilePath];
+</code></pre>
+
+<p><img src="/images/%E5%BD%92%E6%A1%A3%E5%92%8C%E8%A7%A3%E6%A1%A3.png" alt="" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[存储-偏好设置]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/05/02/cun-chu-pian-hao-she-zhi/"/>
+    <updated>2014-05-02T15:37:43+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/05/02/cun-chu-pian-hao-she-zhi</id>
+    <content type="html"><![CDATA[<ul>
+<li><p>很多iOS应用都支持偏好设置，比如保存用户名、密码、字体大小等设置，iOS提供了一套标准的解决方案来为应用加入偏好设置功能</p></li>
+<li><p>每个应用都有个NSUserDefaults实例，通过它来存取偏好设置</p>
+
+<ul>
+<li>比如，保存用户名、字体大小、是否自动登录</li>
+</ul>
+</li>
+</ul>
+
+
+<!--more-->
+
+
+<pre><code class="objc">/**
+ 偏好设置存储:
+ 好处：1.不需要关心文件名
+ 2.快速做键值对存储
+ 底层：就是封装了一个字典
+ */
+- (IBAction)save:(id)sender {
+
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+
+
+    [userDefaults setObject:@"wq" forKey:@"account"];
+    [userDefaults setObject:@"123" forKey:@"pwd"];
+    [userDefaults setFloat:55.5 forKey:@"weight"];
+    [userDefaults setBool:YES forKey:@"rmbPwd"];
+
+    [userDefaults removeObjectForKey:@"weight"];
+    /**常用:
+     - (void)setInteger:(NSInteger)value forKey:(NSString *)defaultName;
+     - (void)setFloat:(float)value forKey:(NSString *)defaultName;
+     - (void)setDouble:(double)value forKey:(NSString *)defaultName;
+     - (void)setBool:(BOOL)value forKey:(NSString *)defaultName;
+     - (void)setURL:(NSURL *)url forKey:(NSString *)defaultName
+
+     - (NSInteger)integerForKey:(NSString *)defaultName;
+     - (float)floatForKey:(NSString *)defaultName;
+     - (double)doubleForKey:(NSString *)defaultName;
+     - (BOOL)boolForKey:(NSString *)defaultName;
+    */
+
+}
+- (IBAction)read:(id)sender {
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults objectForKey:@"account"];
+    [userDefaults boolForKey:@"remPwd"];
+    [userDefaults floatForKey:@"weight"];
+
+    NSLog(@"%@ %d %f",[userDefaults objectForKey:@"account"], [userDefaults boolForKey:@"rmbPwd"], [userDefaults floatForKey:@"weight"]);
+}
+</code></pre>
+
+<ul>
+<li>注意：UserDefaults设置数据时，不是立即写入，而是根据时间戳定时地把缓存中的数据写入本地磁盘。所以调用了set方法之后数据有可能还没有写入磁盘应用程序就终止了。出现以上问题，可以通过调用synchornize方法强制写入</li>
+</ul>
+
+
+<pre><code class="objc">// 在iOS7之前，默认不会马上把跟硬盘同步
+// 同步
+[userDefaults synchronize];
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[存储-plist]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/05/01/cun-chu-plist/"/>
+    <updated>2014-05-01T15:37:32+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/05/01/cun-chu-plist</id>
+    <content type="html"><![CDATA[<h2>plist文件</h2>
+
+<ul>
+<li><p>直接将数据直接写在代码里面，不是一种合理的做法。如果数据经常改，就要经常翻开对应的代码进行修改，造成代码扩展性低</p></li>
+<li><p>因此，可以考虑将经常变的数据放在文件中进行存储，程序启动后从文件中读取最新的数据。如果要变动数据，直接修改数据文件即可，不用修改代码</p></li>
+<li><p>一般可以使用属性列表文件存储NSArray或者NSDictionary之类的数据，这种“属性列表文件”的扩展名是plist，因此也称为“plist文件”</p></li>
+</ul>
+
+
+<!--more-->
+
+
+<p><img src="/images/plist%E5%88%9B%E5%BB%BA.png" alt="plist文件创建" /></p>
+
+<ul>
+<li><p>一般如何判断一个对象能不能使用Plist存储，就看下有没有writeToFile
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'>  <span class="c1">// Plist注意：不能存储自定义对象</span>
+</span><span class='line'>  <span class="c1">// Plist：数组和字典,</span>
+</span><span class='line'>  <span class="c1">// 如何判断一个对象能不能使用Plist，就看下有没有writeToFile</span>
+</span><span class='line'>  <span class="bp">NSArray</span> <span class="o">*</span><span class="n">arr</span> <span class="o">=</span> <span class="l">@[</span><span class="p">@</span><span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="n">one</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;,</span> <span class="mi">@2</span><span class="p">,</span> <span class="l">@{</span><span class="p">@</span><span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="n">key</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;</span><span class="o">:</span><span class="p">@</span><span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="n">value</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;}];</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="c1">// 获取沙盒根目录</span>
+</span><span class='line'>  <span class="bp">NSString</span> <span class="o">*</span><span class="n">homePath</span> <span class="o">=</span> <span class="n">NSHomeDirectory</span><span class="p">();</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="c1">// 获取Document目录&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="c1">// 方式一:利用沙盒根目录拼接”Documents”字符串</span>
+</span><span class='line'>  <span class="c1">// 不建议采用，因为新版本的操作系统可能会修改目录名</span>
+</span><span class='line'>  <span class="bp">NSString</span> <span class="o">*</span><span class="n">documents</span> <span class="o">=</span> <span class="p">[</span><span class="n">homePath</span> <span class="nl">stringByAppendingString</span><span class="p">:@</span><span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="n">Documents</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;];</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="c1">// 方式二:</span>
+</span><span class='line'>  <span class="o">/&lt;</span><span class="n">em</span><span class="o">&gt;&lt;</span><span class="n">em</span><span class="o">&gt;</span>
+</span><span class='line'>   <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="err">获取</span><span class="n">Cache</span><span class="err">文件路径</span>
+</span><span class='line'>   <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="nl">NSSearchPathDirectory</span><span class="p">:</span><span class="err">搜索的目录</span>
+</span><span class='line'>   <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="n">NSSearchPathDomainMask</span><span class="err">：搜索范围</span> <span class="nl">NSUserDomainMask</span><span class="p">:</span><span class="err">表示在用户的手机上查找</span>
+</span><span class='line'>   <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="n">expandTilde</span> <span class="err">是否展开全路径，如果没有展开，应用的沙盒路径就是</span><span class="o">~</span><span class="p">,</span><span class="err">比如</span><span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">Caches</span>
+</span><span class='line'>   <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="err">存储一定要要展开路径</span>
+</span><span class='line'>   <span class="o">*</span>
+</span><span class='line'>   <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="err">方法原型</span><span class="o">:</span><span class="bp">NSArray</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="n">NSSearchPathForDirectoriesInDomains</span><span class="p">(</span><span class="n">NSSearchPathDirectory</span> <span class="n">directory</span><span class="p">,</span> <span class="n">NSSearchPathDomainMask</span> <span class="n">domainMask</span><span class="p">,</span> <span class="kt">BOOL</span> <span class="n">expandTilde</span><span class="p">);</span>
+</span><span class='line'>   <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;/</span>
+</span><span class='line'>  <span class="bp">NSString</span> <span class="o">*</span><span class="n">cachePath</span> <span class="o">=</span> <span class="n">NSSearchPathForDirectoriesInDomains</span><span class="p">(</span><span class="n">NSCachesDirectory</span><span class="p">,</span> <span class="n">NSUserDomainMask</span><span class="p">,</span> <span class="nb">YES</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="c1">// 拼接文件名</span>
+</span><span class='line'>  <span class="bp">NSString</span> <span class="o">*</span><span class="n">filePath</span> <span class="o">=</span> <span class="p">[</span><span class="n">cachePath</span> <span class="nl">stringByAppendingPathComponent</span><span class="p">:@</span><span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="n">personArr</span><span class="p">.</span><span class="n">plist</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;];</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="c1">// File:文件的全路径</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">arr</span> <span class="nl">writeToFile</span><span class="p">:</span><span class="n">filePath</span> <span class="nl">atomically</span><span class="p">:</span><span class="nb">YES</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+<img src="/images/%E5%86%99%E5%85%A5plist%E6%96%87%E4%BB%B6%E7%9A%84%E6%95%B0%E6%8D%AE.png" alt="写入plist文件的数据" /></p></li>
+<li>从plist获取数据</li>
+</ul>
+
+
+<pre><code class="objc">    NSArray *contents = [NSArray arrayWithContentsOfFile:filePath];
+</code></pre>
+
+<p><img src="/images/%E4%BB%8E%E5%AD%97%E5%85%B8%E8%8E%B7%E5%8F%96%E6%95%B0%E6%8D%AE.png" alt="从字典获取数据" />
+<img src="/images/%E8%A7%A3%E6%9E%90.png" alt="" />
+<img src="/images/plist%E8%AF%BB%E5%8F%96.png" alt="" /></p>
+]]></content>
+  </entry>
+  
+</feed>

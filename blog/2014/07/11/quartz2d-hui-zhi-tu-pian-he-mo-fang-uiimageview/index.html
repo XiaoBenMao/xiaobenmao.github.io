@@ -1,0 +1,474 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Quartz2d-绘制图片和模仿UIImageView - My World</title>
+  <meta name="author" content="嗷大喵">
+
+  
+  <meta name="description" content="1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+- (void)drawRect:(CGRect)rect { // 超出裁剪区域的内容全部裁剪掉 // 注意：裁剪必须放在绘制之前 UIRectClip(CGRectMake(0, 0, 200, 200 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://xiaobenmao.github.io/blog/2014/07/11/quartz2d-hui-zhi-tu-pian-he-mo-fang-uiimageview/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My World" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.useso.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.useso.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My World</a></h1>
+  
+    <h2>Your World</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="xiaobenmao.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Quartz2d-绘制图片和模仿UIImageView</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-07-11T17:31:01+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:31 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 超出裁剪区域的内容全部裁剪掉</span>
+</span><span class='line'>    <span class="c1">// 注意：裁剪必须放在绘制之前</span>
+</span><span class='line'>    <span class="n">UIRectClip</span><span class="p">(</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="s">@&quot;阿狸头像&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 默认绘制的内容尺寸跟图片尺寸一样大</span>
+</span><span class='line'>    <span class="c1">//[image drawAtPoint:CGPointZero];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 在矩形区域内拉伸</span>
+</span><span class='line'>    <span class="c1">//[image drawInRect:rect];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 将图片原比例平铺</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">image</span> <span class="nl">drawAsPatternInRect</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="n">bounds</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<!--more-->
+
+
+<ul>
+<li><p>画图片drawAtPoint
+<img src="/images/%E7%94%BB%E5%9B%BE%E7%89%87drawAtPoint.png" alt="" /></p></li>
+<li><p>画图片drawInRect
+<img src="/images/%E7%94%BB%E5%9B%BE%E7%89%87drawInRect.png" alt="" /></p></li>
+<li><p>画图片平铺
+<img src="/images/%E7%94%BB%E5%9B%BE%E7%89%87%E5%B9%B3%E9%93%BA.png" alt="" /></p></li>
+<li><p>系统UIimageView设置图片</p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 默认图片把控件填充，图片的尺寸跟控件尺寸一样大</span>
+</span><span class='line'>    <span class="c1">//UIImageView *imageV = [[UIImageView alloc] initWithFrame:CGRectMake(50, 50, 200, 350)];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 默认imagView的尺寸和image的尺寸一样大</span>
+</span><span class='line'>    <span class="bp">UIImageView</span> <span class="o">*</span><span class="n">imageV</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithImage</span><span class="p">:[</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="s">@&quot;阿狸头像&quot;</span><span class="p">]];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//imageV.image = [UIImage imageNamed:@&quot;阿狸头像&quot;];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">imageV</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>模仿UIimageView,绘制图片</p></li>
+<li><ul>
+<li>initWithFrame:
+<img src="/images/%E6%A8%A1%E4%BB%BFImageView1.png" alt="" /></li>
+</ul>
+</li>
+<li><p>initWithImage:
+<img src="/images/%E7%94%BB%E5%9B%BE%E7%89%87drawInRect.png" alt="" /></p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">MyUIimageView</span> : <span class="bp">UIView</span>
+</span><span class='line'><span class="cm">/** 图片属性*/</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span><span class="p">;</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">initWithImage:</span><span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="p">)</span> <span class="nv">image</span><span class="p">;</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">initWithFrame:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span> <span class="nv">rect</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#import &quot;MyUIimageView.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">MyUIimageView</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">initWithFrame:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 设置控件的尺寸</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nb">self</span> <span class="o">=</span> <span class="p">[</span><span class="nb">super</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">rect</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">rect</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">initWithImage:</span><span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">image</span>
+</span><span class='line'><span class="p">{</span>   <span class="c1">// 默认控件大小等于图片尺寸</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nb">self</span> <span class="o">=</span> <span class="p">[</span><span class="nb">super</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">image</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">image</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">)])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">_image</span> <span class="o">=</span> <span class="n">image</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setImage:</span><span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">image</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">_image</span> <span class="o">=</span> <span class="n">image</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// 设置新图片后重新绘制</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">setNeedsDisplay</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 图片填充整个控件</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">image</span> <span class="nl">drawInRect</span><span class="p">:</span><span class="n">rect</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>使用</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//MyUIimageView *imageV = [[MyUIimageView alloc]initWithImage:[UIImage imageNamed:@&quot;阿狸头像&quot;]];</span>
+</span><span class='line'>    <span class="c1">//imageV.image = [UIImage imageNamed:@&quot;001&quot;];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">MyUIimageView</span> <span class="o">*</span><span class="n">imageV</span> <span class="o">=</span> <span class="p">[[</span><span class="n">MyUIimageView</span> <span class="n">alloc</span><span class="p">]</span><span class="nl">initWithFrame</span><span class="p">:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">300</span><span class="p">)];</span>
+</span><span class='line'>    <span class="n">imageV</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="s">@&quot;阿狸头像&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">imageV</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">嗷大喵</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-07-11T17:31:01+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:31 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/07/10/quartz2d-hui-zhi-wen-zi/" title="Previous Post: Quartz2d-绘制文字">&laquo; Quartz2d-绘制文字</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/07/12/quartz2d-tu-xing-shang-xia-wen-zhan/" title="Next Post: Quartz2d-图形上下文栈">Quartz2d-图形上下文栈 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>欢迎光临小站</h1>
+  <p>我的世界</p>
+  <p>新浪微博：<a href=" http://weibo.com/QQ908887023" target="_blank">我是嗷大喵</a></p>
+</section><section>
+  <h1>文章分类</h1>
+  <ul id="categories">
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/suan-fa/'>算法</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/cocos2dx-lua/'>cocos2dx-lua</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/u3d/'>u3d</a> (4)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ioswei-fen-lei/'>ios未分类</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/tableview/'>tableview</a> (14)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ji-suan-ji-ying-yu/'>计算机英语</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/liao-tian-cellbu-ju/'>聊天cell布局</a> (7)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/uipickerview/'>uipickerview</a> (5)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shu-ju-cun-chu/'>数据存储</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shi-jian-chu-li/'>事件处理</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a> (17)
+      </li>
+    
+  </ul>
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/09/06/quartz2d-hua-ju-xing/">Quartz2d-画矩形</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/">Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-hua-ban/">Quartz2d-画板</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-shou-shi-jie-suo/">Quartz2d-手势解锁</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/16/quartz2d-shou-dong-jie-ping/">Quartz2d-手动截屏</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - 嗷大喵 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

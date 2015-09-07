@@ -1,0 +1,522 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Quartz2d-图形上下文栈 - My World</title>
+  <meta name="author" content="嗷大喵">
+
+  
+  <meta name="description" content="UIBezierPath的路径和上下文的路径是不同的,特别是在设置状态的时候,有时候不会起作用,可以使用'.CGPath'将UIkit的路径转换成CoreGraphics路径 如果以后用贝瑟尔绘制图形[path stroke],应设置贝瑟尔路径状态 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://xiaobenmao.github.io/blog/2014/07/12/quartz2d-tu-xing-shang-xia-wen-zhan/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My World" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.useso.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.useso.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My World</a></h1>
+  
+    <h2>Your World</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="xiaobenmao.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Quartz2d-图形上下文栈</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-07-12T20:32:55+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>8:32 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="/images/%E5%9B%BE%E5%BD%A2%E4%B8%8A%E4%B8%8B%E6%96%87%E6%A0%88.png" alt="" /></p>
+
+<!--more-->
+
+
+<ul>
+<li><p>UIBezierPath的路径和上下文的路径是不同的,特别是在设置状态的时候,有时候不会起作用,可以使用'.CGPath'将UIkit的路径转换成CoreGraphics路径</p>
+
+<ul>
+<li>如果以后用贝瑟尔绘制图形[path stroke],应设置贝瑟尔路径状态</li>
+<li>如果渲染上下文CGContextStrokePath(ctx),上下文的状态要用上下文设置,上下文只有一条路径,或者将贝塞尔路径转换成上下文路径</li>
+</ul>
+</li>
+<li><p>如果通过上下文设置状态(宽度,颜色等),那么只有一条路径</p>
+
+<ul>
+<li>如果向获得不同的状态可以通过前后设置不同的状态实现</li>
+<li>也可以通过上下文栈实现</li>
+</ul>
+</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DrawView.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">DrawView</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 如果以后用贝瑟尔绘制图形【path stroke】,上下文的状态由贝瑟尔路径状态</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 1.获取上下文</span>
+</span><span class='line'>    <span class="n">CGContextRef</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">UIGraphicsGetCurrentContext</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 2.描述路径</span>
+</span><span class='line'>    <span class="c1">// 第一根</span>
+</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="n">bezierPath</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="nl">moveToPoint</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">125</span><span class="p">)];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="nl">addLineToPoint</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="mi">240</span><span class="p">,</span> <span class="mi">125</span><span class="p">)];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 把路径添加到上下文</span>
+</span><span class='line'>    <span class="c1">// .CGPath 可以UIkit的路径转换成CoreGraphics路径</span>
+</span><span class='line'>    <span class="n">CGContextAddPath</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">path</span><span class="p">.</span><span class="bp">CGPath</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 保存一份上下文的状态</span>
+</span><span class='line'>    <span class="n">CGContextSaveGState</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 设置上下文状态</span>
+</span><span class='line'>    <span class="n">CGContextSetLineWidth</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">]</span> <span class="n">set</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 渲染上下文</span>
+</span><span class='line'>    <span class="n">CGContextStrokePath</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 第二根</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 2.描述路径</span>
+</span><span class='line'>    <span class="c1">// 第一根</span>
+</span><span class='line'>    <span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="n">bezierPath</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="nl">moveToPoint</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="mi">125</span><span class="p">,</span> <span class="mi">10</span><span class="p">)];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="nl">addLineToPoint</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="mi">125</span><span class="p">,</span> <span class="mi">240</span><span class="p">)];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 把路径添加到上下文</span>
+</span><span class='line'>    <span class="c1">// .CGPath 可以UIkit的路径转换成CoreGraphics路径</span>
+</span><span class='line'>    <span class="n">CGContextAddPath</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">path</span><span class="p">.</span><span class="bp">CGPath</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 还原状态</span>
+</span><span class='line'>    <span class="n">CGContextRestoreGState</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//    // 设置不同的上下文状态</span>
+</span><span class='line'><span class="c1">//    CGContextSetLineWidth(ctx, 1);</span>
+</span><span class='line'><span class="c1">//</span>
+</span><span class='line'><span class="c1">//    [[UIColor blackColor] set];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 渲染上下文</span>
+</span><span class='line'>    <span class="n">CGContextStrokePath</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/%E5%9B%BE%E5%BD%A2%E4%B8%8A%E4%B8%8B%E6%96%87%E6%A0%88%E4%B8%89%E6%9D%A1%E7%BA%BF.png" alt="" />
+- 画三条线描述上下文栈
+    - 先保存一份初始上下文状态,CGContextSaveGState
+    - 设置第一条线的上下文状态进行设置,并保存在上下文栈
+    - 设置第二条线的上下文状态进行设置,并保存在上下文栈
+    - 设置第三条线(不设置上下文状态),如果不恢复上下文,则将上下文栈中栈顶即第二条线上下文状态取出进行设置</p>
+
+<pre><code>- 如果恢复上下文状态CGContextRestoreGState,则第三条线的上下文状态最初始的默认的上下文状态
+</code></pre>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 1.获取上下文</span>
+</span><span class='line'>    <span class="n">CGContextRef</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">UIGraphicsGetCurrentContext</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">CGContextMoveToPoint</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">125</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">CGContextAddLineToPoint</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">140</span><span class="p">,</span> <span class="mi">125</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 保存一份上下文的状态</span>
+</span><span class='line'>    <span class="n">CGContextSaveGState</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 第一条线的状态加入上下文栈</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 设置上下文状态</span>
+</span><span class='line'>    <span class="n">CGContextSetLineWidth</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">]</span> <span class="n">set</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 渲染上下文</span>
+</span><span class='line'>    <span class="n">CGContextStrokePath</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 第二根线</span>
+</span><span class='line'>    <span class="n">CGContextMoveToPoint</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">90</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">CGContextAddLineToPoint</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">140</span><span class="p">,</span> <span class="mi">185</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 第二条线的状态加入上下文栈</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 设置上下文状态</span>
+</span><span class='line'>    <span class="n">CGContextSetLineWidth</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[[</span><span class="bp">UIColor</span> <span class="n">blueColor</span><span class="p">]</span> <span class="n">set</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 渲染上下文</span>
+</span><span class='line'>    <span class="n">CGContextStrokePath</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 第三根</span>
+</span><span class='line'>    <span class="n">CGContextMoveToPoint</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">125</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">CGContextAddLineToPoint</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">125</span><span class="p">,</span> <span class="mi">240</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 还原状态 ,则为最原始的默认上下文状态</span>
+</span><span class='line'>    <span class="c1">//CGContextRestoreGState(ctx);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//不还原状态,则取出图形上下文栈中即第二条的状态进行设置</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 渲染上下文</span>
+</span><span class='line'>    <span class="n">CGContextStrokePath</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/%E4%B8%8A%E4%B8%8B%E6%96%87%E6%A0%88.png" alt="" /></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">嗷大喵</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-07-12T20:32:55+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>8:32 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/07/11/quartz2d-hui-zhi-tu-pian-he-mo-fang-uiimageview/" title="Previous Post: Quartz2d-绘制图片和模仿UIImageView">&laquo; Quartz2d-绘制图片和模仿UIImageView</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/07/13/quartz2d-ju-zhen-cao-zuo/" title="Next Post: Quartz2d-矩阵操作">Quartz2d-矩阵操作 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>欢迎光临小站</h1>
+  <p>我的世界</p>
+  <p>新浪微博：<a href=" http://weibo.com/QQ908887023" target="_blank">我是嗷大喵</a></p>
+</section><section>
+  <h1>文章分类</h1>
+  <ul id="categories">
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/suan-fa/'>算法</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/cocos2dx-lua/'>cocos2dx-lua</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/u3d/'>u3d</a> (4)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ioswei-fen-lei/'>ios未分类</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/tableview/'>tableview</a> (14)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ji-suan-ji-ying-yu/'>计算机英语</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/liao-tian-cellbu-ju/'>聊天cell布局</a> (7)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/uipickerview/'>uipickerview</a> (5)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shu-ju-cun-chu/'>数据存储</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shi-jian-chu-li/'>事件处理</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a> (17)
+      </li>
+    
+  </ul>
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/09/06/quartz2d-hua-ju-xing/">Quartz2d-画矩形</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/">Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-hua-ban/">Quartz2d-画板</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-shou-shi-jie-suo/">Quartz2d-手势解锁</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/16/quartz2d-shou-dong-jie-ping/">Quartz2d-手动截屏</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - 嗷大喵 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

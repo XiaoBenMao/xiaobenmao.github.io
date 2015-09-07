@@ -1,0 +1,393 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Quartz2d-画板 - My World</title>
+  <meta name="author" content="嗷大喵">
+
+  
+  <meta name="description" content="1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+/**
+5&gt; 画板 演示程序： &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://xiaobenmao.github.io/blog/2014/07/17/quartz2d-hua-ban/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My World" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.useso.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.useso.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My World</a></h1>
+  
+    <h2>Your World</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="xiaobenmao.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Quartz2d-画板</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-07-17T18:39:13+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>6:39 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><!--more-->
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm">5&gt; 画板</span>
+</span><span class='line'><span class="cm">    演示程序：</span>
+</span><span class='line'><span class="cm">    分析控件：ToolBar(不需要管里面子控件的frame)，画板view,自定义工具条（方便屏幕适配，能迅速固定里面子控件的位置）</span>
+</span><span class='line'><span class="cm">    自动布局，四个约束确定一个控件</span>
+</span><span class='line'><span class="cm">    蓝色按钮：左，右，下，高固定</span>
+</span><span class='line'><span class="cm">    橘色按钮：右，下固定，宽度和高度和蓝色按钮相等。</span>
+</span><span class='line'><span class="cm">    绿色按钮：右，下，宽度和高度和橘色按钮相等</span>
+</span><span class='line'><span class="cm">    绘图思路：先描述路径，在渲染，需要画很多线条，最好每个线条保存到一个路径里面。</span>
+</span><span class='line'><span class="cm">    绘图功能：</span>
+</span><span class='line'><span class="cm">        * touchBegin设置画线起点：开始触摸的点</span>
+</span><span class='line'><span class="cm">        * 怎么设置起点？创建UIBezierPath，贝塞尔路径才能设置起点</span>
+</span><span class='line'><span class="cm">        * touchMove:手指移动到哪就画哪，addLine到移动的点</span>
+</span><span class='line'><span class="cm">        * setNeedDisplay,路径描述完了，就渲染到视图就好了。</span>
+</span><span class='line'><span class="cm">        * 只能画一条线？drawRect方法每次都会把之前的清掉，重新绘制</span>
+</span><span class='line'><span class="cm">        * 怎么绘制多条路径？搞个数组保存上一次的</span>
+</span><span class='line'><span class="cm">        * 设置线宽:每次滑动滑块，就改变下一次路径的宽度</span>
+</span><span class='line'><span class="cm">        * 监听滑块的值，把值传递给paintView,设置路径的线宽。</span>
+</span><span class='line'><span class="cm">        * 不能在drawRect写，会导致所有路径都是一个线宽，应该是每个路径都记录自己的线宽，而且线宽只需要设置一次，在路径一创建的时候就设置。</span>
+</span><span class='line'><span class="cm">        * 设置颜色：</span>
+</span><span class='line'><span class="cm">        * 自定义UIBezierPath，保存颜色，实现一条路径对应一个颜色</span>
+</span><span class='line'><span class="cm">    辅助功能：</span>
+</span><span class='line'><span class="cm">    * 清屏：清空所有路径数组</span>
+</span><span class='line'><span class="cm">    * 撤销：移除最后一条路径</span>
+</span><span class='line'><span class="cm">    * 橡皮擦:设置画笔为白色</span>
+</span><span class='line'><span class="cm">    * 保存:</span>
+</span><span class='line'><span class="cm">        1&gt; 把画板内容截屏</span>
+</span><span class='line'><span class="cm">        2&gt; 把图片保存到相册 UIImageWriteToSavedPhotosAlbum</span>
+</span><span class='line'><span class="cm">        3&gt; 保存相册的回调方法不能乱写，必须按照规定 image:didFinishSavingWithError:contextInfo:</span>
+</span><span class='line'><span class="cm">    * 照片选择</span>
+</span><span class='line'><span class="cm">        1&gt; 通常都是去相册里去照片</span>
+</span><span class='line'><span class="cm">        2&gt; UIImagePickerController,就可以去手机相册了</span>
+</span><span class='line'><span class="cm">        3&gt; 用Modal，没有导航控制器,不能push</span>
+</span><span class='line'><span class="cm">        4&gt; 设置代理，获取图片</span>
+</span><span class='line'><span class="cm">        5&gt; 把图片传递给paintView</span>
+</span><span class='line'><span class="cm">        6&gt; 添加到路径，然后重绘。:画图片也需要顺序的</span>
+</span><span class='line'><span class="cm">    * 照片处理</span>
+</span><span class='line'><span class="cm">        1&gt; PPT画思路：搞一个和画板一样的透明view，里面搞个UIImageView来显示我们从照片库选择的图片，然后对UIImageView进行旋转，缩放等操作</span>
+</span><span class='line'><span class="cm">        2&gt; UImageView不能放在layoutSubViews里面设置尺寸，因为要设置他的形变，默认会调用他父类的layoutSubViews,导致一些莫名其妙的原因</span>
+</span><span class='line'><span class="cm">        3&gt; 在传图片的时候设置他的尺寸，和位置,让他和图片一样的尺寸，显示在中间</span>
+</span><span class='line'><span class="cm">        4&gt; 长按操作：在长按结束的时候，做操作</span>
+</span><span class='line'><span class="cm">            1.默认高亮状态，先变浅在恢复，设置alpha</span>
+</span><span class='line'><span class="cm">            2.动画结束后，把自己截屏，传给控制器里，在交给paintView显示</span>
+</span><span class='line'><span class="cm">            3.需要移除父视图，使命完成了，而且不移除，不能绘制东西，永远添加到paintView上面</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">*/</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>当自定义类设置了接口,从外面传值,一定要重写setter方法</li>
+<li>当绘制多条路径path的时候,为了每条路径的颜色不同,可以自定义贝瑟尔路径,继承自UIBezierPath保存每条路径的颜色,增加一个pathColor属性,在drawRect方法中,就可以设置每条路径的颜色,否则修改颜色后所有,颜色都是一样的</li>
+<li>stroke时,必须放在最后,属性设置放在之前,比如颜色放在后面,第一根线的颜色是错误的</li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">嗷大喵</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-07-17T18:39:13+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>6:39 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/07/17/quartz2d-shou-shi-jie-suo/" title="Previous Post: Quartz2d-手势解锁">&laquo; Quartz2d-手势解锁</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/" title="Next Post: Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)">Quartz2d-绘图中的定时器(CADisplayLink和NSTimer) &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>欢迎光临小站</h1>
+  <p>我的世界</p>
+  <p>新浪微博：<a href=" http://weibo.com/QQ908887023" target="_blank">我是嗷大喵</a></p>
+</section><section>
+  <h1>文章分类</h1>
+  <ul id="categories">
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/suan-fa/'>算法</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/cocos2dx-lua/'>cocos2dx-lua</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/u3d/'>u3d</a> (4)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ioswei-fen-lei/'>ios未分类</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/tableview/'>tableview</a> (14)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ji-suan-ji-ying-yu/'>计算机英语</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/liao-tian-cellbu-ju/'>聊天cell布局</a> (7)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/uipickerview/'>uipickerview</a> (5)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shu-ju-cun-chu/'>数据存储</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shi-jian-chu-li/'>事件处理</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a> (17)
+      </li>
+    
+  </ul>
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/09/06/quartz2d-hua-ju-xing/">Quartz2d-画矩形</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/">Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-hua-ban/">Quartz2d-画板</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-shou-shi-jie-suo/">Quartz2d-手势解锁</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/16/quartz2d-shou-dong-jie-ping/">Quartz2d-手动截屏</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - 嗷大喵 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

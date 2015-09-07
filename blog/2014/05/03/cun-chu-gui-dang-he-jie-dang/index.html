@@ -1,0 +1,411 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>存储-归档和解档 - My World</title>
+  <meta name="author" content="嗷大喵">
+
+  
+  <meta name="description" content="NSKeyedArchiver 归档可以存储自定义对象
+如果对象是NSString、NSDictionary、NSArray、NSData、NSNumber等类型，可以直接用NSKeyedArchiver进行归档和恢复
+不是所有的对象都可以直接用这种方法进行归档， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://xiaobenmao.github.io/blog/2014/05/03/cun-chu-gui-dang-he-jie-dang/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My World" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.useso.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.useso.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My World</a></h1>
+  
+    <h2>Your World</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="xiaobenmao.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">存储-归档和解档</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-05-03T15:38:07+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2014</span></span> <span class='time'>3:38 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h4>NSKeyedArchiver</h4>
+
+<ul>
+<li>归档可以存储自定义对象</li>
+<li><p>如果对象是NSString、NSDictionary、NSArray、NSData、NSNumber等类型，可以直接用NSKeyedArchiver进行归档和恢复</p></li>
+<li><p>不是所有的对象都可以直接用这种方法进行归档，只有遵守了NSCoding协议的对象才可以</p></li>
+</ul>
+
+
+<!--more-->
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;Foundation/Foundation.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 自定对象用于归档和解档,遵守NSCoding协议,实现协议方法</span>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">WQContactData</span> : <span class="bp">NSObject</span><span class="o">&lt;</span><span class="bp">NSCoding</span><span class="o">&gt;</span>
+</span><span class='line'><span class="cm">/** 姓名*/</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">NSString</span> <span class="o">*</span><span class="n">name</span><span class="p">;</span>
+</span><span class='line'><span class="cm">/** 手机号*/</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">NSString</span> <span class="o">*</span><span class="n">phoneNum</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">assign</span><span class="p">)</span> <span class="kt">int</span> <span class="n">age</span><span class="p">;</span>
+</span><span class='line'><span class="p">+</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">contactWithName:</span><span class="p">(</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">name</span> <span class="nf">andPhoneNum:</span><span class="p">(</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">phonenum</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>NSCoding协议有2个方法,要归档和解档的对象要实现这两个方法:</li>
+<li>方法一:encodeWithCoder:
+
+<ul>
+<li>每次归档对象时，都会调用这个方法。一般在这个方法里面指定如何归档对象中的每个实例变量，可以使用encodeObject:forKey:方法归档实例变量</li>
+</ul>
+</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">static</span> <span class="bp">NSString</span> <span class="o">*</span><span class="n">nameKey</span> <span class="o">=</span> <span class="s">@&quot;name&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="k">static</span> <span class="bp">NSString</span> <span class="o">*</span><span class="n">phoneKey</span> <span class="o">=</span> <span class="s">@&quot;phone&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="k">static</span> <span class="bp">NSString</span> <span class="o">*</span><span class="n">phoneKey</span> <span class="o">=</span> <span class="s">@&quot;age&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="c1">// 什么时候调用:自定义归档对象的时候</span>
+</span><span class='line'><span class="c1">// 作用: 用来描述当前对象那些属性需要归档</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">encodeWithCoder:</span><span class="p">(</span><span class="bp">NSCoder</span> <span class="o">*</span><span class="p">)</span><span class="nv">aDecoder</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">aDecoder</span> <span class="nl">encodeObject</span><span class="p">:</span><span class="n">_name</span> <span class="nl">forKey</span><span class="p">:</span><span class="n">nameKey</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">aDecoder</span> <span class="nl">encodeObject</span><span class="p">:</span><span class="n">_phoneNum</span> <span class="nl">forKey</span><span class="p">:</span><span class="n">phoneKey</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">aDecoder</span> <span class="nl">encodeInt</span><span class="p">:</span><span class="n">age</span> <span class="nl">forKey</span><span class="p">:</span><span class="n">ageKey</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>方法二:initWithCoder:
+
+<ul>
+<li>每次从文件中恢复(解码)对象时，都会调用这个方法。一般在这个方法里面指定如何解码文件中的数据为对象的实例变量，可以使用decodeObject:forKey方法解码实例变量</li>
+</ul>
+</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// 什么时候调用:解档文件的时候,比如自定义对象,xib,storyboard及控件等</span>
+</span><span class='line'><span class="c1">// 作用: 用来描述当前对象里那些属性需要解档</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">initWithCoder:</span><span class="p">(</span><span class="bp">NSCoder</span> <span class="o">*</span><span class="p">)</span><span class="nv">aDecoder</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nb">self</span> <span class="o">=</span> <span class="p">[</span><span class="nb">super</span> <span class="n">init</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">_name</span> <span class="o">=</span> <span class="p">[</span><span class="n">aDecoder</span> <span class="nl">decodeObjectForKey</span><span class="p">:</span><span class="n">nameKey</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">_phoneNum</span> <span class="o">=</span> <span class="p">[</span><span class="n">aDecoder</span> <span class="nl">decodeObjectForKey</span><span class="p">:</span><span class="n">phoneKey</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">_age</span> <span class="o">=</span> <span class="p">[</span><span class="n">aDecoder</span> <span class="nl">decodeObjectForKey</span><span class="p">:</span><span class="n">nameKey</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> 如果父类也遵守了NSCoding协议，请注意：应该在encodeWithCoder:方法中加上一句</span>
+</span><span class='line'><span class="cm"> [super encodeWithCode:encode];</span>
+</span><span class='line'><span class="cm"> 确保继承的实例变量也能被编码，即也能被归档</span>
+</span><span class='line'><span class="cm"> 应该在initWithCoder:方法中加上一句</span>
+</span><span class='line'><span class="cm"> self = [super initWithCoder:decoder];</span>
+</span><span class='line'><span class="cm"> 确保继承的实例变量也能被解码，即也能被恢复</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 只要父类遵守了NSCoding,就调用[super initWithCoder:aCoder],先初始化父类.</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 通过代码初始化的时候,调用init方法,会调用initWithFrame</span>
+</span><span class='line'><span class="cm">*/</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>归档和解档</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// 方法原型:</span>
+</span><span class='line'><span class="p">+</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">archiveRootObject:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">rootObject</span> <span class="nf">toFile:</span><span class="p">(</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">path</span><span class="p">;</span>
+</span><span class='line'><span class="p">+</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">unarchiveObjectWithFile:</span><span class="p">(</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">path</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 归档</span>
+</span><span class='line'><span class="c1">// 文件路径中的文件名后缀可以自定义,为加密后的文件打不开</span>
+</span><span class='line'><span class="p">[</span><span class="bp">NSKeyedArchiver</span> <span class="nl">archiveRootObject</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="n">contactsData</span> <span class="nl">toFile</span><span class="p">:</span><span class="n">WQFilePath</span><span class="p">];</span>
+</span><span class='line'><span class="c1">// 解档</span>
+</span><span class='line'><span class="n">_contactsData</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSKeyedUnarchiver</span> <span class="nl">unarchiveObjectWithFile</span><span class="p">:</span><span class="n">WQFilePath</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/%E5%BD%92%E6%A1%A3%E5%92%8C%E8%A7%A3%E6%A1%A3.png" alt="" /></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">嗷大喵</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-05-03T15:38:07+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2014</span></span> <span class='time'>3:38 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/shu-ju-cun-chu/'>数据存储</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/05/02/cun-chu-pian-hao-she-zhi/" title="Previous Post: 存储-偏好设置">&laquo; 存储-偏好设置</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/06/15/shi-jian-chu-li-jian-dan-shou-shi-1/" title="Next Post: 事件处理-简单手势(1)">事件处理-简单手势(1) &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>欢迎光临小站</h1>
+  <p>我的世界</p>
+  <p>新浪微博：<a href=" http://weibo.com/QQ908887023" target="_blank">我是嗷大喵</a></p>
+</section><section>
+  <h1>文章分类</h1>
+  <ul id="categories">
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/suan-fa/'>算法</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/cocos2dx-lua/'>cocos2dx-lua</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/u3d/'>u3d</a> (4)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ioswei-fen-lei/'>ios未分类</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/tableview/'>tableview</a> (14)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ji-suan-ji-ying-yu/'>计算机英语</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/liao-tian-cellbu-ju/'>聊天cell布局</a> (7)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/uipickerview/'>uipickerview</a> (5)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shu-ju-cun-chu/'>数据存储</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shi-jian-chu-li/'>事件处理</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a> (17)
+      </li>
+    
+  </ul>
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/09/06/quartz2d-hua-ju-xing/">Quartz2d-画矩形</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/">Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-hua-ban/">Quartz2d-画板</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-shou-shi-jie-suo/">Quartz2d-手势解锁</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/16/quartz2d-shou-dong-jie-ping/">Quartz2d-手动截屏</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - 嗷大喵 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

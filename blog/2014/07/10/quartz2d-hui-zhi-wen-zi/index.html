@@ -1,0 +1,541 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Quartz2d-绘制文字 - My World</title>
+  <meta name="author" content="嗷大喵">
+
+  
+  <meta name="description" content="1
+2
+3
+4
+5
+6
+// 绘制文字
+NSString *str = @&quot;带我一起飞一起飞一起飞一起飞一起飞一起飞一起飞一起飞&quot;;
+// 只设置起点,不会换行
+//[str drawAtPoint:self.bounds.origin withAttributes: &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://xiaobenmao.github.io/blog/2014/07/10/quartz2d-hui-zhi-wen-zi/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My World" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.useso.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.useso.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My World</a></h1>
+  
+    <h2>Your World</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="xiaobenmao.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Quartz2d-绘制文字</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-07-10T12:30:33+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:30 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="/images/%E7%94%BB%E6%96%87%E5%AD%97.png" alt="" /></p>
+
+<!--more-->
+
+
+<p><img src="/images/%E7%94%BB%E6%96%87%E5%AD%971.png" alt="" /></p>
+
+<p><img src="/images/%E7%94%BB%E6%96%87%E5%AD%972.png" alt="" /></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// 绘制文字</span>
+</span><span class='line'><span class="bp">NSString</span> <span class="o">*</span><span class="n">str</span> <span class="o">=</span> <span class="s">@&quot;带我一起飞一起飞一起飞一起飞一起飞一起飞一起飞一起飞&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="c1">// 只设置起点,不会换行</span>
+</span><span class='line'><span class="c1">//[str drawAtPoint:self.bounds.origin withAttributes:textDict];</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">[</span><span class="n">str</span> <span class="nl">drawInRect</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="n">bounds</span> <span class="nl">withAttributes</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/%E7%94%BB%E5%AF%8C%E6%96%87%E6%9C%AC%E6%96%87%E5%AD%97.png" alt="" /></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 绘制文字</span>
+</span><span class='line'>    <span class="bp">NSString</span> <span class="o">*</span><span class="n">str</span> <span class="o">=</span> <span class="s">@&quot;带我一起飞一起飞一起飞一起飞一起飞一起飞一起飞一起飞&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 富文本属性</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//Attritbutes:富文本属性,用来设置字体的一些属性</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">NSMutableDictionary</span> <span class="o">*</span><span class="n">textDict</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSMutableDictionary</span> <span class="n">dictionary</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 设置文字的颜色</span>
+</span><span class='line'>    <span class="n">textDict</span><span class="p">[</span><span class="n">NSForegroundColorAttributeName</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 设置文字字体</span>
+</span><span class='line'>    <span class="n">textDict</span><span class="p">[</span><span class="n">NSFontAttributeName</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIFont</span> <span class="nl">systemFontOfSize</span><span class="p">:</span><span class="mi">30</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 设置文字的宽度,只有设置了宽度,文字才会有空心颜色的效果</span>
+</span><span class='line'>    <span class="n">textDict</span><span class="p">[</span><span class="n">NSStrokeWidthAttributeName</span><span class="p">]</span> <span class="o">=</span> <span class="mi">@3</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 设置文字的空心颜色,该颜色会覆盖字体的颜色</span>
+</span><span class='line'>    <span class="n">textDict</span><span class="p">[</span><span class="n">NSStrokeColorAttributeName</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">blueColor</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 创建阴影对象</span>
+</span><span class='line'>    <span class="bp">NSShadow</span> <span class="o">*</span><span class="n">shadow</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">NSShadow</span> <span class="n">alloc</span><span class="p">]</span><span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">// 设置阴影的颜色</span>
+</span><span class='line'>    <span class="n">shadow</span><span class="p">.</span><span class="n">shadowColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">greenColor</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">// 设置阴影的偏移量</span>
+</span><span class='line'>    <span class="n">shadow</span><span class="p">.</span><span class="n">shadowOffset</span> <span class="o">=</span> <span class="n">CGSizeMake</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
+</span><span class='line'>    <span class="c1">// 设置阴影的模糊度</span>
+</span><span class='line'>    <span class="n">shadow</span><span class="p">.</span><span class="n">shadowBlurRadius</span> <span class="o">=</span> <span class="mf">1.5</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// 将阴影对象加入富文本中</span>
+</span><span class='line'>    <span class="n">textDict</span><span class="p">[</span><span class="n">NSShadowAttributeName</span><span class="p">]</span> <span class="o">=</span> <span class="n">shadow</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 在矩形框内画出文字(自动换行),并添加富文本</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">str</span> <span class="nl">drawInRect</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="n">bounds</span> <span class="nl">withAttributes</span><span class="p">:</span><span class="n">textDict</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>UILabel控件有个attributedText属性,也可以设置富文本属性</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// 创建富文本字符串</span>
+</span><span class='line'><span class="bp">NSAttributedString</span> <span class="o">*</span><span class="n">strArr</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">NSAttributedString</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithString</span><span class="p">:</span><span class="s">@&quot;asdlsajkldl&quot;</span> <span class="nl">attributes</span><span class="p">:</span><span class="n">textDict</span><span class="p">];</span>
+</span><span class='line'><span class="c1">//给label设置富文本字符串</span>
+</span><span class='line'><span class="nb">self</span><span class="p">.</span><span class="n">labelView</span><span class="p">.</span><span class="n">attributedText</span> <span class="o">=</span>  <span class="n">strArr</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>NSAttributedString描述</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cm">/*</span>
+</span><span class='line'><span class="cm"> 字符属性</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 字符属性可以应用于 attributed string 的文本中。</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> NSString *const NSFontAttributeName;(字体)</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> NSString *const NSParagraphStyleAttributeName;(段落)</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> NSString *const NSForegroundColorAttributeName;(字体颜色)</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> NSString *const NSBackgroundColorAttributeName;(字体背景色)</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> NSString *const NSLigatureAttributeName;(连字符)</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> NSString *const NSKernAttributeName;(字间距)</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> NSString *const NSStrikethroughStyleAttributeName;(删除线)</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> NSString *const NSUnderlineStyleAttributeName;(下划线)</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> NSString *const NSStrokeColorAttributeName;(边线颜色)</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> NSString *const NSStrokeWidthAttributeName;(边线宽度)</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> NSString *const NSShadowAttributeName;(阴影)(横竖排版)</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> NSString *const NSVerticalGlyphFormAttributeName;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 常量</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 1&gt; NSFontAttributeName(字体)</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 该属性所对应的值是一个 UIFont 对象。该属性用于改变一段文本的字体。如果不指定该属性，则默认为12-point Helvetica(Neue)。</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 2&gt; NSParagraphStyleAttributeName(段落)</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 该属性所对应的值是一个 NSParagraphStyle 对象。该属性在一段文本上应用多个属性。如果不指定该属性，则默认为 NSParagraphStyle 的defaultParagraphStyle 方法返回的默认段落属性。</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 3&gt; NSForegroundColorAttributeName(字体颜色)</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 该属性所对应的值是一个 UIColor 对象。该属性用于指定一段文本的字体颜色。如果不指定该属性，则默认为黑色。</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 4&gt; NSBackgroundColorAttributeName(字体背景色)</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 该属性所对应的值是一个 UIColor 对象。该属性用于指定一段文本的背景颜色。如果不指定该属性，则默认无背景色。</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 5&gt; NSLigatureAttributeName(连字符)</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 该属性所对应的值是一个 NSNumber 对象(整数)。连体字符是指某些连在一起的字符，它们采用单个的图元符号。0 表示没有连体字符。1 表示使用默认的连体字符。2表示使用所有连体符号。默认值为 1（注意，iOS 不支持值为 2）。</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 6&gt; NSKernAttributeName(字间距)</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 该属性所对应的值是一个 NSNumber 对象(整数)。字母紧排指定了用于调整字距的像素点数。字母紧排的效果依赖于字体。值为 0 表示不使用字母紧排。默认值为0。</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 7&gt; NSStrikethroughStyleAttributeName(删除线)</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 该属性所对应的值是一个 NSNumber 对象(整数)。该值指定是否在文字上加上删除线，该值参考“Underline Style Attributes”。默认值是NSUnderlineStyleNone。</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 8&gt; NSUnderlineStyleAttributeName(下划线)</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 该属性所对应的值是一个 NSNumber 对象(整数)。该值指定是否在文字上加上下划线，该值参考“Underline Style Attributes”。默认值是NSUnderlineStyleNone。</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 9&gt; NSStrokeColorAttributeName(边线颜色)</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 该属性所对应的值是一个 UIColor 对象。如果该属性不指定（默认），则等同于 NSForegroundColorAttributeName。否则，指定为删除线或下划线颜色。更多细节见“Drawing attributedstrings that are both filled and stroked”。</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 10&gt; NSStrokeWidthAttributeName(边线宽度)</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 该属性所对应的值是一个 NSNumber 对象(小数)。该值改变描边宽度（相对于字体size 的百分比）。默认为 0，即不改变。正数只改变描边宽度。负数同时改变文字的描边和填充宽度。例如，对于常见的空心字，这个值通常为3.0。</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 11&gt; NSShadowAttributeName(阴影)</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 该属性所对应的值是一个 NSShadow 对象。默认为 nil。</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 12&gt; NSVerticalGlyphFormAttributeName(横竖排版)</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> 该属性所对应的值是一个 NSNumber 对象(整数)。0 表示横排文本。1 表示竖排文本。在 iOS 中，总是使用横排文本，0 以外的值都未定义。</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm"> */</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">嗷大喵</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-07-10T12:30:33+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:30 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/07/09/quartz2d-hua-bing-xing-tu-he-zhu-zhuang-tu/" title="Previous Post: Quartz2d-画饼形图和柱状图">&laquo; Quartz2d-画饼形图和柱状图</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/07/11/quartz2d-hui-zhi-tu-pian-he-mo-fang-uiimageview/" title="Next Post: Quartz2d-绘制图片和模仿UIImageView">Quartz2d-绘制图片和模仿UIImageView &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>欢迎光临小站</h1>
+  <p>我的世界</p>
+  <p>新浪微博：<a href=" http://weibo.com/QQ908887023" target="_blank">我是嗷大喵</a></p>
+</section><section>
+  <h1>文章分类</h1>
+  <ul id="categories">
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/suan-fa/'>算法</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/cocos2dx-lua/'>cocos2dx-lua</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/u3d/'>u3d</a> (4)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ioswei-fen-lei/'>ios未分类</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/tableview/'>tableview</a> (14)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ji-suan-ji-ying-yu/'>计算机英语</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/liao-tian-cellbu-ju/'>聊天cell布局</a> (7)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/uipickerview/'>uipickerview</a> (5)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shu-ju-cun-chu/'>数据存储</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shi-jian-chu-li/'>事件处理</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a> (17)
+      </li>
+    
+  </ul>
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/09/06/quartz2d-hua-ju-xing/">Quartz2d-画矩形</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/">Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-hua-ban/">Quartz2d-画板</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-shou-shi-jie-suo/">Quartz2d-手势解锁</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/16/quartz2d-shou-dong-jie-ping/">Quartz2d-手动截屏</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - 嗷大喵 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

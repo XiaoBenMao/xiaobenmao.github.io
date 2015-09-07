@@ -1,0 +1,568 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Quartz2d-图片剪裁(带有边框) - My World</title>
+  <meta name="author" content="嗷大喵">
+
+  
+  <meta name="description" content="核心代码 使用路径剪裁:[path addClip];
+使用上下文剪裁:CGContextClip(ctx); 使用路径剪裁 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+/*
+* 图片裁剪 * 分析思路：先设置裁剪区域，把图片画上去，超出裁剪区域的自动裁剪掉。 * 加载旧图片，根据旧图片， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://xiaobenmao.github.io/blog/2014/07/15/quartz2d-tu-pian-jian-cai-dai-you-bian-kuang/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My World" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.useso.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.useso.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My World</a></h1>
+  
+    <h2>Your World</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="xiaobenmao.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Quartz2d-图片剪裁(带有边框)</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-07-15T13:36:47+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>1:36 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><!--more-->
+
+
+<p><img src="/images/%E5%9B%BE%E7%89%87%E5%89%AA%E8%A3%811.png" alt="" /></p>
+
+<p><img src="/images/%E5%9B%BE%E7%89%87%E5%89%AA%E8%A3%812.png" alt="" /></p>
+
+<ul>
+<li>核心代码
+
+<ul>
+<li>使用路径剪裁:[path addClip];</li>
+<li>使用上下文剪裁:CGContextClip(ctx);</li>
+</ul>
+</li>
+</ul>
+
+
+<h3>使用路径剪裁</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cm">/*</span>
+</span><span class='line'><span class="cm">*    图片裁剪</span>
+</span><span class='line'><span class="cm">    * 分析思路：先设置裁剪区域，把图片画上去，超出裁剪区域的自动裁剪掉。</span>
+</span><span class='line'><span class="cm">    * 加载旧图片，根据旧图片，获取上下文尺寸。</span>
+</span><span class='line'><span class="cm">    * 上下文的尺寸 = 新图片的尺寸</span>
+</span><span class='line'><span class="cm">    * 开启一个多大的上下文?:和图片尺寸一样大，避免压缩图片。如果比图片尺寸小，会压缩图片。</span>
+</span><span class='line'><span class="cm">    * 设置裁剪区域：正切于图片的圆</span>
+</span><span class='line'><span class="cm">    * 绘制旧图片</span>
+</span><span class='line'><span class="cm">    * 获取新图片</span>
+</span><span class='line'><span class="cm">    * 关闭上下文</span>
+</span><span class='line'><span class="cm">*/</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/%E5%89%AA%E8%A3%81%E5%89%8D.png" alt="" /></p>
+
+<p><img src="/images/%E5%89%AA%E8%A3%81%E5%90%8E.png" alt="" /></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">clipImage</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 0.加载图片</span>
+</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="s">@&quot;阿狸头像&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 1.开启位图上下文，跟图片尺寸一样大</span>
+</span><span class='line'>    <span class="n">UIGraphicsBeginImageContextWithOptions</span><span class="p">(</span><span class="n">image</span><span class="p">.</span><span class="n">size</span><span class="p">,</span> <span class="nb">NO</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 2.设置圆形裁剪区域，正切与图片</span>
+</span><span class='line'>    <span class="c1">// 2.1创建圆形的路径</span>
+</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="nl">bezierPathWithOvalInRect</span><span class="p">:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">image</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">image</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">)];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 2.2把路径设置为裁剪区域</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="n">addClip</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 3.绘制图片</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">image</span> <span class="nl">drawAtPoint</span><span class="p">:</span><span class="n">CGPointZero</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 4.从上下文中获取图片</span>
+</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">clipImage</span> <span class="o">=</span> <span class="n">UIGraphicsGetImageFromCurrentImageContext</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 5.关闭上下文</span>
+</span><span class='line'>    <span class="n">UIGraphicsEndImageContext</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">_imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">clipImage</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>为UIImage添加一个分类,返回一个剪裁后带有指定颜色边框的图片</li>
+</ul>
+
+
+<p><img src="/images/%E5%89%AA%E8%A3%81%E5%B8%A6%E6%9C%89%E8%BE%B9%E6%A1%86%E5%88%86%E6%9E%90.png" alt="" /></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cm">/*</span>
+</span><span class='line'><span class="cm">*   带圆环裁剪:在裁剪的图片外边加个小圆环。</span>
+</span><span class='line'><span class="cm">    * 分析思路：先画一个大圆，在设置裁剪区域，把图片画上去，超出裁剪区域的自动裁剪掉。</span>
+</span><span class='line'><span class="cm">    * 加载旧图片，根据旧图片，获取上下文尺寸。</span>
+</span><span class='line'><span class="cm">    * 确定圆环宽度 borderW</span>
+</span><span class='line'><span class="cm">    * 上下文的尺寸 = 新图片的尺寸</span>
+</span><span class='line'><span class="cm">    * 确定新的上下文尺寸: newImageW : oldImageW + 2 * borderW  newImageH : oldImageH + 2 * borderW，</span>
+</span><span class='line'><span class="cm">    * 绘制大圆：</span>
+</span><span class='line'><span class="cm">        1.获取上下文 2.添加路径到上下文 3.设置大圆的颜色 = 圆环的颜色 4.渲染</span>
+</span><span class='line'><span class="cm">    * 设置裁剪区域,和图片尺寸一样大，只不过，x,y不一样，x=borderW,y=borderW.</span>
+</span><span class='line'><span class="cm">    * 绘制旧图片</span>
+</span><span class='line'><span class="cm">    * 获取新图片</span>
+</span><span class='line'><span class="cm">    * 关闭上下文</span>
+</span><span class='line'><span class="cm">    * 抽分类，3个参数，图片名称，圆环宽度，圆环颜色</span>
+</span><span class='line'><span class="cm">*/</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/%E5%89%AA%E8%A3%81%E5%B8%A6%E6%9C%89%E8%BE%B9%E6%A1%86.png" alt="" /></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="bp">UIImage</span> <span class="nl">(Image)</span>
+</span><span class='line'><span class="p">+</span> <span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">imageWithClipImage:</span><span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">image</span> <span class="nf">borderWidth:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">borderWidth</span> <span class="nf">borderColor:</span><span class="p">(</span><span class="bp">UIColor</span> <span class="o">*</span><span class="p">)</span><span class="nv">color</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#import &quot;UIImage+Image.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="bp">UIImage</span> <span class="nl">(Image)</span>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> *  带有外框的图片剪裁</span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> *  @param image       所要剪裁的图片</span>
+</span><span class='line'><span class="cm"> *  @param borderWidth 边框宽度</span>
+</span><span class='line'><span class="cm"> *  @param color       边框宽度</span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> *  @return 剪裁好的图片</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="p">+</span> <span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">imageWithClipImage:</span><span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">image</span> <span class="nf">borderWidth:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">borderWidth</span> <span class="nf">borderColor:</span><span class="p">(</span><span class="bp">UIColor</span> <span class="o">*</span><span class="p">)</span><span class="nv">color</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 图片的宽度和高度</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">imageWH</span> <span class="o">=</span> <span class="n">image</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 设置圆环的宽度</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">border</span> <span class="o">=</span> <span class="n">borderWidth</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 圆形的宽度和高度</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">ovalWH</span> <span class="o">=</span> <span class="n">imageWH</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">border</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 1.开启上下文</span>
+</span><span class='line'>    <span class="n">UIGraphicsBeginImageContextWithOptions</span><span class="p">(</span><span class="n">CGSizeMake</span><span class="p">(</span><span class="n">ovalWH</span><span class="p">,</span> <span class="n">ovalWH</span><span class="p">),</span> <span class="nb">NO</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 2.画大圆</span>
+</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="nl">bezierPathWithOvalInRect</span><span class="p">:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ovalWH</span><span class="p">,</span> <span class="n">ovalWH</span><span class="p">)];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">color</span> <span class="n">set</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="n">fill</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 3.设置裁剪区域</span>
+</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">clipPath</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="nl">bezierPathWithOvalInRect</span><span class="p">:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="n">border</span><span class="p">,</span> <span class="n">border</span><span class="p">,</span> <span class="n">imageWH</span><span class="p">,</span> <span class="n">imageWH</span><span class="p">)];</span>
+</span><span class='line'>    <span class="c1">// 把路径设置为剪裁区域</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">clipPath</span> <span class="n">addClip</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 4.绘制图片,图片起始点是在上下文的位置</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">image</span> <span class="nl">drawAtPoint</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="n">border</span><span class="p">,</span> <span class="n">border</span><span class="p">)];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 5.获取图片</span>
+</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">clipImage</span> <span class="o">=</span> <span class="n">UIGraphicsGetImageFromCurrentImageContext</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 6.关闭上下文</span>
+</span><span class='line'>    <span class="n">UIGraphicsEndImageContext</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">clipImage</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 使用</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 图片裁剪：把正方形图片重新生产一张圆形的图片</span>
+</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIImage</span> <span class="nl">imageWithClipImage</span><span class="p">:[</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="s">@&quot;阿狸头像&quot;</span><span class="p">]</span> <span class="nl">borderWidth</span><span class="p">:</span><span class="mi">1</span> <span class="nl">borderColor</span><span class="p">:[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">]];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">_imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>使用上下文剪裁</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>      <span class="c1">//画圆，以便以后指定可以显示图片的范围</span>
+</span><span class='line'>      <span class="c1">//获取图形上下文</span>
+</span><span class='line'>      <span class="n">CGContextRef</span> <span class="n">ctx</span><span class="o">=</span><span class="n">UIGraphicsGetCurrentContext</span><span class="p">();</span>
+</span><span class='line'>      <span class="n">CGContextAddEllipseInRect</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">//指定上下文中可以显示内容的范围就是圆的范围</span>
+</span><span class='line'>      <span class="n">CGContextClip</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
+</span><span class='line'>      <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image2</span><span class="o">=</span><span class="p">[</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="s">@&quot;me&quot;</span><span class="p">];</span>
+</span><span class='line'>      <span class="p">[</span><span class="n">image2</span> <span class="nl">drawAtPoint</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)];</span>
+</span><span class='line'> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/%E5%89%AA%E8%A3%81storyboard.png" alt="" /></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">嗷大喵</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-07-15T13:36:47+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>1:36 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/07/14/quartz2d-shui-yin/" title="Previous Post: Quartz2d-水印">&laquo; Quartz2d-水印</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/07/15/quartz2d-jie-ping-zhi-ding-kong-jian/" title="Next Post: Quartz2d-截屏(指定控件)">Quartz2d-截屏(指定控件) &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>欢迎光临小站</h1>
+  <p>我的世界</p>
+  <p>新浪微博：<a href=" http://weibo.com/QQ908887023" target="_blank">我是嗷大喵</a></p>
+</section><section>
+  <h1>文章分类</h1>
+  <ul id="categories">
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/suan-fa/'>算法</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/cocos2dx-lua/'>cocos2dx-lua</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/u3d/'>u3d</a> (4)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ioswei-fen-lei/'>ios未分类</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/tableview/'>tableview</a> (14)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ji-suan-ji-ying-yu/'>计算机英语</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/liao-tian-cellbu-ju/'>聊天cell布局</a> (7)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/uipickerview/'>uipickerview</a> (5)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shu-ju-cun-chu/'>数据存储</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shi-jian-chu-li/'>事件处理</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a> (17)
+      </li>
+    
+  </ul>
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/09/06/quartz2d-hua-ju-xing/">Quartz2d-画矩形</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/">Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-hua-ban/">Quartz2d-画板</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-shou-shi-jie-suo/">Quartz2d-手势解锁</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/16/quartz2d-shou-dong-jie-ping/">Quartz2d-手动截屏</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - 嗷大喵 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

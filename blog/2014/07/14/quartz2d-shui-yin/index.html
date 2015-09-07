@@ -1,0 +1,493 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Quartz2d-水印 - My World</title>
+  <meta name="author" content="嗷大喵">
+
+  
+  <meta name="description" content="- 水印需要绘制图片到新的图片上，因此需要用到位图上下文 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20 /*
+1&gt; 水印简介 * 图片水印作用：防止他人盗取图片，加一些Logo，生成一张新的图片。 * 怎么生成新的图片?和绘图一样的， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://xiaobenmao.github.io/blog/2014/07/14/quartz2d-shui-yin/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My World" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.useso.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.useso.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My World</a></h1>
+  
+    <h2>Your World</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="xiaobenmao.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Quartz2d-水印</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-07-14T11:56:32+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>11:56 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><!--more-->
+
+
+<p><img src="/images/%E6%B0%B4%E5%8D%B00.png" alt="" />
+- 水印需要绘制图片到新的图片上，因此需要用到位图上下文</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'>   <span class="cm">/*</span>
+</span><span class='line'><span class="cm">1&gt; 水印简介</span>
+</span><span class='line'><span class="cm">    *  图片水印作用：防止他人盗取图片，加一些Logo，生成一张新的图片。</span>
+</span><span class='line'><span class="cm">    *  怎么生成新的图片?和绘图一样的，需要拿到上下文做事情，这里也需要拿到上下文，生成一个新的图片。</span>
+</span><span class='line'><span class="cm">    *  什么上下文？位图上下文，在这个上下文画东西，就能输出到新的图片上。</span>
+</span><span class='line'><span class="cm">    *  怎么获取？之前用的都是图层上下文，系统会自动创建，但是我们位图上下文，需要我们手动创建</span>
+</span><span class='line'><span class="cm">    *  总结：只要不和view有关系的上下文，都需要我们手动创建。</span>
+</span><span class='line'><span class="cm">    *  在哪获取图像上下文，viewDidLoad, 不需要拿到系统创建的图层上下文，没必要在drawRect方法里写,直接viewDidLoad就行了。</span>
+</span><span class='line'><span class="cm">    *  怎么创建图像上下文了？之前说过跟上下文有关的以什么开头，UIGraphics</span>
+</span><span class='line'><span class="cm">    *  UIGraphicsBeginImageContextWithOptions:看注释,create bitmap，创建一个位图上下文,而且这种方法得到的图片最清晰。</span>
+</span><span class='line'><span class="cm">    *  解释参数（size:新图片尺寸 opaque: YES:不透明 NO:透明 scale:0.0 不伸缩）</span>
+</span><span class='line'><span class="cm">    *  绘制内容(图片，文字)</span>
+</span><span class='line'><span class="cm">    *  获取图片：把位图上下文的内容生成一个图片给你。</span>
+</span><span class='line'><span class="cm">    *  关闭上下文，不关闭一直占用着内存。</span>
+</span><span class='line'><span class="cm">    *  显示UIImageView上</span>
+</span><span class='line'><span class="cm">    *  保存图片，写到文件，UIImage不能写，需要转换成NSData二进制数据</span>
+</span><span class='line'><span class="cm">    *  UIImageJPEGRepresentation:可以设置图片质量</span>
+</span><span class='line'><span class="cm">    *  UIImagePNGRepresentation：把图片转换成png格式的二进制数据,png格式默认是最高清的。</span>
+</span><span class='line'><span class="cm">    *  写到桌面</span>
+</span><span class='line'><span class="cm">    */</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/%E6%B0%B4%E5%8D%B01.png" alt="" /></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 加载图片</span>
+</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="s">@&quot;小黄人&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     1,获取上下文，之前的上下文都是在view的drawRect方法中获取（跟View相关联的上下文layer上下文）</span>
+</span><span class='line'><span class="cm">     2,目前我们需要绘制图片到新的图片上，因此需要用到位图上下文</span>
+</span><span class='line'><span class="cm">     3,怎么获取位图上下文,注意位图上下文的获取方式跟layer上下文不一样。位图上下文需要我们手动创建。</span>
+</span><span class='line'><span class="cm">     4,开启一个位图上下文，注意位图上下文跟view无关联，所以不需要在drawRect.</span>
+</span><span class='line'><span class="cm">     5,开启一个位图上下文:UIGraphicsBeginImageContextWithOptions(CGSize size, BOOL opaque, CGFloat scale)</span>
+</span><span class='line'><span class="cm">     参数:</span>
+</span><span class='line'><span class="cm">        1&gt;size:位图上下文的尺寸（新图片的尺寸）</span>
+</span><span class='line'><span class="cm">        2&gt;opaque: 不透明度 YES：不透明 NO:透明，通常我们需要透明的上下文</span>
+</span><span class='line'><span class="cm">        3&gt;scale:通常不需要缩放上下文，取值为0，表示不缩放</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="n">UIGraphicsBeginImageContextWithOptions</span><span class="p">(</span><span class="n">image</span><span class="p">.</span><span class="n">size</span><span class="p">,</span> <span class="nb">NO</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">CGContextRef</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">UIGraphicsGetCurrentContext</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">CGContextSetRGBFillColor</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">);</span>
+</span><span class='line'>    <span class="c1">// 1.绘制原生的图片</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">image</span> <span class="nl">drawAtPoint</span><span class="p">:</span><span class="n">CGPointZero</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 2.给原生的图片添加文字</span>
+</span><span class='line'>    <span class="bp">NSString</span> <span class="o">*</span><span class="n">str</span> <span class="o">=</span> <span class="s">@&quot;MYCSDN&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 创建字典属性</span>
+</span><span class='line'>    <span class="bp">NSMutableDictionary</span> <span class="o">*</span><span class="n">dict</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSMutableDictionary</span> <span class="n">dictionary</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">dict</span><span class="p">[</span><span class="n">NSForegroundColorAttributeName</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">dict</span><span class="p">[</span><span class="n">NSFontAttributeName</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIFont</span> <span class="nl">systemFontOfSize</span><span class="p">:</span><span class="mi">20</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">str</span> <span class="nl">drawAtPoint</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">528</span><span class="p">)</span> <span class="nl">withAttributes</span><span class="p">:</span><span class="n">dict</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 3.生成一张图片给我们,从上下文中获取图片</span>
+</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">imageWater</span> <span class="o">=</span> <span class="n">UIGraphicsGetImageFromCurrentImageContext</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">myImageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">imageWater</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/%E6%B0%B4%E5%8D%B01.png" alt="" />
+- 也可以在位图上下文里通过渲染上下文或者路径来画图形</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 加载图片</span>
+</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="s">@&quot;小黄人&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     1,获取上下文，之前的上下文都是在view的drawRect方法中获取（跟View相关联的上下文layer上下文）</span>
+</span><span class='line'><span class="cm">     2,目前我们需要绘制图片到新的图片上，因此需要用到位图上下文</span>
+</span><span class='line'><span class="cm">     3,怎么获取位图上下文,注意位图上下文的获取方式跟layer上下文不一样。位图上下文需要我们手动创建。</span>
+</span><span class='line'><span class="cm">     4,开启一个位图上下文，注意位图上下文跟view无关联，所以不需要在drawRect.</span>
+</span><span class='line'><span class="cm">     5,开启一个位图上下文:UIGraphicsBeginImageContextWithOptions(CGSize size, BOOL opaque, CGFloat scale)</span>
+</span><span class='line'><span class="cm">     参数:</span>
+</span><span class='line'><span class="cm">        1&gt;size:位图上下文的尺寸（新图片的尺寸）</span>
+</span><span class='line'><span class="cm">        2&gt;opaque: 不透明度 YES：不透明 NO:透明，通常我们需要透明的上下文</span>
+</span><span class='line'><span class="cm">        3&gt;scale:通常不需要缩放上下文，取值为0，表示不缩放</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="n">UIGraphicsBeginImageContextWithOptions</span><span class="p">(</span><span class="n">image</span><span class="p">.</span><span class="n">size</span><span class="p">,</span> <span class="nb">NO</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 1.获取上下文(位图上下文)</span>
+</span><span class='line'>    <span class="n">CGContextRef</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">UIGraphicsGetCurrentContext</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 2.描述路径</span>
+</span><span class='line'>    <span class="n">CGContextMoveToPoint</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">CGContextAddLineToPoint</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">]</span> <span class="n">set</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 3.渲染上下文</span>
+</span><span class='line'>    <span class="n">CGContextStrokePath</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span><span class="p">[</span><span class="bp">UIBezierPath</span> <span class="nl">bezierPathWithOvalInRect</span><span class="p">:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">)];</span>
+</span><span class='line'>    <span class="p">[[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">]</span> <span class="n">set</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="n">stroke</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 3.生成一张图片给我们,从上下文中获取图片</span>
+</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">imageWater</span> <span class="o">=</span> <span class="n">UIGraphicsGetImageFromCurrentImageContext</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">myImageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">imageWater</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">嗷大喵</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-07-14T11:56:32+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>11:56 am</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/07/13/quartz2d-ju-zhen-cao-zuo/" title="Previous Post: Quartz2d-矩阵操作">&laquo; Quartz2d-矩阵操作</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/07/15/quartz2d-tu-pian-jian-cai-dai-you-bian-kuang/" title="Next Post: Quartz2d-图片剪裁(带有边框)">Quartz2d-图片剪裁(带有边框) &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>欢迎光临小站</h1>
+  <p>我的世界</p>
+  <p>新浪微博：<a href=" http://weibo.com/QQ908887023" target="_blank">我是嗷大喵</a></p>
+</section><section>
+  <h1>文章分类</h1>
+  <ul id="categories">
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/suan-fa/'>算法</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/cocos2dx-lua/'>cocos2dx-lua</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/u3d/'>u3d</a> (4)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ioswei-fen-lei/'>ios未分类</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/tableview/'>tableview</a> (14)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ji-suan-ji-ying-yu/'>计算机英语</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/liao-tian-cellbu-ju/'>聊天cell布局</a> (7)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/uipickerview/'>uipickerview</a> (5)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shu-ju-cun-chu/'>数据存储</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shi-jian-chu-li/'>事件处理</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a> (17)
+      </li>
+    
+  </ul>
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/09/06/quartz2d-hua-ju-xing/">Quartz2d-画矩形</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/">Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-hua-ban/">Quartz2d-画板</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/17/quartz2d-shou-shi-jie-suo/">Quartz2d-手势解锁</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/16/quartz2d-shou-dong-jie-ping/">Quartz2d-手动截屏</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - 嗷大喵 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

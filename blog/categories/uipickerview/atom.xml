@@ -1,0 +1,681 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Uipickerview | My World]]></title>
+  <link href="http://xiaobenmao.github.io/blog/categories/uipickerview/atom.xml" rel="self"/>
+  <link href="http://xiaobenmao.github.io/"/>
+  <updated>2015-09-07T23:16:14+08:00</updated>
+  <id>http://xiaobenmao.github.io/</id>
+  <author>
+    <name><![CDATA[嗷大喵]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[pickerView - 城市选择]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/04/29/pickerview-cheng-shi-xuan-ze/"/>
+    <updated>2014-04-29T09:44:47+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/04/29/pickerview-cheng-shi-xuan-ze</id>
+    <content type="html"><![CDATA[<p><img src="/images/%E9%80%89%E6%8B%A9%E5%9F%8E%E5%B8%82.png" alt="" /></p>
+
+<!--more-->
+
+
+<ul>
+<li>城市数据模型</li>
+</ul>
+
+
+<pre><code class="objc">#import &lt;Foundation/Foundation.h&gt;
+
+@interface WQProvinceData : NSObject
+/** 城市*/
+@property (nonatomic, strong) NSArray *cities;
+/** 城市名称*/
+@property (nonatomic, strong) NSString *name;
++ (instancetype)provinceWithDict:(NSDictionary *)dict;
+@end
+
+#import "WQProvinceData.h"
+
+@implementation WQProvinceData
++ (instancetype)provinceWithDict:(NSDictionary *)dict
+{
+    WQProvinceData *provinceData = [[WQProvinceData alloc]init];
+    [provinceData setValuesForKeysWithDictionary:dict];
+    return provinceData;
+}
+@end
+</code></pre>
+
+<ul>
+<li>控制器</li>
+</ul>
+
+
+<pre><code class="objc">#import &lt;UIKit/UIKit.h&gt;
+
+@interface ViewController : UIViewController
+@end
+
+
+#import "ViewController.h"
+#import "WQProvinceData.h"
+@interface ViewController ()&lt;UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate&gt;
+@property (weak, nonatomic) IBOutlet UITextField *birthdayField;
+/**日期选择器*/
+@property (nonatomic, strong) UIDatePicker *datePicker;
+/**城市显示文本框*/
+@property (weak, nonatomic) IBOutlet UITextField *cityField;
+/**城市数据模型*/
+@property (nonatomic, strong) NSMutableArray *provinceData;
+
+/**城市选择器*/
+@property (nonatomic, strong) UIPickerView *pickerView;
+/**当前选中省下标*/
+@property (nonatomic, assign) NSInteger provinceIndex;
+@end
+
+@implementation ViewController
+// 懒加载,省,城数据
+- (NSMutableArray *)provinceData
+{
+    if (_provinceData == nil)
+    {
+        _provinceData = [NSMutableArray array];
+        // 加载plist文件
+        NSArray *arrFromPlist = [NSArray arrayWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"provinces.plist" ofType:nil]];
+        // 字典转模型
+        [arrFromPlist enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            WQProvinceData *data = [WQProvinceData provinceWithDict:obj];
+            [_provinceData addObject:data];
+        }];
+    }
+    return _provinceData;
+}
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // 给日期输入框设置代理
+    self.birthdayField.delegate = self;
+    // 设置日期键盘
+    [self setUpBirthDayKeyBoard];
+
+    // 给城市输入框设置代理
+    self.cityField.delegate = self;
+    // 设置城市键盘
+    [self setUpCityKeyBoard];
+}
+
+// 不允许用户输入数据,只可以通过选择器选择(textField的代理方法)
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    return NO;
+}
+/**
+ *  设置日期选择
+ */
+- (void)setUpBirthDayKeyBoard
+{
+    self.datePicker = [[UIDatePicker alloc]init];
+    self.birthdayField.inputView = self.datePicker;
+    self.datePicker.datePickerMode = UIDatePickerModeDate;
+    self.datePicker.locale = [NSLocale localeWithLocaleIdentifier:@"zh"];
+    // 给日期输入框添加监听器,用来监听数据的修改
+    [self.datePicker addTarget:self action:@selector(birthdayFieldValueChange:) forControlEvents:UIControlEventValueChanged];
+}
+
+// 监听开始编辑,用来初始文本框的显示
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    if (textField == self.birthdayField) {
+        [self birthdayFieldValueChange:self.datePicker];
+    }else if (textField == self.cityField)
+    {
+        [self pickerView:self.pickerView didSelectRow:0 inComponent:0];
+    }
+
+}
+// 给日期 text赋值
+- (void)birthdayFieldValueChange:(UIDatePicker *)datePicker
+{
+    NSDate *date = datePicker.date;
+    NSDateFormatter *formatter = [[NSDateFormatter alloc]init];
+    formatter.dateFormat = @"yy-MM-dd";
+    NSString *dateStr = [formatter stringFromDate:date];
+    self.birthdayField.text = dateStr;
+}
+
+#pragma mark - -----城市选择器
+/**
+ *  设置城市键盘
+ */
+- (void)setUpCityKeyBoard
+{
+    // 修改文本输入框弹出键盘的样式
+    self.pickerView = [[UIPickerView alloc]init];
+    self.cityField.inputView = self.pickerView;
+    // 设置数据源和代理
+    self.pickerView.dataSource = self;
+    self.pickerView.delegate = self;
+}
+
+// 城市选择器,只有省和该省城市两列
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
+    return 2;
+}
+// 返回当前component列的行数
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+{
+    if (component == 0) {
+        return self.provinceData.count;
+    }else
+    {
+        WQProvinceData *tempData = self.provinceData[_provinceIndex];
+        return tempData.cities.count;
+    }
+}
+// 返回component列row行显示的数据
+- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
+{
+    if (component == 0) {
+        WQProvinceData *tempData = self.provinceData[row];
+        return tempData.name ;
+    }else
+    {
+        WQProvinceData *tempData = self.provinceData[_provinceIndex];
+        return tempData.cities[row];
+    }
+}
+// 滚动UIPickerView就会调用
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+{
+    // 如果滚动的时省
+    if(component == 0)
+    {
+        // 当前获取到当前选择的省的下标
+        _provinceIndex = [pickerView selectedRowInComponent:0];
+        // 刷新第一列城市的数据
+        [self.pickerView reloadComponent:1];
+        // 刷新城市后,让城市显示第一个
+        [self.pickerView selectRow:0 inComponent:1 animated:YES];
+    }
+    // 获取当前省的数据模型
+    WQProvinceData *proData = self.provinceData[_provinceIndex];
+    // 获取当前城市的下标
+    NSInteger cityIndex = [pickerView selectedRowInComponent:1];
+    // 将数据显示到textfield上
+    self.cityField.text = [NSString stringWithFormat:@"%@ - %@",proData.name, proData.cities[cityIndex]];
+}
+@end
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[pickerView - 选择国旗]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/04/28/pickerview-xuan-ze-guo-qi/"/>
+    <updated>2014-04-28T21:33:56+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/04/28/pickerview-xuan-ze-guo-qi</id>
+    <content type="html"><![CDATA[<p><img src="/images/%E9%80%89%E6%8B%A9%E5%9B%BD%E6%97%97.png" alt="" /></p>
+
+<p>数据模型:
+- 在使用KVC模式时,如果字典中存储了图片名,可以直接声明UIImage属性,通过重写setter方法,直接赋值,
+    -  好处:在给子控件赋值时,统一使用点语法</p>
+
+<!--more-->
+
+
+<pre><code class="objc">#import &lt;UIKit/UIKit.h&gt;
+@interface WQFlagData : NSObject
+/**name*/
+@property (nonatomic, strong) NSString *name;
+
+@property (nonatomic, strong)  UIImage*icon;
++ (instancetype)flagWithDic:(NSDictionary *)dict;
+@end
+
+
+#import "WQFlagData.h"
+
+@implementation WQFlagData
+// 写程序一定要有扩展性
+
+// instancetype: 自动识别当前是哪个类在调用，就会变成对应类的对象
+
+// 为什么不用id,id 不能使用点语法
+// id 可以调用任何对象的方法，坏处：不利于编译器=检查错误
+
+// alloc 的调用用self,如果是子类,则代表创建的为子类对象
++ (instancetype)flagWithDic:(NSDictionary *)dict
+{
+    WQFlagData *flagData = [[self alloc]init];
+    // 利用KVC字典转模型
+    [flagData setValuesForKeysWithDictionary:dict];
+
+//    [dict enumerateKeysAndObjectsUsingBlock:^(NSString *key, id obj, BOOL *stop) {
+//
+//
+//        NSString *funcName = [NSString stringWithFormat:@"set%@",key.capitalizedString];
+//
+//        if ([flag respondsToSelector:@selector(funcName)]) {
+//
+//            [flag setValue:obj forKeyPath:key];
+//
+//        }
+//    }];
+    return flagData;
+}
+// 此处重写set方法,直接修改成UIImage类型,在空间赋值时,可以统一用点语法直接赋值,格式统一,
+- (void)setIcon:(NSString *)icon
+{
+    _icon = [UIImage imageNamed:icon];
+}
+
+
+// 遍历字典里面所有的key
+
+//  key：name
+//  就去模型中查找有没有setName:,直接调用这个对象setName:赋值
+//  假如没有找到setName:。就会去模型中查找有没有_name属性，_name = value
+//  假如没有找到_name,还会去模型中查找name属性
+//  最终没有找到，就会直接报错。
+@end
+</code></pre>
+
+<ul>
+<li>自定义控件,通过加载xib方式(可以用button代替)</li>
+</ul>
+
+
+<pre><code class="objc">#import &lt;UIKit/UIKit.h&gt;
+@class WQFlagData;
+@interface WQFlagView : UIView
+/** 数据模型*/
+@property (nonatomic, strong) WQFlagData *flagData;
++ (instancetype)flagView;
+@end
+</code></pre>
+
+<ul>
+<li>控制器</li>
+</ul>
+
+
+<pre><code class="objc">#import &lt;UIKit/UIKit.h&gt;
+
+@interface ViewController : UIViewController
+@end
+
+//
+//  ViewController.m
+//  PickerView国旗选择
+//
+//  Created by mac on 15/6/9.
+//  Copyright (c) 2015年 mac. All rights reserved.
+//
+
+#import "ViewController.h"
+#import "WQFlagData.h"
+#import "WQFlagView.h"
+@interface ViewController ()&lt;UIPickerViewDelegate, UIPickerViewDataSource&gt;
+@property (weak, nonatomic) IBOutlet UIPickerView *flagPickerView;
+/**&lt;#注释#&gt;*/
+@property (nonatomic, strong) NSMutableArray *flagData;
+
+@end
+
+@implementation ViewController
+
+- (NSMutableArray *)flagData
+{
+    if(_flagData == nil)
+    {
+        NSArray *arrFromPlist =[NSArray arrayWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"flags.plist" ofType:nil]];
+        _flagData = [NSMutableArray array];
+        for (NSDictionary *dict in arrFromPlist)
+        {
+            WQFlagData *data = [WQFlagData flagWithDic:dict];
+            [_flagData addObject:data];
+        }
+    }
+    return _flagData;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.flagPickerView.dataSource = self;
+    self.flagPickerView.delegate = self;
+}
+
+
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
+    return 1;
+}
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+{
+    return self.flagData.count;
+}
+
+- (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component
+{
+    return 80;
+}
+- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
+{
+    WQFlagView *flagView = [WQFlagView flagView];
+    flagView.flagData = self.flagData[row];
+    return flagView;
+}
+
+@end
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[pickerVIew - 点餐]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/04/27/pickerview-dian-can/"/>
+    <updated>2014-04-27T20:33:11+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/04/27/pickerview-dian-can</id>
+    <content type="html"><![CDATA[<p><img src="/images/pickerView%E7%82%B9%E9%A4%90.png" alt="pickerView点餐系统" /></p>
+
+<!--more-->
+
+
+<pre><code class="objc">
+typedef enum {
+    WQFoodFruit,
+    WQFoodMainFood,
+    WQFoodDrink
+};
+#import "ViewController.h"
+
+// 分屏:cmd + option + return
+
+// 退出分屏：cmd + return
+
+@interface ViewController ()&lt;UIPickerViewDelegate,UIPickerViewDataSource&gt;
+@property (weak, nonatomic) IBOutlet UILabel *fruitLabel;
+@property (weak, nonatomic) IBOutlet UILabel *mainLabel;
+@property (weak, nonatomic) IBOutlet UILabel *drinkLabel;
+
+@property (weak, nonatomic) IBOutlet UIPickerView *pickerView;
+
+
+@property (nonatomic, strong) NSArray *foods;
+
+@end
+
+@implementation ViewController
+
+// 点击随机的时候调用
+- (IBAction)random:(UIButton *)sender {
+
+    // pickerView每一列随机选中一行
+
+    // 随机选中的文字展示到label
+
+    // cmd + option + [ 代码上跳
+    // cmd + [ 代码左移
+    for (int i = 0; i &lt; 3; i++) {
+
+        // 假设让第0列随机选中一行
+        // 取出第0列的行数
+        NSInteger count = [self.foods[i] count];
+
+        int random = arc4random_uniform((u_int32_t)count);
+        // 不会触发代理的选中方法,用来不滑动就改变pickerView的值
+        [_pickerView selectRow:random inComponent:i animated:YES];
+
+        // 主动给label赋值
+        [self pickerView:nil didSelectRow:random inComponent:i];
+    }
+
+}
+
+- (NSArray *)foods
+{
+    if (_foods == nil) {
+
+        // 加载Pilst文件
+       NSString *filePath = [[NSBundle mainBundle] pathForResource:@"foods.plist" ofType:nil];
+
+        // 大数组：pickerView有多少列
+        _foods = [NSArray arrayWithContentsOfFile:filePath];
+
+    }
+
+    return _foods;
+}
+
+- (void)viewDidLoad {
+
+    [super viewDidLoad];
+    // Do any additional setup after loading the view, typically from a nib.
+
+    self.pickerView.delegate = self;
+
+    // 初始化label标题
+
+    for (int i = 0; i &lt; 3; i++) {
+
+        [self pickerView:nil didSelectRow:0 inComponent:i];
+
+    }
+
+}
+// 返回pickerView有多少列
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
+    return self.foods.count;
+}
+
+// 返回第component列有多少行
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+{
+    return [self.foods[component] count];
+}
+
+// 返回第component列第row行的标题
+- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
+{
+    return self.foods[component][row];
+}
+
+
+- (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component
+{
+    return 45;
+}
+
+// 给label赋值
+// 选中第component列第row行的时候调用
+// 注意：这个方法必须用户主动拖动pickerView，才会调用
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+{
+
+    switch (component) {
+        case WQFoodFruit:
+            // 设置水果
+            _fruitLabel.text = self.foods[component][row];
+            break;
+        case WQFoodMainFood:
+            // 设置主食
+            _mainLabel.text = self.foods[component][row];
+            break;
+        case WQFoodDrink:
+            // 设置饮料
+            _drinkLabel.text = self.foods[component][row];
+            break;
+    }
+}
+@end
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[PickerView数据源和代理]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/04/26/pickerviewshu-ju-yuan-he-dai-li/"/>
+    <updated>2014-04-26T16:32:48+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/04/26/pickerviewshu-ju-yuan-he-dai-li</id>
+    <content type="html"><![CDATA[<!--more-->
+
+
+<pre><code class="objc">#pragma mark - 数据源,以下为@required的方法
+// 返回pickerView有多少列
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
+     NSLog(@"numberOfComponentsInPickerView");
+    return 3;
+}
+
+// 返回第component列有多少行
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+{
+    NSLog(@"numberOfRowsInComponent");
+    return 2;
+}
+
+
+#pragma mark - 代理
+// 返回第component列的每一行的行高
+- (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component
+{
+    return 80.0;
+}
+
+// 返回第component列第row行的标题
+- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
+{
+    NSLog(@"-----%zd",[pickerView selectedRowInComponent:component]);
+
+    NSLog(@"titleForRow");
+    return @"a";
+}
+
+// NSAttributedString富文本属性: 可以描述文字大小和颜色
+//- (NSAttributedString *)pickerView:(UIPickerView *)pickerView attributedTitleForRow:(NSInteger)row forComponent:(NSInteger)component NS_AVAILABLE_IOS(6_0)
+
+// 总结：如果同时实现返回字符串和view的方法，返回UIView的优先级比较高
+// 返回第component列第row行的View
+- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
+{
+    UIView *vw = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 60, 60)];
+
+    vw.backgroundColor = [UIColor redColor];
+
+    return vw;
+}
+
+// 选中第component第row的时候调用
+// __func__： 返回当前方法在哪个类里面调用
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+{
+    NSLog(@"%s---%ld-%ld",__func__,component,row);
+    NSLog(@"%zd",[pickerView selectedRowInComponent:component]);
+}
+@end
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[UIDatePicker - 键盘处理-选择日期]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/04/20/uidatepicker-jian-pan-chu-li-xuan-ze-ri-qi/"/>
+    <updated>2014-04-20T03:34:05+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/04/20/uidatepicker-jian-pan-chu-li-xuan-ze-ri-qi</id>
+    <content type="html"><![CDATA[<p><img src="/images/UIDatePicker%E8%8B%B1%E6%96%87.png" alt="pickerView点餐系统" /></p>
+
+<!--more-->
+
+
+<pre><code class="objc">
+#import "ViewController.h"
+
+@interface ViewController ()&lt;UITextFieldDelegate&gt;
+@property (weak, nonatomic) IBOutlet UITextField *birthdayField;
+
+@property (nonatomic, weak) UIDatePicker *datePicker;
+
+@end
+
+@implementation ViewController
+
+#pragma mark - UITextFieldDelegate
+
+// 是否允许用户输入文字
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
+    return NO;
+}
+
+// 文本框开始编辑的时候调用
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    // 给生日文本框赋值
+    [self dateChange:_datePicker];
+}
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view, typically from a nib.
+    _birthdayField.delegate = self;
+
+    // 自定义生日键盘
+    [self setUpBirthdayKeyboard];
+}
+
+// 自定义生日键盘
+- (void)setUpBirthdayKeyboard
+{
+    // 创建UIDatePicker
+    // 注意：UIDatePicker有默认的尺寸，可以不用设置frame
+    UIDatePicker *picker = [[UIDatePicker alloc] init];
+
+    _datePicker = picker;
+
+    // 设置地区 zh:中国
+    picker.locale = [NSLocale localeWithLocaleIdentifier:@"zh"];
+
+    // 设置日期的模式
+    picker.datePickerMode = UIDatePickerModeDate;
+
+    // 监听UIDatePicker的滚动
+    [picker addTarget:self action:@selector(dateChange:) forControlEvents:UIControlEventValueChanged];
+
+
+    _birthdayField.inputView = picker;
+}
+
+// 当UIDatePicker滚动的时候调用
+// 给生日文本框赋值
+- (void)dateChange:(UIDatePicker *)datePicker
+{
+    NSLog(@"%@",datePicker.date);
+    // 日期转换字符串
+
+    NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
+
+    fmt.dateFormat = @"yyyy-MM-dd";
+
+    NSString *dateStr = [fmt stringFromDate:datePicker.date];
+
+    _birthdayField.text = dateStr;
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+@end
+</code></pre>
+
+<p><img src="/images/UIDatePicker%E4%B8%AD%E6%96%87.png" alt="pickerView点餐系统" /></p>
+]]></content>
+  </entry>
+  
+</feed>
