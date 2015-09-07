@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Coreanimation | My World]]></title>
+  <link href="http://xiaobenmao.github.io/blog/categories/coreanimation/atom.xml" rel="self"/>
+  <link href="http://xiaobenmao.github.io/"/>
+  <updated>2015-09-08T01:40:23+08:00</updated>
+  <id>http://xiaobenmao.github.io/</id>
+  <author>
+    <name><![CDATA[嗷大喵]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[CALayer-时钟]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/08/02/calayer-shi-zhong/"/>
+    <updated>2014-08-02T18:29:04+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/08/02/calayer-shi-zhong</id>
+    <content type="html"><![CDATA[<pre><code class="objc">/**
+时钟-自定义图层
+程序思路：
+* 了解时钟由什么组成的，使用哪些控件。(UIImgeView,CALayer)
+* 为什么不使用UIView，而使用CALayer,需要监听事件吗？
+* 现实生活中秒针是怎么旋转的，绕着时钟的中点转，PPT演示，拖一根秒针线条
+* 在ios中默认是绕着中心点旋转的，因为锚点默认在图层的中点，要想绕着下边中心点转，需要改变图层锚点的位置。
+* 根据锚点，设置position坐标，为时钟的中点。
+* 思考秒针旋转的角度，怎么知道当前秒针旋转到哪，当前秒针旋转的角度 = 当前秒数 * 每秒转多少°。
+1&gt; 计算一秒转多少° 360 * 60 = 6
+2&gt; 获取当前秒数，通过日历对象，获取日期组成成分 NSCalendar -&gt; NSDateComponents -&gt; 获取当前秒数
+* 每隔一秒，获取最新秒数，更新时钟。
+* 分钟一样的做法
+* 时钟也一样
+    1.每一分钟，时钟也需要旋转，60分钟 -&gt; 1小时 - &gt; 30°  ==》 每分钟 30 / 60.0  一分钟时针转0.5°
+* 把时针和秒针头尾变尖，设置圆角半径
+*/
+</code></pre>
+
+<!--more-->
+
+
+<p><img src="/images/%E6%97%B6%E9%92%9F.png" alt="" /></p>
+
+<pre><code class="objc">#import "ViewController.h"
+// 时钟背景的宽度
+#define kClockW _clockView.bounds.size.width
+// 将角度转为弧度
+#define angle2radian(angle) ((angle) / 180.0 * M_PI)
+// 一秒钟秒针转6°
+#define perSecondA 6
+
+// 一分钟分针转6°
+#define perMinuteA 6
+
+
+// 一小时时针转30°
+#define perHourA 30
+
+// 每分钟时针转多少度
+#define perMinuteHourA 0.5
+
+
+@interface ViewController ()
+@property (weak, nonatomic) IBOutlet UIImageView *clockView;
+
+@property (nonatomic, weak) CALayer *secondLayer;
+
+@property (nonatomic, weak) CALayer *minuteLayer;
+
+@property (nonatomic, weak) CALayer *hourLayer;
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    // 添加时针
+    [self setUpHourLayer];
+
+    // 添加分针
+    [self setUpMinuteLayer];
+
+    // 添加秒针
+    [self setUpSecondLayer];
+
+
+    // 添加定时器
+    [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timeChange) userInfo:nil repeats:YES];
+
+    // 开始就获取时间,否则会从初始添加状态,跳到当前时间
+    [self timeChange];
+
+}
+
+- (void)timeChange
+{
+    // 获取当前的系统的时间
+
+    // 获取当前日历对象
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+
+    // 获取日期的组件：年月日小时分秒
+    // components:需要获取的日期组件
+    // fromDate：获取哪个日期的组件
+    // 经验：以后枚举中有移位运算符，通常一般可以使用并运算（|）
+    NSDateComponents  *cmp = [calendar components:NSCalendarUnitSecond | NSCalendarUnitMinute | NSCalendarUnitHour fromDate:[NSDate date]];
+
+    // 获取秒
+    NSInteger second = cmp.second;
+
+    // 获取分
+    NSInteger minute = cmp.minute;
+
+    // 获取小时
+    NSInteger hour = cmp.hour;
+
+    // 计算秒针转多少度
+    CGFloat secondA = second * perSecondA;
+
+    // 计算分针转多少度
+    CGFloat minuteA = minute * perMinuteA;
+
+    // 计算时针转多少度
+    CGFloat hourA = hour * perHourA + minute * perMinuteHourA;
+
+    // 旋转秒针
+    _secondLayer.transform = CATransform3DMakeRotation(angle2radian(secondA), 0, 0, 1);
+
+    // 旋转分针
+    _minuteLayer.transform = CATransform3DMakeRotation(angle2radian(minuteA), 0, 0, 1);
+
+    // 旋转小时
+    _hourLayer.transform = CATransform3DMakeRotation(angle2radian(hourA), 0, 0, 1);
+}
+#pragma mark - 添加秒针
+- (void)setUpSecondLayer
+{
+   CALayer *secondL = [CALayer layer];
+
+    secondL.backgroundColor = [UIColor redColor].CGColor;
+
+    // 设置锚点
+    secondL.anchorPoint = CGPointMake(0.5, 1);
+
+    secondL.position = CGPointMake(kClockW * 0.5, kClockW * 0.5);
+
+    secondL.bounds = CGRectMake(0, 0, 1, kClockW * 0.5 - 20);
+
+    [_clockView.layer addSublayer:secondL];
+
+    _secondLayer = secondL;
+}
+
+
+#pragma mark - 添加分针
+- (void)setUpMinuteLayer
+{
+    CALayer *layer = [CALayer layer];
+
+    layer.backgroundColor = [UIColor blackColor].CGColor;
+
+    // 设置锚点
+    layer.anchorPoint = CGPointMake(0.5, 1);
+
+    layer.position = CGPointMake(kClockW * 0.5, kClockW * 0.5);
+
+    layer.bounds = CGRectMake(0, 0, 4, kClockW * 0.5 - 20);
+
+    layer.cornerRadius = 4;
+
+
+    [_clockView.layer addSublayer:layer];
+
+    _minuteLayer = layer;
+}
+
+#pragma mark - 添加时针
+- (void)setUpHourLayer
+{
+    CALayer *layer = [CALayer layer];
+
+    layer.backgroundColor = [UIColor blackColor].CGColor;
+
+    // 设置锚点
+    layer.anchorPoint = CGPointMake(0.5, 1);
+
+    layer.position = CGPointMake(kClockW * 0.5, kClockW * 0.5);
+
+    layer.bounds = CGRectMake(0, 0, 4, kClockW * 0.5 - 40);
+
+    layer.cornerRadius = 4;
+
+
+    [_clockView.layer addSublayer:layer];
+
+    _hourLayer = layer;
+}
+
+@end
+</code></pre>
+
+<p><img src="/images/%E6%97%B6%E9%92%9Fstoryboard.png" alt="" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CALayer-隐式动画]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/08/02/calayer-yin-shi-dong-hua/"/>
+    <updated>2014-08-02T13:28:56+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/08/02/calayer-yin-shi-dong-hua</id>
+    <content type="html"><![CDATA[<p><img src="/images/%E9%9A%90%E5%BC%8F%E5%8A%A8%E7%94%BB0.png" alt="" /></p>
+
+<!--more-->
+
+
+<p><img src="/images/%E9%9A%90%E5%BC%8F%E5%8A%A8%E7%94%BB1.png" alt="" /></p>
+
+<ul>
+<li>对于手动创建的layer,即非控件的layer在一些属性修改    时会有默认的动画效果</li>
+</ul>
+
+
+<p><img src="/images/%E9%9A%90%E5%BC%8F%E5%8A%A8%E7%94%BB%E6%8F%90%E7%A4%BA.png" alt="" /></p>
+
+<pre><code class="objc">#import "ViewController.h"
+// 角度转弧度
+#define angle2radion(angle) ((angle) / 180.0 * M_PI)
+@interface ViewController ()
+@property (nonatomic, weak) CALayer *layer;
+@property (weak, nonatomic) IBOutlet UIView *blueView;
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    CALayer *layer = [CALayer layer];
+
+    layer.position = CGPointMake(200, 150);
+
+    layer.bounds = CGRectMake(0, 0, 80, 80);
+
+    layer.backgroundColor = [UIColor redColor].CGColor;
+
+    [self.view.layer addSublayer:layer];
+
+    _layer = layer;
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    // 举例隐式动画属性:(有渐变的过程,不突兀)
+    // 直接修改rootLayer的属性值,变化很快,没有动画效果
+    // 随机旋转
+    _layer.transform = CATransform3DMakeRotation(angle2radion(arc4random_uniform(360) + 1), 0, 0, 1);
+
+    // 随机设置位置
+    _layer.position = CGPointMake(arc4random_uniform(200) + 20, arc4random_uniform(400) + 50);
+
+    // 圆角半径随机
+    _layer.cornerRadius = arc4random_uniform(50);
+
+    // 背景颜色随机
+    _layer.backgroundColor = [self randomColor].CGColor;
+
+    // 随机边框宽度
+    _layer.borderWidth = arc4random_uniform(10);
+    // 随机边框颜色
+    _layer.borderColor = [self randomColor].CGColor;
+
+
+}
+
+// 返回随机的颜色
+- (UIColor *)randomColor
+{
+    CGFloat r = arc4random_uniform(256) / 255.0;
+    CGFloat b = arc4random_uniform(256) / 255.0;
+    CGFloat g = arc4random_uniform(256) / 255.0;
+
+    return [UIColor colorWithRed:r green:g blue:b alpha:1];
+}
+@end
+</code></pre>
+
+<p><img src="/images/%E9%9A%90%E5%BC%8F%E5%8A%A8%E7%94%BB%E9%9A%8F%E6%9C%BA.png" alt="" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CALayer-属性设置]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/08/01/calayer-shu-xing-she-zhi/"/>
+    <updated>2014-08-01T15:28:44+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/08/01/calayer-shu-xing-she-zhi</id>
+    <content type="html"><![CDATA[<p><img src="/images/CALayer%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8.png" alt="" /></p>
+
+<!--more-->
+
+
+<p><img src="/images/CALayer.png" alt="" /></p>
+
+<p><img src="/images/CALyer%E7%9A%84%E5%B1%9E%E6%80%A71.png" alt="" /></p>
+
+<p><img src="/images/CALyer%E7%9A%84%E5%B1%9E%E6%80%A72.png" alt="" /></p>
+
+<h4>通过CCLAyer可以调整View的一些外观属性</h4>
+
+<p><img src="/images/CALayer%E5%AF%B9view%E7%9A%84%E5%B1%9E%E6%80%A7%E8%AE%BE%E7%BD%AE.png" alt="" /></p>
+
+<pre><code class="objc">- (void)viewDidLoad {
+    [super viewDidLoad];
+    // 可以通过CALyer,调整view的一些外观属性
+
+    // 圆角半径
+    self.greenView.layer.cornerRadius = 20;
+    // 边框
+    self.greenView.layer.borderWidth = 3;
+    // 边框颜色
+    self.greenView.layer.borderColor = [UIColor grayColor].CGColor;
+
+    // 设置阴影
+    //Opacity:不透明度,alpha:透明度
+    self.greenView.layer.shadowOpacity = 0.5;
+    // 注意：图层的颜色都是核心绘图框架，通常用.CGColor将UI类型转为CG类型
+    // 阴影颜色
+    self.greenView.layer.shadowColor = [UIColor redColor].CGColor;
+    // 阴影偏移量
+    self.greenView.layer.shadowOffset = CGSizeMake(10, 10);
+    // 阴影的半径
+    self.greenView.layer.shadowRadius = 10;
+}
+</code></pre>
+
+<h4>UIImageView在CALayer中的使用</h4>
+
+<p><img src="/images/CALyer%E5%89%AA%E8%A3%81%E5%A4%B4%E5%83%8F.png" alt="" /></p>
+
+<pre><code class="objc">- (void)viewDidLoad {
+    [super viewDidLoad];
+    // cornerRadiu设置控件的主层边框(rootLayer)
+    // 图片是加在主层的子控件contents内容层中
+    self.myImageView.layer.cornerRadius = 100;
+
+    NSLog(@"%@",self.myImageView.layer.contents);
+    // 超出主层边框的内容全部裁剪掉
+    self.myImageView.layer.masksToBounds = YES;
+
+    // 设置边框
+    self.myImageView.layer.borderWidth = 2;
+    self.myImageView.layer.borderColor = [UIColor redColor].CGColor;
+    /**
+     *通过剪裁和上述方法都能获取原型头像
+     *如何判断以后是否需要裁剪图片，就判断下需要显示图层的控件是否是正方形。
+     *如果控件的宽高不相等,则使用CALyer会变形
+     */
+}
+</code></pre>
+
+<p><img src="/images/CALayer%E5%89%AA%E8%A3%81%E5%A4%B4%E5%83%8F1.png" alt="" /></p>
+
+<h4>CALayer的形变属性</h4>
+
+<p><img src="/images/xyz%E8%BD%B4.png" alt="" /></p>
+
+<pre><code class="objc">
+        // 旋转,不使用动画,会旋转过快,看不出效果
+        self.greenView.layer.transform = CATransform3DMakeRotation(M_PI, 0, 0 ,1);
+
+        // 缩放
+        self.greenView.layer.transform = CATransform3DMakeScale(0.5, 0.5, 1);
+
+        // 平移
+         self.greenView.layer.transform = CATransform3DMakeTranslation(20, 20, 0);
+
+        // 快速进行图层缩放,KVC
+        // [self.greenView.layer setValue:@0.5 forKeyPath:@"transform.scale"];
+        // [self.greenView.layer setValue:@(M_PI) forKeyPath:@"transform.rotation"];
+</code></pre>
+
+<p><img src="/images/CALayer%E4%B8%AD%E7%9A%84storyboard.png" alt="" /></p>
+
+<h4>创建CALayer</h4>
+
+<pre><code class="objc">- (void)viewDidLoad {
+    [super viewDidLoad];
+    // 创建CALayer
+    CALayer *layer = [CALayer layer];
+
+    layer.frame = CGRectMake(100, 100, 100, 100);
+
+    layer.backgroundColor = [UIColor redColor].CGColor;
+    // 图片设置在属性内容contents里;
+    // 前面有中文,后面的.CGImage不提示, 要进行类型转换
+    layer.contents = (id)([UIImage imageNamed:@"阿狸头像"].CGImage);
+    // 添加层
+    [self.view.layer addSublayer:layer];
+}
+</code></pre>
+
+<ul>
+<li><p><code>CGColor和CGImage需要在UIKit框架和CoreGraphic之间转换</code>
+<img src="/images/CGColor%E5%92%8CCGImage.png" alt="" /></p></li>
+<li><p><code>UIView和CALayer最大区别是是否能处理点击事件</code>
+<img src="/images/UIView%E5%92%8CCALayer%E7%9A%84%E9%80%89%E6%8B%A9.png" alt="" /></p></li>
+</ul>
+
+
+<p><img src="/images/UIView%E5%92%8CCALayer.png" alt="" /></p>
+]]></content>
+  </entry>
+  
+</feed>

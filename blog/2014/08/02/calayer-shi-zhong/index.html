@@ -1,0 +1,630 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>CALayer-时钟 - My World</title>
+  <meta name="author" content="嗷大喵">
+
+  
+  <meta name="description" content="1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+/**
+时钟-自定义图层
+程序思路：
+* 了解时钟由什么组成的，使用哪些控件。(UIImgeView,CALayer)
+* 为什么不使用UIView，而使用CALayer,需要监听事件吗？
+* &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://xiaobenmao.github.io/blog/2014/08/02/calayer-shi-zhong/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My World" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.useso.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.useso.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My World</a></h1>
+  
+    <h2>Your World</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="xiaobenmao.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">CALayer-时钟</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-08-02T18:29:04+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>2</span><span class='date-suffix'>nd</span>, <span class='date-year'>2014</span></span> <span class='time'>6:29 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm">时钟-自定义图层</span>
+</span><span class='line'><span class="cm">程序思路：</span>
+</span><span class='line'><span class="cm">* 了解时钟由什么组成的，使用哪些控件。(UIImgeView,CALayer)</span>
+</span><span class='line'><span class="cm">* 为什么不使用UIView，而使用CALayer,需要监听事件吗？</span>
+</span><span class='line'><span class="cm">* 现实生活中秒针是怎么旋转的，绕着时钟的中点转，PPT演示，拖一根秒针线条</span>
+</span><span class='line'><span class="cm">* 在ios中默认是绕着中心点旋转的，因为锚点默认在图层的中点，要想绕着下边中心点转，需要改变图层锚点的位置。</span>
+</span><span class='line'><span class="cm">* 根据锚点，设置position坐标，为时钟的中点。</span>
+</span><span class='line'><span class="cm">* 思考秒针旋转的角度，怎么知道当前秒针旋转到哪，当前秒针旋转的角度 = 当前秒数 * 每秒转多少°。</span>
+</span><span class='line'><span class="cm">1&gt; 计算一秒转多少° 360 * 60 = 6</span>
+</span><span class='line'><span class="cm">2&gt; 获取当前秒数，通过日历对象，获取日期组成成分 NSCalendar -&gt; NSDateComponents -&gt; 获取当前秒数</span>
+</span><span class='line'><span class="cm">* 每隔一秒，获取最新秒数，更新时钟。</span>
+</span><span class='line'><span class="cm">* 分钟一样的做法</span>
+</span><span class='line'><span class="cm">* 时钟也一样</span>
+</span><span class='line'><span class="cm">    1.每一分钟，时钟也需要旋转，60分钟 -&gt; 1小时 - &gt; 30°  ==》 每分钟 30 / 60.0  一分钟时针转0.5°</span>
+</span><span class='line'><span class="cm">* 把时针和秒针头尾变尖，设置圆角半径</span>
+</span><span class='line'><span class="cm">*/</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<!--more-->
+
+
+<p><img src="/images/%E6%97%B6%E9%92%9F.png" alt="" /></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+<span class='line-number'>157</span>
+<span class='line-number'>158</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
+</span><span class='line'><span class="c1">// 时钟背景的宽度</span>
+</span><span class='line'><span class="cp">#define kClockW _clockView.bounds.size.width</span>
+</span><span class='line'><span class="c1">// 将角度转为弧度</span>
+</span><span class='line'><span class="cp">#define angle2radian(angle) ((angle) / 180.0 * M_PI)</span>
+</span><span class='line'><span class="c1">// 一秒钟秒针转6°</span>
+</span><span class='line'><span class="cp">#define perSecondA 6</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 一分钟分针转6°</span>
+</span><span class='line'><span class="cp">#define perMinuteA 6</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 一小时时针转30°</span>
+</span><span class='line'><span class="cp">#define perHourA 30</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 每分钟时针转多少度</span>
+</span><span class='line'><span class="cp">#define perMinuteHourA 0.5</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">weak</span><span class="p">,</span> <span class="k">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="bp">UIImageView</span> <span class="o">*</span><span class="n">clockView</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">weak</span><span class="p">)</span> <span class="bp">CALayer</span> <span class="o">*</span><span class="n">secondLayer</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">weak</span><span class="p">)</span> <span class="bp">CALayer</span> <span class="o">*</span><span class="n">minuteLayer</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">weak</span><span class="p">)</span> <span class="bp">CALayer</span> <span class="o">*</span><span class="n">hourLayer</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 添加时针</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">setUpHourLayer</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 添加分针</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">setUpMinuteLayer</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 添加秒针</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">setUpSecondLayer</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 添加定时器</span>
+</span><span class='line'>    <span class="p">[</span><span class="bp">NSTimer</span> <span class="nl">scheduledTimerWithTimeInterval</span><span class="p">:</span><span class="mi">1</span> <span class="nl">target</span><span class="p">:</span><span class="nb">self</span> <span class="nl">selector</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="n">timeChange</span><span class="p">)</span> <span class="nl">userInfo</span><span class="p">:</span><span class="nb">nil</span> <span class="nl">repeats</span><span class="p">:</span><span class="nb">YES</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 开始就获取时间,否则会从初始添加状态,跳到当前时间</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">timeChange</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">timeChange</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 获取当前的系统的时间</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 获取当前日历对象</span>
+</span><span class='line'>    <span class="bp">NSCalendar</span> <span class="o">*</span><span class="n">calendar</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSCalendar</span> <span class="n">currentCalendar</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 获取日期的组件：年月日小时分秒</span>
+</span><span class='line'>    <span class="c1">// components:需要获取的日期组件</span>
+</span><span class='line'>    <span class="c1">// fromDate：获取哪个日期的组件</span>
+</span><span class='line'>    <span class="c1">// 经验：以后枚举中有移位运算符，通常一般可以使用并运算（|）</span>
+</span><span class='line'>    <span class="bp">NSDateComponents</span>  <span class="o">*</span><span class="n">cmp</span> <span class="o">=</span> <span class="p">[</span><span class="n">calendar</span> <span class="nl">components</span><span class="p">:</span><span class="n">NSCalendarUnitSecond</span> <span class="o">|</span> <span class="n">NSCalendarUnitMinute</span> <span class="o">|</span> <span class="n">NSCalendarUnitHour</span> <span class="nl">fromDate</span><span class="p">:[</span><span class="bp">NSDate</span> <span class="n">date</span><span class="p">]];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 获取秒</span>
+</span><span class='line'>    <span class="bp">NSInteger</span> <span class="n">second</span> <span class="o">=</span> <span class="n">cmp</span><span class="p">.</span><span class="n">second</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 获取分</span>
+</span><span class='line'>    <span class="bp">NSInteger</span> <span class="n">minute</span> <span class="o">=</span> <span class="n">cmp</span><span class="p">.</span><span class="n">minute</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 获取小时</span>
+</span><span class='line'>    <span class="bp">NSInteger</span> <span class="n">hour</span> <span class="o">=</span> <span class="n">cmp</span><span class="p">.</span><span class="n">hour</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 计算秒针转多少度</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">secondA</span> <span class="o">=</span> <span class="n">second</span> <span class="o">*</span> <span class="n">perSecondA</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 计算分针转多少度</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">minuteA</span> <span class="o">=</span> <span class="n">minute</span> <span class="o">*</span> <span class="n">perMinuteA</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 计算时针转多少度</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">hourA</span> <span class="o">=</span> <span class="n">hour</span> <span class="o">*</span> <span class="n">perHourA</span> <span class="o">+</span> <span class="n">minute</span> <span class="o">*</span> <span class="n">perMinuteHourA</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 旋转秒针</span>
+</span><span class='line'>    <span class="n">_secondLayer</span><span class="p">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">CATransform3DMakeRotation</span><span class="p">(</span><span class="n">angle2radian</span><span class="p">(</span><span class="n">secondA</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 旋转分针</span>
+</span><span class='line'>    <span class="n">_minuteLayer</span><span class="p">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">CATransform3DMakeRotation</span><span class="p">(</span><span class="n">angle2radian</span><span class="p">(</span><span class="n">minuteA</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 旋转小时</span>
+</span><span class='line'>    <span class="n">_hourLayer</span><span class="p">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">CATransform3DMakeRotation</span><span class="p">(</span><span class="n">angle2radian</span><span class="p">(</span><span class="n">hourA</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="cp">#pragma mark - 添加秒针</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setUpSecondLayer</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>   <span class="bp">CALayer</span> <span class="o">*</span><span class="n">secondL</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CALayer</span> <span class="n">layer</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">secondL</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">].</span><span class="bp">CGColor</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 设置锚点</span>
+</span><span class='line'>    <span class="n">secondL</span><span class="p">.</span><span class="n">anchorPoint</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">secondL</span><span class="p">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">kClockW</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">kClockW</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">secondL</span><span class="p">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">kClockW</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">-</span> <span class="mi">20</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">_clockView</span><span class="p">.</span><span class="n">layer</span> <span class="nl">addSublayer</span><span class="p">:</span><span class="n">secondL</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">_secondLayer</span> <span class="o">=</span> <span class="n">secondL</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - 添加分针</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setUpMinuteLayer</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="bp">CALayer</span> <span class="o">*</span><span class="n">layer</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CALayer</span> <span class="n">layer</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">layer</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">blackColor</span><span class="p">].</span><span class="bp">CGColor</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 设置锚点</span>
+</span><span class='line'>    <span class="n">layer</span><span class="p">.</span><span class="n">anchorPoint</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">layer</span><span class="p">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">kClockW</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">kClockW</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">layer</span><span class="p">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">kClockW</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">-</span> <span class="mi">20</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">layer</span><span class="p">.</span><span class="n">cornerRadius</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">_clockView</span><span class="p">.</span><span class="n">layer</span> <span class="nl">addSublayer</span><span class="p">:</span><span class="n">layer</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">_minuteLayer</span> <span class="o">=</span> <span class="n">layer</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - 添加时针</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setUpHourLayer</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="bp">CALayer</span> <span class="o">*</span><span class="n">layer</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CALayer</span> <span class="n">layer</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">layer</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">blackColor</span><span class="p">].</span><span class="bp">CGColor</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 设置锚点</span>
+</span><span class='line'>    <span class="n">layer</span><span class="p">.</span><span class="n">anchorPoint</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">layer</span><span class="p">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">kClockW</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">kClockW</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">layer</span><span class="p">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">kClockW</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">-</span> <span class="mi">40</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">layer</span><span class="p">.</span><span class="n">cornerRadius</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">_clockView</span><span class="p">.</span><span class="n">layer</span> <span class="nl">addSublayer</span><span class="p">:</span><span class="n">layer</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">_hourLayer</span> <span class="o">=</span> <span class="n">layer</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/%E6%97%B6%E9%92%9Fstoryboard.png" alt="" /></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">嗷大喵</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-08-02T18:29:04+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>2</span><span class='date-suffix'>nd</span>, <span class='date-year'>2014</span></span> <span class='time'>6:29 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/coreanimation/'>coreanimation</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/08/02/calayer-yin-shi-dong-hua/" title="Previous Post: CALayer-隐式动画">&laquo; CALayer-隐式动画</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/" title="Next Post: Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)">Quartz2d-绘图中的定时器(CADisplayLink和NSTimer) &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>欢迎光临小站</h1>
+  <p>我的世界</p>
+  <p>新浪微博：<a href=" http://weibo.com/QQ908887023" target="_blank">我是嗷大喵</a></p>
+</section><section>
+  <h1>文章分类</h1>
+  <ul id="categories">
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/suan-fa/'>算法</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/cocos2dx-lua/'>cocos2dx-lua</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/u3d/'>u3d</a> (4)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ioswei-fen-lei/'>ios未分类</a> (1)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/tableview/'>tableview</a> (14)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/ji-suan-ji-ying-yu/'>计算机英语</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/liao-tian-cellbu-ju/'>聊天cell布局</a> (7)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/uipickerview/'>uipickerview</a> (5)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shu-ju-cun-chu/'>数据存储</a> (3)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/shi-jian-chu-li/'>事件处理</a> (2)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a> (17)
+      </li>
+    
+      <li class="category">
+        <a class='category' href='/blog/categories/coreanimation/'>coreanimation</a> (3)
+      </li>
+    
+  </ul>
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/09/06/quartz2d-hua-ju-xing/">Quartz2d-画矩形</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/">Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/08/02/calayer-shi-zhong/">CALayer-时钟</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/08/02/calayer-yin-shi-dong-hua/">CALayer-隐式动画</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/08/01/calayer-shu-xing-she-zhi/">CALayer-属性设置</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - 嗷大喵 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -9,13 +9,24 @@
   <meta name="author" content="嗷大喵">
 
   
-  <meta name="description" content="数据刷新方法 重新刷新屏幕上的所有cell 没有动画效果 1
-[self.tableView reloadData]; 刷新特定行的cell 有动画效果 1
+  <meta name="description" content="tableView 的编辑模式 左划删除按钮 1
 2
 3
 4
 5
-[self.tableView reloadRowsAtIndexPaths:@[ [NSIndexPath &hellip;">
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+#pragma mark - UITableViewDelegate
+/* *只要实现这个代理方法,左划cell删除按钮就有了 *在编辑模式下:用户提交了添加(点击了添加按钮 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -71,6 +82,148 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/16/tableview-bian-ji-mo-shi/">tableView-编辑模式</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-02-16T17:08:18+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:08 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>tableView 的编辑模式</h3>
+
+<ul>
+<li>左划删除按钮</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#pragma  mark - UITableViewDelegate</span>
+</span><span class='line'><span class="cm">/*</span>
+</span><span class='line'><span class="cm"> *只要实现这个代理方法,左划cell删除按钮就有了</span>
+</span><span class='line'><span class="cm"> *在编辑模式下:用户提交了添加(点击了添加按钮)\删除(点击了删除按钮)操作时就会调用</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="bp">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">commitEditingStyle:</span><span class="p">(</span><span class="n">UITableViewCellEditingStyle</span><span class="p">)</span><span class="nv">editingStyle</span> <span class="nf">forRowAtIndexPath:</span><span class="p">(</span><span class="bp">NSIndexPath</span> <span class="o">*</span><span class="p">)</span><span class="nv">indexPath</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>   <span class="k">if</span><span class="p">(</span><span class="n">editingStyle</span> <span class="o">==</span> <span class="n">UITableViewCellEditingStyleDelete</span><span class="p">)</span>
+</span><span class='line'>   <span class="p">{</span>
+</span><span class='line'>       <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">dealsData</span> <span class="nl">removeObjectAtIndex</span><span class="p">:</span><span class="n">indexPath</span><span class="p">.</span><span class="n">row</span><span class="p">];</span>
+</span><span class='line'>       <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">tableView</span> <span class="n">reloadData</span><span class="p">];</span>
+</span><span class='line'>   <span class="p">}</span><span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">editingStyle</span> <span class="o">==</span> <span class="n">UITableViewCellEditingStyleInsert</span><span class="p">)</span>
+</span><span class='line'>   <span class="p">{</span>
+</span><span class='line'>       <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;点击%zd行的编辑模式下添加按钮&quot;</span><span class="p">,</span><span class="n">indexPath</span><span class="p">.</span><span class="n">row</span><span class="p">);</span>
+</span><span class='line'>   <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p> </div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/02/16/tableview-bian-ji-mo-shi/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/15/bian-cheng-ying-yu-2/">编程英语(2)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-02-15T17:33:51+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:33 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>转自:<a href="http://www.ryedu.net/syy/hyyy/200912/15824_2.html">http://www.ryedu.net/syy/hyyy/200912/15824_2.html</a></p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/02/15/bian-cheng-ying-yu-2/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/15/bian-cheng-ying-yu-1/">编程英语(1)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-02-15T16:30:38+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>4:30 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>转自:<a href="http://www.ryedu.net/syy/hyyy/200912/15824_2.html">http://www.ryedu.net/syy/hyyy/200912/15824_2.html</a></p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/02/15/bian-cheng-ying-yu-1/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -628,109 +781,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/01/03/cocos2dx3-dot-3-hellolua/">cocos2dx3.3 “HelloLua”</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-01-03T17:24:37+08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2014</span></span> <span class='time'>5:24 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>引擎初始界面"HelloLua"代码解析</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/01/03/cocos2dx3-dot-3-hellolua/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/01/03/ccprogresstimer-jin-du-tiao-dong-hua-zai-cocos2dx-plus-lua/">CCProgressTimer 进度条动画在cocos2dx+lua</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-01-03T15:18:40+08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2014</span></span> <span class='time'>3:18 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>CCProgressTimer 进度条动画源代码分析红孩儿博客<a href="http://blog.csdn.net/honghaier/article/details/8281884">http://blog.csdn.net/honghaier/article/details/8281884</a></p>
-
-<p>实现一个填充爱心的效果功能。<a href="http://blog.csdn.net/hitwhylz/article/details/21732213">http://blog.csdn.net/hitwhylz/article/details/21732213</a>
-<a href="http://www.cnblogs.com/GameDeveloper/p/3578584.html">http://www.cnblogs.com/GameDeveloper/p/3578584.html</a></p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/01/03/ccprogresstimer-jin-du-tiao-dong-hua-zai-cocos2dx-plus-lua/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/01/02/lua-events/">Lua-events</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-01-02T11:43:00+08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>2</span><span class='date-suffix'>nd</span>, <span class='date-year'>2014</span></span> <span class='time'>11:43 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"></div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/01/02/lua-events/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/7">&larr; Older</a>
@@ -795,6 +845,10 @@
         <a class='category' href='/blog/categories/quartz2d/'>quartz2d</a> (17)
       </li>
     
+      <li class="category">
+        <a class='category' href='/blog/categories/coreanimation/'>coreanimation</a> (3)
+      </li>
+    
   </ul>
 </section><section>
   <h1>Recent Posts</h1>
@@ -809,15 +863,15 @@
       </li>
     
       <li class="post">
-        <a href="/blog/2014/07/17/quartz2d-hua-ban/">Quartz2d-画板</a>
+        <a href="/blog/2014/08/02/calayer-shi-zhong/">CALayer-时钟</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/07/17/quartz2d-shou-shi-jie-suo/">Quartz2d-手势解锁</a>
+        <a href="/blog/2014/08/02/calayer-yin-shi-dong-hua/">CALayer-隐式动画</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/07/16/quartz2d-shou-dong-jie-ping/">Quartz2d-手动截屏</a>
+        <a href="/blog/2014/08/01/calayer-shu-xing-she-zhi/">CALayer-属性设置</a>
       </li>
     
   </ul>
