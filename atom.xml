@@ -4,7 +4,7 @@
   <title><![CDATA[My World]]></title>
   <link href="http://xiaobenmao.github.io/atom.xml" rel="self"/>
   <link href="http://xiaobenmao.github.io/"/>
-  <updated>2015-09-08T04:41:57+08:00</updated>
+  <updated>2015-09-08T11:05:03+08:00</updated>
   <id>http://xiaobenmao.github.io/</id>
   <author>
     <name><![CDATA[嗷大喵]]></name>
@@ -12,15 +12,6 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
-  
-  <entry>
-    <title type="html"><![CDATA[Quartz2d-画矩形]]></title>
-    <link href="http://xiaobenmao.github.io/blog/2015/09/06/quartz2d-hua-ju-xing/"/>
-    <updated>2015-09-06T18:05:31+08:00</updated>
-    <id>http://xiaobenmao.github.io/blog/2015/09/06/quartz2d-hua-ju-xing</id>
-    <content type="html"><![CDATA[
-]]></content>
-  </entry>
   
   <entry>
     <title type="html"><![CDATA[Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)]]></title>
@@ -4928,6 +4919,153 @@ return outPut
 
 
 <p><img src="http://xiaobenmao.github.io/images/%E5%9B%BE%E7%89%87%E6%93%A6%E9%99%A4storyboard.png" alt="" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Quartz2d-截屏(指定控件)]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/07/15/quartz2d-jie-ping-zhi-ding-kong-jian/"/>
+    <updated>2014-07-15T17:38:26+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/07/15/quartz2d-jie-ping-zhi-ding-kong-jian</id>
+    <content type="html"><![CDATA[<!--more-->
+
+
+<p><img src="http://xiaobenmao.github.io/images/%E6%88%AA%E5%8F%96%E5%B1%8F%E5%B9%95.png" alt="" /></p>
+
+<p><img src="http://xiaobenmao.github.io/images/%E6%88%AA%E5%B1%8F.png" alt="" /></p>
+
+<p><img src="http://xiaobenmao.github.io/images/%E6%88%AA%E5%B1%8F1.png" alt="" />
+- 为UIImage增加一个分类,返回截取指定控件的图片</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'>   <span class="cm">/*</span>
+</span><span class='line'><span class="cm">    *屏幕截图简介:</span>
+</span><span class='line'><span class="cm">    *屏幕截图:把屏幕的内容截屏生成一张新的图片</span>
+</span><span class='line'><span class="cm">    * 通常开发中，都是把控制器的内容截屏，生成新的图片</span>
+</span><span class='line'><span class="cm">    * 控制器怎么显示？根据view</span>
+</span><span class='line'><span class="cm">    * view怎么显示? 根据layer图层</span>
+</span><span class='line'><span class="cm">    * 把layer渲染到位图上下文</span>
+</span><span class='line'><span class="cm">    * 注意：图层只能用渲染，图片和文字可以用draw</span>
+</span><span class='line'><span class="cm">    * 渲染在哪?新的图片</span>
+</span><span class='line'><span class="cm">    * 开启图片上下文,和视图一样的尺寸</span>
+</span><span class='line'><span class="cm">    * 写入桌面</span>
+</span><span class='line'><span class="cm">    * 抽分类</span>
+</span><span class='line'><span class="cm">    */</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nl">renderInContext</span><span class="p">:</span><span class="err">把调用者控件的</span><span class="n">layer</span><span class="err">渲染到当前位图上下文</span><span class="n">ctx</span><span class="err">中</span><span class="p">,</span><span class="err">进行操作</span><span class="p">,</span><span class="err">可以获取图片</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="bp">UIImage</span> <span class="nl">(Image)</span>
+</span><span class='line'><span class="c1">// 控件截屏</span>
+</span><span class='line'><span class="p">+</span> <span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">imageWithCaputureView:</span><span class="p">(</span><span class="bp">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nv">view</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#import &quot;UIImage+Image.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="bp">UIImage</span> <span class="nl">(Image)</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">+</span> <span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">imageWithCaputureView:</span><span class="p">(</span><span class="bp">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nv">view</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 开启位图上下文</span>
+</span><span class='line'>    <span class="n">UIGraphicsBeginImageContextWithOptions</span><span class="p">(</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">,</span> <span class="nb">NO</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 获取上下文</span>
+</span><span class='line'>    <span class="n">CGContextRef</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">UIGraphicsGetCurrentContext</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 把控件上的图层渲染到上下文,layer只能渲染</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">view</span><span class="p">.</span><span class="n">layer</span> <span class="nl">renderInContext</span><span class="p">:</span><span class="n">ctx</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 生成一张图片</span>
+</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="n">UIGraphicsGetImageFromCurrentImageContext</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 关闭上下文</span>
+</span><span class='line'>    <span class="n">UIGraphicsEndImageContext</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">image</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 使用</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 生成一张新的图片</span>
+</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span>  <span class="p">[</span><span class="bp">UIImage</span> <span class="nl">imageWithCaputureView</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// image转data</span>
+</span><span class='line'>    <span class="c1">// compressionQuality： 图片质量 1:最高质量</span>
+</span><span class='line'>     <span class="bp">NSData</span> <span class="o">*</span><span class="n">data</span> <span class="o">=</span> <span class="n">UIImageJPEGRepresentation</span><span class="p">(</span><span class="n">image</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 将截屏保存在指定路径,桌面</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">data</span> <span class="nl">writeToFile</span><span class="p">:</span><span class="s">@&quot;/Users/mac/Desktop/view.png&quot;</span> <span class="nl">atomically</span><span class="p">:</span><span class="nb">YES</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
 ]]></content>
   </entry>
   

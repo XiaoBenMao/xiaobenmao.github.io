@@ -71,38 +71,6 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/07/15/quartz2d-jie-ping-zhi-ding-kong-jian/">Quartz2d-截屏(指定控件)</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-07-15T17:38:26+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:38 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"></div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/07/15/quartz2d-jie-ping-zhi-ding-kong-jian/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
       <h1 class="entry-title"><a href="/blog/2014/07/15/quartz2d-tu-pian-jian-cai-dai-you-bian-kuang/">Quartz2d-图片剪裁(带有边框)</a></h1>
     
     
@@ -520,6 +488,61 @@
 
     </article>
   
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/07/03/quartz2d-hua-zhi-xian-he-qu-xian/">Quartz2d-画直线和曲线</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-07-03T18:29:36+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2014</span></span> <span class='time'>6:29 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> *Only override drawRect: if you perform custom drawing.</span>
+</span><span class='line'><span class="cm"> *绘图的步骤： 1.获取上下文 2.创建路径（描述路径） 3.把路径添加到上下文 4.渲染上下文</span>
+</span><span class='line'><span class="cm"> *通常在这个方法里面绘制图形</span>
+</span><span class='line'><span class="cm"> *为什么要再drawRect里面绘图，只有在这个方法里面才能获取到跟View的layer相关联的图形上下文</span>
+</span><span class='line'><span class="cm"> *什么时候调用:当这个View要显示的时候才会调用drawRect绘制图形</span>
+</span><span class='line'><span class="cm"> *注意：rect是当前控件的bounds</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="p">{</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/07/03/quartz2d-hua-zhi-xian-he-qu-xian/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
   <div class="pagination">
     
       <a class="prev" href="/posts/4">&larr; Older</a>
@@ -602,10 +625,6 @@
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2015/09/06/quartz2d-hua-ju-xing/">Quartz2d-画矩形</a>
-      </li>
-    
-      <li class="post">
         <a href="/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/">Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)</a>
       </li>
     
@@ -619,6 +638,10 @@
     
       <li class="post">
         <a href="/blog/2015/09/01/swift-zi-dian/">Swift-字典</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/01/swift-han-shu/">Swift-函数</a>
       </li>
     
   </ul>

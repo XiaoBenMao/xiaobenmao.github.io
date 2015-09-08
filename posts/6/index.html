@@ -9,10 +9,8 @@
   <meta name="author" content="嗷大喵">
 
   
-  <meta name="description" content="非等高的cell xib自定义cell
-storyboard自定义cell
-代码自定义cell（frame）
-代码自定义cell（Autolayout） \ 布局内容,返回每一行的高度为固定值 常规设置 自定义控制器类 懒加载,面向模型开发,将字典转为模型,以后数据通过模型获得 &hellip;">
+  <meta name="description" content="代码自定义cell方法 代码自定义cell(使用frame) 1.创建一个继承自UITableViewCell的子类，比如WQDealCell 在initWithStyle:reuseIdentifier:方法中 添加子控件
+设置子控件的初始化属性（比如文字颜色、字体） &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -68,68 +66,6 @@ storyboard自定义cell
     <div id="content">
       <div class="blog-index">
   
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/23/tableview-zi-ding-yi-fei-deng-gao-cell-xib-1/">tableView-自定义非等高cell-xib(1)</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-03-23T20:10:16+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2014</span></span> <span class='time'>8:10 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><ul>
-<li>非等高的cell
-
-<ul>
-<li>xib自定义cell</li>
-<li>storyboard自定义cell</li>
-<li>代码自定义cell（frame）</li>
-<li>代码自定义cell（Autolayout）</li>
-</ul>
-</li>
-</ul>
-
-
-<p>\</p>
-
-<h3>布局内容,返回每一行的高度为固定值</h3>
-
-<h3>常规设置</h3>
-
-<ul>
-<li>自定义控制器类
-
-<ul>
-<li>懒加载,面向模型开发,将字典转为模型,以后数据通过模型获得</li>
-<li>实现数据源和代理类方法</li>
-</ul>
-</li>
-</ul>
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/03/23/tableview-zi-ding-yi-fei-deng-gao-cell-xib-1/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
   
   
     <article>
@@ -709,6 +645,75 @@ storyboard自定义cell
 
     </article>
   
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/17/uialertcontroller-dai-ti-uiactionsheethe-uialertview/">UIAlertController - 代替UIActionSheet和UIAlertView</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-02-17T17:29:04+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:29 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h1>0527-4</h1>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'>    <span class="c1">// 定义alert控制器,有两种模式: ActionSheet和UIAlertView</span>
+</span><span class='line'>    <span class="n">UIAlertController</span> <span class="o">*</span><span class="n">alert</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIAlertController</span> <span class="nl">alertControllerWithTitle</span><span class="p">:</span><span class="s">@&quot;是否注销?&quot;</span> <span class="nl">message</span><span class="p">:</span><span class="s">@&quot;messge&quot;</span> <span class="nl">preferredStyle</span><span class="p">:</span><span class="n">UIAlertControllerStyleActionSheet</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 上拉菜单增加按钮:取消,确定(文字红色)和默认三种样式</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">alert</span> <span class="nl">addAction</span><span class="p">:[</span><span class="n">UIAlertAction</span> <span class="nl">actionWithTitle</span><span class="p">:</span><span class="s">@&quot;取消&quot;</span> <span class="nl">style</span><span class="p">:</span><span class="n">UIAlertActionStyleCancel</span> <span class="nl">handler</span><span class="p">:</span><span class="nb">nil</span><span class="p">]];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">alert</span> <span class="nl">addAction</span><span class="p">:[</span><span class="n">UIAlertAction</span> <span class="nl">actionWithTitle</span><span class="p">:</span><span class="s">@&quot;注销&quot;</span> <span class="nl">style</span><span class="p">:</span><span class="n">UIAlertActionStyleDestructive</span> <span class="nl">handler</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="n">UIAlertAction</span> <span class="o">*</span><span class="n">action</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;点击注销按钮&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}]];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">alert</span> <span class="nl">addAction</span><span class="p">:[</span><span class="n">UIAlertAction</span> <span class="nl">actionWithTitle</span><span class="p">:</span><span class="s">@&quot;普通按钮&quot;</span> <span class="nl">style</span><span class="p">:</span><span class="n">UIAlertActionStyleDefault</span> <span class="nl">handler</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="n">UIAlertAction</span> <span class="o">*</span><span class="n">action</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;点击普通按钮&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}]];</span>
+</span><span class='line'>    <span class="c1">// 显示aler控制器</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="nl">presentViewController</span><span class="p">:</span><span class="n">alert</span> <span class="nl">animated</span><span class="p">:</span><span class="nb">YES</span> <span class="nl">completion</span><span class="p">:</span><span class="o">^</span><span class="p">{</span>
+</span><span class='line'>        <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;显示后alert时的操作&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/02/17/uialertcontroller-dai-ti-uiactionsheethe-uialertview/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
   <div class="pagination">
     
       <a class="prev" href="/posts/7">&larr; Older</a>
@@ -791,10 +796,6 @@ storyboard自定义cell
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2015/09/06/quartz2d-hua-ju-xing/">Quartz2d-画矩形</a>
-      </li>
-    
-      <li class="post">
         <a href="/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/">Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)</a>
       </li>
     
@@ -808,6 +809,10 @@ storyboard自定义cell
     
       <li class="post">
         <a href="/blog/2015/09/01/swift-zi-dian/">Swift-字典</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/01/swift-han-shu/">Swift-函数</a>
       </li>
     
   </ul>
