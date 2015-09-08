@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Nsrunloop&nsruntime | My World]]></title>
   <link href="http://xiaobenmao.github.io/blog/categories/nsrunloop-and-nsruntime/atom.xml" rel="self"/>
   <link href="http://xiaobenmao.github.io/"/>
-  <updated>2015-09-08T11:10:42+08:00</updated>
+  <updated>2015-09-08T12:09:52+08:00</updated>
   <id>http://xiaobenmao.github.io/</id>
   <author>
     <name><![CDATA[嗷大喵]]></name>
@@ -12,6 +12,115 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[NSRunLoop-常驻线程]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/08/02/nsrunloop-chang-zhu-xian-cheng/"/>
+    <updated>2015-08-02T12:06:26+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/08/02/nsrunloop-chang-zhu-xian-cheng</id>
+    <content type="html"><![CDATA[<ul>
+<li>线程一结束就会进入消亡状态,如果定义为属性进行强引用,在进程结束也会处在消亡状态</li>
+<li>保持线程不消亡:
+
+<ul>
+<li>如果经常做一些耗时操作,可以保持线程不死</li>
+<li>或者需要一个线程一直在后天进行扫描等监听操作,也可以线程不消亡</li>
+<li>可以通过自定义线程,重写dealloc方法,测验线程是否消亡</li>
+</ul>
+</li>
+</ul>
+
+
+<!--more-->
+
+
+<h3>为保持线程不消亡,可以添加NSRunLoop</h3>
+
+<pre><code class="objc">
+- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    self.thread = [[WQThread alloc] initWithTarget:self selector:@selector(execute) object:nil];
+    [self.thread start];
+}
+
+- (void)execute
+{
+
+    // 懒加载runLoop,并且添加source.向runLoop中添加source或者timer或者obsever
+    // 如果为空则立即退出
+    [[NSRunLoop currentRunLoop] addPort:[NSPort port] forMode:NSDefaultRunLoopMode];
+    // 启动runLoop,一值在循环处理各种事件,所以线程不会消亡
+    [[NSRunLoop currentRunLoop] run];
+
+    NSLog(@"---------");
+    // 不传模式,就为默认模式,调用run相当于下面,运行时间为无限大
+    //[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
+    //[[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantFuture]];
+}
+</code></pre>
+
+<ul>
+<li>以下会会实现,但是不推荐
+
+<ul>
+<li>当runLoop循环开启的时候,有内外两个循环</li>
+<li>线程外部循环退出需要另加标记</li>
+</ul>
+</li>
+</ul>
+
+
+<pre><code class="objc">- (void)execute
+{
+    NSLog(@"----------run----%@", [NSThread currentThread]);
+
+    while (1) {
+        // 线程一刚开始一直不停的检测mode是否为空,默认不为空
+        // 进入检测是否有source或者timer,此时没有则退出
+        // 当线程有source或者timer或者obsever时开启runLoop循环
+        [[NSRunLoop currentRunLoop] run];
+    }
+
+    NSLog(@"---------");
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+
+    // 此时给self.thread即上面的线程添加一个source源,此时
+    [self performSelector:@selector(test2) onThread:self.thread withObject:nil waitUntilDone:NO];
+}
+</code></pre>
+
+<ul>
+<li>以下为错误的状态</li>
+</ul>
+
+
+<pre><code class="objc">/**
+ * 这种方式虽然能保住线程的名，但是这条线程就无法处理其他行为（事件）
+ */
+- (void)execute
+{
+    NSLog(@"----------run----%@", [NSThread currentThread]);
+
+    while (1); // 当前线程永远在处理这行代码
+
+    NSLog(@"---------");
+}
+</code></pre>
+
+<h3>让图片延迟显示,比如在控件滚动结束后再显示,可以通过修改图片显示的摸式来实现</h3>
+
+<pre><code class="objc">- (void)useImageView
+{
+    // 只在NSDefaultRunLoopMode模式下显示图片
+    [self.imageView performSelector:@selector(setImage:) withObject:[UIImage imageNamed:@"placeholder"] afterDelay:3.0 inModes:@[NSDefaultRunLoopMode]];
+}
+</code></pre>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[NSRunLoop-运行逻辑]]></title>

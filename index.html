@@ -9,7 +9,26 @@
   <meta name="author" content="嗷大喵">
 
   
-  <meta name="description" content="">
+  <meta name="description" content="1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+/** 闭包(Closures):
+闭包:是自包含的代码块,可以在代码中被传递和使用
+闭包可以捕获和存储其所在上下文中任意常量和变量的引用,这就是所谓的闭包并包裹着这些常量和变量,俗称闭包.
+闭包的几种形式:
+1,“ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,38 +84,6 @@
     <div id="content">
       <div class="blog-index">
   
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/">Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-09-02T18:32:01+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>2</span><span class='date-suffix'>nd</span>, <span class='date-year'>2015</span></span> <span class='time'>6:32 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"></div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
   
   
     <article>
@@ -487,6 +474,51 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2015/08/02/nsrunloop-chang-zhu-xian-cheng/">NSRunLoop-常驻线程</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-08-02T12:06:26+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>2</span><span class='date-suffix'>nd</span>, <span class='date-year'>2015</span></span> <span class='time'>12:06 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><ul>
+<li>线程一结束就会进入消亡状态,如果定义为属性进行强引用,在进程结束也会处在消亡状态</li>
+<li>保持线程不消亡:
+
+<ul>
+<li>如果经常做一些耗时操作,可以保持线程不死</li>
+<li>或者需要一个线程一直在后天进行扫描等监听操作,也可以线程不消亡</li>
+<li>可以通过自定义线程,重写dealloc方法,测验线程是否消亡</li>
+</ul>
+</li>
+</ul>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2015/08/02/nsrunloop-chang-zhu-xian-cheng/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2015/08/01/nsrunloop-and-nsruntime/">NSRunLoop-运行逻辑</a></h1>
     
     
@@ -645,7 +677,7 @@
       </li>
     
       <li class="category">
-        <a class='category' href='/blog/categories/nsrunloop-and-nsruntime/'>nsrunloop&nsruntime</a> (1)
+        <a class='category' href='/blog/categories/nsrunloop-and-nsruntime/'>nsrunloop&nsruntime</a> (2)
       </li>
     
       <li class="category">
@@ -656,10 +688,6 @@
 </section><section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/">Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)</a>
-      </li>
     
       <li class="post">
         <a href="/blog/2015/09/01/swift-bi-bao/">Swift-闭包</a>
@@ -675,6 +703,10 @@
     
       <li class="post">
         <a href="/blog/2015/09/01/swift-han-shu/">Swift-函数</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/01/swift-shu-zu/">Swift-数组</a>
       </li>
     
   </ul>

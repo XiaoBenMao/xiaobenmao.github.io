@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://xiaobenmao.github.io/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/</loc>
-    <lastmod>2015-09-02T18:32:01+08:00</lastmod>
-  </url>
-  <url>
     <loc>http://xiaobenmao.github.io/blog/2015/09/01/swift-bi-bao/</loc>
     <lastmod>2015-09-01T09:50:57+08:00</lastmod>
   </url>
@@ -33,6 +29,10 @@
     <lastmod>2015-09-01T08:29:01+08:00</lastmod>
   </url>
   <url>
+    <loc>http://xiaobenmao.github.io/blog/2015/08/02/nsrunloop-chang-zhu-xian-cheng/</loc>
+    <lastmod>2015-08-02T12:06:26+08:00</lastmod>
+  </url>
+  <url>
     <loc>http://xiaobenmao.github.io/blog/2015/08/01/nsrunloop-and-nsruntime/</loc>
     <lastmod>2015-08-01T04:20:43+08:00</lastmod>
   </url>
@@ -59,6 +59,10 @@
   <url>
     <loc>http://xiaobenmao.github.io/blog/2014/08/01/calayer-shu-xing-she-zhi/</loc>
     <lastmod>2014-08-01T15:28:44+08:00</lastmod>
+  </url>
+  <url>
+    <loc>http://xiaobenmao.github.io/blog/2014/07/22/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/</loc>
+    <lastmod>2014-07-22T18:32:01+08:00</lastmod>
   </url>
   <url>
     <loc>http://xiaobenmao.github.io/blog/2014/07/17/quartz2d-hua-ban/</loc>
@@ -343,5 +347,26 @@
   </url>
   <url>
     <loc>http://xiaobenmao.github.io/blog/categories/kuai-su-cong-ocdao-swift/</loc>
+  </url>
+  <url>
+    <loc>http://xiaobenmao.github.io/posts/2/</loc>
+  </url>
+  <url>
+    <loc>http://xiaobenmao.github.io/posts/3/</loc>
+  </url>
+  <url>
+    <loc>http://xiaobenmao.github.io/posts/4/</loc>
+  </url>
+  <url>
+    <loc>http://xiaobenmao.github.io/posts/5/</loc>
+  </url>
+  <url>
+    <loc>http://xiaobenmao.github.io/posts/6/</loc>
+  </url>
+  <url>
+    <loc>http://xiaobenmao.github.io/posts/7/</loc>
+  </url>
+  <url>
+    <loc>http://xiaobenmao.github.io/posts/8/</loc>
   </url>
 </urlset>

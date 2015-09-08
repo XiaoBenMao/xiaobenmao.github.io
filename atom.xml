@@ -4,7 +4,7 @@
   <title><![CDATA[My World]]></title>
   <link href="http://xiaobenmao.github.io/atom.xml" rel="self"/>
   <link href="http://xiaobenmao.github.io/"/>
-  <updated>2015-09-08T11:10:42+08:00</updated>
+  <updated>2015-09-08T12:09:52+08:00</updated>
   <id>http://xiaobenmao.github.io/</id>
   <author>
     <name><![CDATA[嗷大喵]]></name>
@@ -12,157 +12,6 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
-  
-  <entry>
-    <title type="html"><![CDATA[Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)]]></title>
-    <link href="http://xiaobenmao.github.io/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/"/>
-    <updated>2015-09-02T18:32:01+08:00</updated>
-    <id>http://xiaobenmao.github.io/blog/2015/09/02/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer</id>
-    <content type="html"><![CDATA[<!--more-->
-
-
-<p><img src="images/Quartz2d%E7%9A%84%E5%AE%9A%E6%97%B6%E5%99%A8.png" alt="" /></p>
-
-<ul>
-<li>NSSTimer</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm"> *(NSTimeInterval)ti:多少秒调用一次,单位秒</span>
-</span><span class='line'><span class="cm"> *(id)aTarget:给谁添加定时器</span>
-</span><span class='line'><span class="cm"> *(SEL)aSelector:回调函数,每次调用所要做的事情</span>
-</span><span class='line'><span class="cm"> *(id)userInfo:此参数可以为nil，当定时器失效时，由你指定的对象保留和释放该定时器。</span>
-</span><span class='line'><span class="cm"> *(BOOL)yesOrNo:是否循环</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="p">+</span> <span class="p">(</span><span class="bp">NSTimer</span> <span class="o">*</span><span class="p">)</span><span class="nf">scheduledTimerWithTimeInterval:</span><span class="p">(</span><span class="n">NSTimeInterval</span><span class="p">)</span><span class="nv">ti</span> <span class="nf">target:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">aTarget</span> <span class="nf">selector:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">aSelector</span> <span class="nf">userInfo:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">userInfo</span> <span class="nf">repeats:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">yesOrNo</span><span class="p">;</span>
-</span><span class='line'><span class="c1">//启动 Timer</span>
-</span><span class='line'><span class="err">–</span> <span class="n">fire</span>
-</span><span class='line'><span class="c1">//停止 Timer</span>
-</span><span class='line'><span class="err">–</span> <span class="n">invalidate</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><p>NSTimer初始化器接受调用方法逻辑之间的间隔作为它的其中一个参数，预设一秒执行30次。CADisplayLink默认每秒运行60次，通过它的frameInterval属性改变每秒运行帧数，如设置为2，意味CADisplayLink每隔一帧运行一次，有效的逻辑每秒运行30次。</p></li>
-<li><p>NSTimer接受另一个参数是否重复，而把CADisplayLink设置为重复（默认重复？）直到它失效。</p></li>
-<li><p>还有一个区别在于，NSTimer一旦初始化它就开始运行，而CADisplayLink需要将显示链接添加到一个运行循环中，即用于处理系统事件的一个Cocoa Touch结构。</p></li>
-<li><p>NSTimer 我们通常会用在背景计算，更新一些数值资料，而如果牵涉到画面的更新，动画过程的演变，我们通常会用CADisplayLink。</p></li>
-<li><p>但是要使用CADisplayLink，需要加入QuartzCore.framework及#import &lt;QuartzCore/CADisplayLink.h></p></li>
-<li><p>CADisplayLink在Quartz2d中的使用</p></li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DrawView.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="k">static</span> <span class="n">CGFloat</span> <span class="n">_snowY</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">DrawView</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 如果以后想绘制东西到view上面，必须在drawRect方法里面，不管有没有手动获取到上下文</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 修改雪花y值</span>
-</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span>  <span class="p">[</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="s">@&quot;雪花&quot;</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 画图</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">image</span> <span class="nl">drawAtPoint</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">_snowY</span><span class="p">)];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">_snowY</span> <span class="o">+=</span> <span class="mi">10</span><span class="p">;</span>
-</span><span class='line'>    <span class="c1">// 当掉出屏幕底部时,修改y值,重新在顶部画出来</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_snowY</span> <span class="o">&gt;</span> <span class="n">rect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">_snowY</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 如果在绘图的时候需要用到定时器，通常</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// NSTimer很少用于绘图，因为调度优先级比较低，并不会准时调用</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">awakeFromNib</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// 创建定时器</span>
-</span><span class='line'>    <span class="c1">//[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(timeChange) userInfo:nil repeats:YES];</span>
-</span><span class='line'>    <span class="bp">CADisplayLink</span> <span class="o">*</span><span class="n">link</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CADisplayLink</span> <span class="nl">displayLinkWithTarget</span><span class="p">:</span><span class="nb">self</span> <span class="nl">selector</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="n">timeChange</span><span class="p">)];</span>
-</span><span class='line'>    <span class="c1">// 设定每隔几帧调用一次</span>
-</span><span class='line'>    <span class="n">link</span><span class="p">.</span><span class="n">frameInterval</span> <span class="o">=</span> <span class="mi">30</span><span class="p">;</span>
-</span><span class='line'>    <span class="c1">// 添加主运行循环</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">link</span> <span class="nl">addToRunLoop</span><span class="p">:[</span><span class="bp">NSRunLoop</span> <span class="n">mainRunLoop</span><span class="p">]</span> <span class="nl">forMode</span><span class="p">:</span><span class="n">NSDefaultRunLoopMode</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// CADisplayLink:每次屏幕刷新的时候就会调用，屏幕一般一秒刷新60次</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">timeChange</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// 注意：这个方法并不会马上调用drawRect,其实这个方法只是给当前控件添加刷新的标记，等下一次屏幕刷新的时候才会调用drawRect</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">setNeedsDisplay</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-]]></content>
-  </entry>
   
   <entry>
     <title type="html"><![CDATA[Swift-闭包]]></title>
@@ -1680,6 +1529,179 @@
 </span><span class='line'><span class="c1">//let num: Int = 10.1</span>
 </span><span class='line'><span class="k">let</span> <span class="nl">num3</span><span class="p">:</span> <span class="n">Int</span> <span class="o">=</span> <span class="mi">10</span>
 </span><span class='line'><span class="k">let</span> <span class="nl">num4</span><span class="p">:</span> <span class="n">Int</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mf">10.1</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[NSRunLoop-常驻线程]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/08/02/nsrunloop-chang-zhu-xian-cheng/"/>
+    <updated>2015-08-02T12:06:26+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/08/02/nsrunloop-chang-zhu-xian-cheng</id>
+    <content type="html"><![CDATA[<ul>
+<li>线程一结束就会进入消亡状态,如果定义为属性进行强引用,在进程结束也会处在消亡状态</li>
+<li>保持线程不消亡:
+
+<ul>
+<li>如果经常做一些耗时操作,可以保持线程不死</li>
+<li>或者需要一个线程一直在后天进行扫描等监听操作,也可以线程不消亡</li>
+<li>可以通过自定义线程,重写dealloc方法,测验线程是否消亡</li>
+</ul>
+</li>
+</ul>
+
+
+<!--more-->
+
+
+<h3>为保持线程不消亡,可以添加NSRunLoop</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="kr">thread</span> <span class="o">=</span> <span class="p">[[</span><span class="n">WQThread</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTarget</span><span class="p">:</span><span class="nb">self</span> <span class="nl">selector</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="n">execute</span><span class="p">)</span> <span class="nl">object</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="kr">thread</span> <span class="n">start</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">execute</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 懒加载runLoop,并且添加source.向runLoop中添加source或者timer或者obsever</span>
+</span><span class='line'>    <span class="c1">// 如果为空则立即退出</span>
+</span><span class='line'>    <span class="p">[[</span><span class="bp">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">]</span> <span class="nl">addPort</span><span class="p">:[</span><span class="bp">NSPort</span> <span class="n">port</span><span class="p">]</span> <span class="nl">forMode</span><span class="p">:</span><span class="n">NSDefaultRunLoopMode</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">// 启动runLoop,一值在循环处理各种事件,所以线程不会消亡</span>
+</span><span class='line'>    <span class="p">[[</span><span class="bp">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">]</span> <span class="n">run</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;---------&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="c1">// 不传模式,就为默认模式,调用run相当于下面,运行时间为无限大</span>
+</span><span class='line'>    <span class="c1">//[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];</span>
+</span><span class='line'>    <span class="c1">//[[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantFuture]];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>以下会会实现,但是不推荐
+
+<ul>
+<li>当runLoop循环开启的时候,有内外两个循环</li>
+<li>线程外部循环退出需要另加标记</li>
+</ul>
+</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">execute</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;----------run----%@&quot;</span><span class="p">,</span> <span class="p">[</span><span class="bp">NSThread</span> <span class="n">currentThread</span><span class="p">]);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// 线程一刚开始一直不停的检测mode是否为空,默认不为空</span>
+</span><span class='line'>        <span class="c1">// 进入检测是否有source或者timer,此时没有则退出</span>
+</span><span class='line'>        <span class="c1">// 当线程有source或者timer或者obsever时开启runLoop循环</span>
+</span><span class='line'>        <span class="p">[[</span><span class="bp">NSRunLoop</span> <span class="n">currentRunLoop</span><span class="p">]</span> <span class="n">run</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;---------&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">touchesBegan:</span><span class="p">(</span><span class="bp">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="bp">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 此时给self.thread即上面的线程添加一个source源,此时</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="nl">performSelector</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="n">test2</span><span class="p">)</span> <span class="nl">onThread</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="kr">thread</span> <span class="nl">withObject</span><span class="p">:</span><span class="nb">nil</span> <span class="nl">waitUntilDone</span><span class="p">:</span><span class="nb">NO</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>`</p>
+
+<ul>
+<li>以下为错误的状态</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * 这种方式虽然能保住线程的名，但是这条线程就无法处理其他行为（事件）</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">execute</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;----------run----%@&quot;</span><span class="p">,</span> <span class="p">[</span><span class="bp">NSThread</span> <span class="n">currentThread</span><span class="p">]);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// 当前线程永远在处理这行代码</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;---------&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>让图片延迟显示,比如在控件滚动结束后再显示,可以通过修改图片显示的摸式来实现</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">useImageView</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 只在NSDefaultRunLoopMode模式下显示图片</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">imageView</span> <span class="nl">performSelector</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">setImage</span><span class="p">:)</span> <span class="nl">withObject</span><span class="p">:[</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="s">@&quot;placeholder&quot;</span><span class="p">]</span> <span class="nl">afterDelay</span><span class="p">:</span><span class="mf">3.0</span> <span class="nl">inModes</span><span class="p">:</span><span class="l">@[</span><span class="n">NSDefaultRunLoopMode</span><span class="l">]</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -3864,6 +3886,157 @@
   </entry>
   
   <entry>
+    <title type="html"><![CDATA[Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2014/07/22/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/"/>
+    <updated>2014-07-22T18:32:01+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2014/07/22/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer</id>
+    <content type="html"><![CDATA[<!--more-->
+
+
+<p><img src="images/Quartz2d%E7%9A%84%E5%AE%9A%E6%97%B6%E5%99%A8.png" alt="" /></p>
+
+<ul>
+<li>NSSTimer</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> *(NSTimeInterval)ti:多少秒调用一次,单位秒</span>
+</span><span class='line'><span class="cm"> *(id)aTarget:给谁添加定时器</span>
+</span><span class='line'><span class="cm"> *(SEL)aSelector:回调函数,每次调用所要做的事情</span>
+</span><span class='line'><span class="cm"> *(id)userInfo:此参数可以为nil，当定时器失效时，由你指定的对象保留和释放该定时器。</span>
+</span><span class='line'><span class="cm"> *(BOOL)yesOrNo:是否循环</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="p">+</span> <span class="p">(</span><span class="bp">NSTimer</span> <span class="o">*</span><span class="p">)</span><span class="nf">scheduledTimerWithTimeInterval:</span><span class="p">(</span><span class="n">NSTimeInterval</span><span class="p">)</span><span class="nv">ti</span> <span class="nf">target:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">aTarget</span> <span class="nf">selector:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">aSelector</span> <span class="nf">userInfo:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">userInfo</span> <span class="nf">repeats:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">yesOrNo</span><span class="p">;</span>
+</span><span class='line'><span class="c1">//启动 Timer</span>
+</span><span class='line'><span class="err">–</span> <span class="n">fire</span>
+</span><span class='line'><span class="c1">//停止 Timer</span>
+</span><span class='line'><span class="err">–</span> <span class="n">invalidate</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>NSTimer初始化器接受调用方法逻辑之间的间隔作为它的其中一个参数，预设一秒执行30次。CADisplayLink默认每秒运行60次，通过它的frameInterval属性改变每秒运行帧数，如设置为2，意味CADisplayLink每隔一帧运行一次，有效的逻辑每秒运行30次。</p></li>
+<li><p>NSTimer接受另一个参数是否重复，而把CADisplayLink设置为重复（默认重复？）直到它失效。</p></li>
+<li><p>还有一个区别在于，NSTimer一旦初始化它就开始运行，而CADisplayLink需要将显示链接添加到一个运行循环中，即用于处理系统事件的一个Cocoa Touch结构。</p></li>
+<li><p>NSTimer 我们通常会用在背景计算，更新一些数值资料，而如果牵涉到画面的更新，动画过程的演变，我们通常会用CADisplayLink。</p></li>
+<li><p>但是要使用CADisplayLink，需要加入QuartzCore.framework及#import &lt;QuartzCore/CADisplayLink.h></p></li>
+<li><p>CADisplayLink在Quartz2d中的使用</p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DrawView.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">static</span> <span class="n">CGFloat</span> <span class="n">_snowY</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">DrawView</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 如果以后想绘制东西到view上面，必须在drawRect方法里面，不管有没有手动获取到上下文</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 修改雪花y值</span>
+</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span>  <span class="p">[</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="s">@&quot;雪花&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 画图</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">image</span> <span class="nl">drawAtPoint</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">_snowY</span><span class="p">)];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">_snowY</span> <span class="o">+=</span> <span class="mi">10</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// 当掉出屏幕底部时,修改y值,重新在顶部画出来</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_snowY</span> <span class="o">&gt;</span> <span class="n">rect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">_snowY</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 如果在绘图的时候需要用到定时器，通常</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// NSTimer很少用于绘图，因为调度优先级比较低，并不会准时调用</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">awakeFromNib</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 创建定时器</span>
+</span><span class='line'>    <span class="c1">//[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(timeChange) userInfo:nil repeats:YES];</span>
+</span><span class='line'>    <span class="bp">CADisplayLink</span> <span class="o">*</span><span class="n">link</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CADisplayLink</span> <span class="nl">displayLinkWithTarget</span><span class="p">:</span><span class="nb">self</span> <span class="nl">selector</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="n">timeChange</span><span class="p">)];</span>
+</span><span class='line'>    <span class="c1">// 设定每隔几帧调用一次</span>
+</span><span class='line'>    <span class="n">link</span><span class="p">.</span><span class="n">frameInterval</span> <span class="o">=</span> <span class="mi">30</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// 添加主运行循环</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">link</span> <span class="nl">addToRunLoop</span><span class="p">:[</span><span class="bp">NSRunLoop</span> <span class="n">mainRunLoop</span><span class="p">]</span> <span class="nl">forMode</span><span class="p">:</span><span class="n">NSDefaultRunLoopMode</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// CADisplayLink:每次屏幕刷新的时候就会调用，屏幕一般一秒刷新60次</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">timeChange</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 注意：这个方法并不会马上调用drawRect,其实这个方法只是给当前控件添加刷新的标记，等下一次屏幕刷新的时候才会调用drawRect</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">setNeedsDisplay</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Quartz2d-画板]]></title>
     <link href="http://xiaobenmao.github.io/blog/2014/07/17/quartz2d-hua-ban/"/>
     <updated>2014-07-17T18:39:13+08:00</updated>
@@ -5095,153 +5268,6 @@
 
 
 <p><img src="http://xiaobenmao.github.io/images/%E5%9B%BE%E7%89%87%E6%93%A6%E9%99%A4storyboard.png" alt="" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Quartz2d-截屏(指定控件)]]></title>
-    <link href="http://xiaobenmao.github.io/blog/2014/07/15/quartz2d-jie-ping-zhi-ding-kong-jian/"/>
-    <updated>2014-07-15T17:38:26+08:00</updated>
-    <id>http://xiaobenmao.github.io/blog/2014/07/15/quartz2d-jie-ping-zhi-ding-kong-jian</id>
-    <content type="html"><![CDATA[<!--more-->
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E6%88%AA%E5%8F%96%E5%B1%8F%E5%B9%95.png" alt="" /></p>
-
-<p><img src="http://xiaobenmao.github.io/images/%E6%88%AA%E5%B1%8F.png" alt="" /></p>
-
-<p><img src="http://xiaobenmao.github.io/images/%E6%88%AA%E5%B1%8F1.png" alt="" />
-- 为UIImage增加一个分类,返回截取指定控件的图片</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'>   <span class="cm">/*</span>
-</span><span class='line'><span class="cm">    *屏幕截图简介:</span>
-</span><span class='line'><span class="cm">    *屏幕截图:把屏幕的内容截屏生成一张新的图片</span>
-</span><span class='line'><span class="cm">    * 通常开发中，都是把控制器的内容截屏，生成新的图片</span>
-</span><span class='line'><span class="cm">    * 控制器怎么显示？根据view</span>
-</span><span class='line'><span class="cm">    * view怎么显示? 根据layer图层</span>
-</span><span class='line'><span class="cm">    * 把layer渲染到位图上下文</span>
-</span><span class='line'><span class="cm">    * 注意：图层只能用渲染，图片和文字可以用draw</span>
-</span><span class='line'><span class="cm">    * 渲染在哪?新的图片</span>
-</span><span class='line'><span class="cm">    * 开启图片上下文,和视图一样的尺寸</span>
-</span><span class='line'><span class="cm">    * 写入桌面</span>
-</span><span class='line'><span class="cm">    * 抽分类</span>
-</span><span class='line'><span class="cm">    */</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nl">renderInContext</span><span class="p">:</span><span class="err">把调用者控件的</span><span class="n">layer</span><span class="err">渲染到当前位图上下文</span><span class="n">ctx</span><span class="err">中</span><span class="p">,</span><span class="err">进行操作</span><span class="p">,</span><span class="err">可以获取图片</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="bp">UIImage</span> <span class="nl">(Image)</span>
-</span><span class='line'><span class="c1">// 控件截屏</span>
-</span><span class='line'><span class="p">+</span> <span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">imageWithCaputureView:</span><span class="p">(</span><span class="bp">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nv">view</span><span class="p">;</span>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#import &quot;UIImage+Image.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="bp">UIImage</span> <span class="nl">(Image)</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">+</span> <span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">imageWithCaputureView:</span><span class="p">(</span><span class="bp">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nv">view</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// 开启位图上下文</span>
-</span><span class='line'>    <span class="n">UIGraphicsBeginImageContextWithOptions</span><span class="p">(</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">,</span> <span class="nb">NO</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 获取上下文</span>
-</span><span class='line'>    <span class="n">CGContextRef</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">UIGraphicsGetCurrentContext</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 把控件上的图层渲染到上下文,layer只能渲染</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">view</span><span class="p">.</span><span class="n">layer</span> <span class="nl">renderInContext</span><span class="p">:</span><span class="n">ctx</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 生成一张图片</span>
-</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="n">UIGraphicsGetImageFromCurrentImageContext</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 关闭上下文</span>
-</span><span class='line'>    <span class="n">UIGraphicsEndImageContext</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="n">image</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 使用</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 生成一张新的图片</span>
-</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span>  <span class="p">[</span><span class="bp">UIImage</span> <span class="nl">imageWithCaputureView</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// image转data</span>
-</span><span class='line'>    <span class="c1">// compressionQuality： 图片质量 1:最高质量</span>
-</span><span class='line'>     <span class="bp">NSData</span> <span class="o">*</span><span class="n">data</span> <span class="o">=</span> <span class="n">UIImageJPEGRepresentation</span><span class="p">(</span><span class="n">image</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 将截屏保存在指定路径,桌面</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">data</span> <span class="nl">writeToFile</span><span class="p">:</span><span class="s">@&quot;/Users/mac/Desktop/view.png&quot;</span> <span class="nl">atomically</span><span class="p">:</span><span class="nb">YES</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
 ]]></content>
   </entry>
   
