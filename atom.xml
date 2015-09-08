@@ -4,7 +4,7 @@
   <title><![CDATA[My World]]></title>
   <link href="http://xiaobenmao.github.io/atom.xml" rel="self"/>
   <link href="http://xiaobenmao.github.io/"/>
-  <updated>2015-09-08T12:09:52+08:00</updated>
+  <updated>2015-09-08T16:54:53+08:00</updated>
   <id>http://xiaobenmao.github.io/</id>
   <author>
     <name><![CDATA[嗷大喵]]></name>
@@ -12,6 +12,125 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[CocoaPod-安装第三方库]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/09/08/cocoapodan-zhuang-di-san-fang-ku/"/>
+    <updated>2015-09-08T16:49:32+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/09/08/cocoapodan-zhuang-di-san-fang-ku</id>
+    <content type="html"><![CDATA[<h3>更换源</h3>
+
+<ul>
+<li>Gem是一个管理Ruby库和程序的标准包,它通过Ruby,Gem(如<a href="http://rubygems.org">http://rubygems.org</a>)源来查找、安装、升级和卸载软件包</li>
+</ul>
+
+
+<h4>ruby的软件源rubygems.org因为使用的亚马逊的云服务，所以被墙了，需要更新一下ruby的源，如下代码将官方的ruby源替换成国内淘宝的源</h4>
+
+<ul>
+<li>gem sources &ndash;remove <a href="https://rubygems.org/">https://rubygems.org/</a></li>
+<li>gem sources -a <a href="http://ruby.taobao.org/">http://ruby.taobao.org/</a></li>
+<li>gem sources -l</li>
+</ul>
+
+
+<!--more-->
+
+
+<h3>更新升级gem(以后出现这个问题,尝试这个)</h3>
+
+<ul>
+<li>sudo gem update &ndash;system</li>
+</ul>
+
+
+<h3>安装,Mac下都自带ruby，使用ruby的gem命令即可下载安装</h3>
+
+<ul>
+<li>sudo gem install cocoapods</li>
+</ul>
+
+
+<h3>更换repo镜像为国内服务器</h3>
+
+<ul>
+<li>gem sources &ndash;remove <a href="https://rubygems.org/">https://rubygems.org/</a></li>
+<li>gem sources -a <a href="http://ruby.taobao.org/">http://ruby.taobao.org/</a></li>
+<li>gem sources -l</li>
+</ul>
+
+
+<h3>初始化第三方库信息,第一次操作初始化(以后出现问题,尝试这个)</h3>
+
+<ul>
+<li>pod setup</li>
+</ul>
+
+
+<h3>以后更新第三方库信息</h3>
+
+<ul>
+<li>pod repo update</li>
+</ul>
+
+
+<h3>搜索</h3>
+
+<ul>
+<li>pod search</li>
+</ul>
+
+
+<h3>新建Podfile</h3>
+
+<ul>
+<li>vim Podfile: 编辑该文件</li>
+<li>输入i进入编辑模式</li>
+<li>按Esc:退出编辑模式</li>
+<li>输入冒号:和wq保存退出</li>
+<li>cat 文件名查看文件</li>
+<li>Podfile文件的格式</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="nl">platform</span> <span class="p">:</span><span class="n">ios</span><span class="p">,</span> <span class="s">&quot;8.0&quot;</span>
+</span><span class='line'><span class="n">pod</span> <span class="s">&quot;框架名字&quot;</span>
+</span><span class='line'><span class="n">pod</span> <span class="s">&quot;框架名字&quot;</span><span class="p">,</span> <span class="s">&quot;~&gt; 版本号&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>解析Podfile,安装第三方框架</h3>
+
+<ul>
+<li>pod install</li>
+</ul>
+
+
+<h3>解析Podfile,升级第三方框架</h3>
+
+<h3>以后 使用CocoaPods过程中出现了莫名奇妙的问题</h3>
+
+<ul>
+<li>sudo gem update &ndash;system</li>
+<li>sudo gem install cocoapods</li>
+<li><p>pod setup</p></li>
+<li><p>查找支持cocopod的框架</p>
+
+<ul>
+<li>如果github上的项目存在spec文件</li>
+<li>在github搜索CocoaPods,找到CocoaPods/Specs,选择spec文件夹查看</li>
+<li>官网:<a href="https://cocoapods.org%E6%9F%A5%E6%89%BE">https://cocoapods.org%E6%9F%A5%E6%89%BE</a></li>
+</ul>
+</li>
+</ul>
+
+
+<p><a href="http://www.devtang.com/blog/2014/05/25/use-cocoapod-to-manage-ios-lib-dependency/">http://www.devtang.com/blog/2014/05/25/use-cocoapod-to-manage-ios-lib-dependency/</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Swift-闭包]]></title>
@@ -5123,151 +5242,6 @@
 
 
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Quartz2d-图片擦除(给妹子脱衣服)]]></title>
-    <link href="http://xiaobenmao.github.io/blog/2014/07/16/quartz2d-tu-pian-ca-chu-gei-mei-zi-tuo-yi-fu/"/>
-    <updated>2014-07-16T11:38:52+08:00</updated>
-    <id>http://xiaobenmao.github.io/blog/2014/07/16/quartz2d-tu-pian-ca-chu-gei-mei-zi-tuo-yi-fu</id>
-    <content type="html"><![CDATA[<ul>
-<li>图片擦除是将两张相似的图片重叠,当擦除上面图片的指定区域,显示下面相同区域所要的看到的图片效果</li>
-</ul>
-
-
-<!--more-->
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E5%9B%BE%E7%89%871.png" alt="" /></p>
-
-<p><img src="http://xiaobenmao.github.io/images/%E5%9B%BE%E7%89%872.png" alt="" /></p>
-
-<ul>
-<li>核心代码
-
-<ul>
-<li>渲染图片:[_imageView.layer renderInContext:ctx];</li>
-<li>擦除上层图片:CGContextClearRect(ctx, rect);</li>
-</ul>
-</li>
-</ul>
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E6%93%A6%E9%99%A4%E5%89%8D.png" alt="" /></p>
-
-<p><img src="http://xiaobenmao.github.io/images/%E6%93%A6%E9%99%A4%E5%90%8E.png" alt="" /></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">weak</span><span class="p">,</span> <span class="k">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="bp">UIImageView</span> <span class="o">*</span><span class="n">imageView</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 添加手势</span>
-</span><span class='line'>    <span class="bp">UIPanGestureRecognizer</span> <span class="o">*</span><span class="n">pan</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIPanGestureRecognizer</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTarget</span><span class="p">:</span><span class="nb">self</span> <span class="nl">action</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">pan</span><span class="p">:)];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addGestureRecognizer</span><span class="p">:</span><span class="n">pan</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">pan:</span><span class="p">(</span><span class="bp">UIPanGestureRecognizer</span> <span class="o">*</span><span class="p">)</span><span class="nv">pan</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// 获取当前点</span>
-</span><span class='line'>    <span class="bp">CGPoint</span> <span class="n">curP</span> <span class="o">=</span> <span class="p">[</span><span class="n">pan</span> <span class="nl">locationInView</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 获取擦除的矩形范围</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">wh</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">x</span> <span class="o">=</span> <span class="n">curP</span><span class="p">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">wh</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">y</span> <span class="o">=</span> <span class="n">curP</span><span class="p">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">wh</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="bp">CGRect</span> <span class="n">rect</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">wh</span><span class="p">,</span> <span class="n">wh</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 开启上下文</span>
-</span><span class='line'>    <span class="n">UIGraphicsBeginImageContextWithOptions</span><span class="p">(</span><span class="nb">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">,</span> <span class="nb">NO</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">CGContextRef</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">UIGraphicsGetCurrentContext</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 控件的layer渲染上去</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">_imageView</span><span class="p">.</span><span class="n">layer</span> <span class="nl">renderInContext</span><span class="p">:</span><span class="n">ctx</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 擦除图片</span>
-</span><span class='line'>    <span class="n">CGContextClearRect</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">rect</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 生成一张图片</span>
-</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="n">UIGraphicsGetImageFromCurrentImageContext</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">_imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 关闭上下文</span>
-</span><span class='line'>    <span class="n">UIGraphicsEndImageContext</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E5%9B%BE%E7%89%87%E6%93%A6%E9%99%A4storyboard.png" alt="" /></p>
 ]]></content>
   </entry>
   

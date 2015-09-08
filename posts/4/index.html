@@ -9,17 +9,11 @@
   <meta name="author" content="嗷大喵">
 
   
-  <meta name="description" content="1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-/** *Only override drawRect: if you perform custom drawing. *绘图的步骤： 1.获取上下文 2.创建路径（描述路径） 3.把路径添加到上下文 4.渲染上下文 *通常在这个方法里面绘制图形 * &hellip;">
+  <meta name="description" content="ShapeView:绘制图形 triangle三角形（画图分析）
+关闭路径closePath：从路径的终点连接到起点
+填充路径CGContextFillPath：有了封闭的路径就能填充
+设置填充颜色 [[UIColor blueColor] setFill];
+设置描边颜色 [[UIColor &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -75,6 +69,57 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/07/07/quartz2d-hua-yuan/">Quartz2d-画圆</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-07-07T13:08:11+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>1:08 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><ul>
+<li>ShapeView:绘制图形
+
+<ul>
+<li>triangle三角形（画图分析）</li>
+<li>关闭路径closePath：从路径的终点连接到起点</li>
+<li>填充路径CGContextFillPath：有了封闭的路径就能填充</li>
+<li>设置填充颜色 [[UIColor blueColor] setFill];</li>
+<li>设置描边颜色 [[UIColor redColor] setStroke];</li>
+<li>不显示描边颜色，为什么?没有设置线宽</li>
+<li>设置线宽，还是不显示，为什么?因为绘制路径不对。</li>
+<li>即填充又描边CGContextDrawPath:kCGPathFillStroke。</li>
+<li>rectangle矩形</li>
+<li>circle圆：为什么传入矩形，因为圆内切与矩形</li>
+</ul>
+</li>
+</ul>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/07/07/quartz2d-hua-yuan/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -428,40 +473,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/27/pickerview-dian-can/">pickerVIew - 点餐</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-04-27T20:33:11+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>27</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>8:33 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><img src="/images/pickerView%E7%82%B9%E9%A4%90.png" alt="pickerView点餐系统" /></p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/04/27/pickerview-dian-can/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/5">&larr; Older</a>
@@ -544,6 +555,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/09/08/cocoapodan-zhuang-di-san-fang-ku/">CocoaPod-安装第三方库</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/09/01/swift-bi-bao/">Swift-闭包</a>
       </li>
     
@@ -557,10 +572,6 @@
     
       <li class="post">
         <a href="/blog/2015/09/01/swift-han-shu/">Swift-函数</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/09/01/swift-shu-zu/">Swift-数组</a>
       </li>
     
   </ul>

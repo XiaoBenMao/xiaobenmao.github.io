@@ -9,26 +9,7 @@
   <meta name="author" content="嗷大喵">
 
   
-  <meta name="description" content="1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-/** 闭包(Closures):
-闭包:是自包含的代码块,可以在代码中被传递和使用
-闭包可以捕获和存储其所在上下文中任意常量和变量的引用,这就是所谓的闭包并包裹着这些常量和变量,俗称闭包.
-闭包的几种形式:
-1,“ &hellip;">
+  <meta name="description" content="更换源 Gem是一个管理Ruby库和程序的标准包,它通过Ruby,Gem(如http://rubygems.org)源来查找、安装、升级和卸载软件包 ruby的软件源rubygems.org因为使用的亚马逊的云服务，所以被墙了，需要更新一下ruby的源，如下代码将官方的ruby源替换成国内淘宝的源 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -84,6 +65,54 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/09/08/cocoapodan-zhuang-di-san-fang-ku/">CocoaPod-安装第三方库</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-09-08T16:49:32+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:49 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>更换源</h3>
+
+<ul>
+<li>Gem是一个管理Ruby库和程序的标准包,它通过Ruby,Gem(如<a href="http://rubygems.org">http://rubygems.org</a>)源来查找、安装、升级和卸载软件包</li>
+</ul>
+
+
+<h4>ruby的软件源rubygems.org因为使用的亚马逊的云服务，所以被墙了，需要更新一下ruby的源，如下代码将官方的ruby源替换成国内淘宝的源</h4>
+
+<ul>
+<li>gem sources &ndash;remove <a href="https://rubygems.org/">https://rubygems.org/</a></li>
+<li>gem sources -a <a href="http://ruby.taobao.org/">http://ruby.taobao.org/</a></li>
+<li>gem sources -l</li>
+</ul>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2015/09/08/cocoapodan-zhuang-di-san-fang-ku/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -566,50 +595,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/08/06/coreanimation-li-zi-xiao-guo/">CoreAnimation-粒子效果</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-08-06T09:15:04+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>9:15 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h4>粒子动画</h4>
-
-<p>效果：随机绘制一条路径，点击开始按钮，粒子动画</p>
-
-<h4>实现思路</h4>
-
-<ul>
-<li><p>1.搞个画板绘制路径，自定义view</p></li>
-<li><p>2.给自定义view添加pan手势，和创建复制图层和圆形图层，只需要设置一次，在awakeFromNib方法中设置。</p></li>
-</ul>
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/08/06/coreanimation-li-zi-xiao-guo/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -690,6 +675,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/09/08/cocoapodan-zhuang-di-san-fang-ku/">CocoaPod-安装第三方库</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/09/01/swift-bi-bao/">Swift-闭包</a>
       </li>
     
@@ -703,10 +692,6 @@
     
       <li class="post">
         <a href="/blog/2015/09/01/swift-han-shu/">Swift-函数</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/09/01/swift-shu-zu/">Swift-数组</a>
       </li>
     
   </ul>
