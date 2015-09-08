@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 快速从oc到swift | My World]]></title>
   <link href="http://xiaobenmao.github.io/blog/categories/kuai-su-cong-ocdao-swift/atom.xml" rel="self"/>
   <link href="http://xiaobenmao.github.io/"/>
-  <updated>2015-09-08T11:05:03+08:00</updated>
+  <updated>2015-09-08T11:10:42+08:00</updated>
   <id>http://xiaobenmao.github.io/</id>
   <author>
     <name><![CDATA[嗷大喵]]></name>
@@ -18,10 +18,9 @@
     <link href="http://xiaobenmao.github.io/blog/2015/09/01/swift-bi-bao/"/>
     <updated>2015-09-01T09:50:57+08:00</updated>
     <id>http://xiaobenmao.github.io/blog/2015/09/01/swift-bi-bao</id>
-    <content type="html"><![CDATA[<p>```
-/**</p>
+    <content type="html"><![CDATA[<pre><code>/**
 
-<p>闭包(Closures):
+闭包(Closures):
 闭包:是自包含的代码块,可以在代码中被传递和使用
 闭包可以捕获和存储其所在上下文中任意常量和变量的引用,这就是所谓的闭包并包裹着这些常量和变量,俗称闭包.
 闭包的几种形式:
@@ -33,156 +32,169 @@
 2,隐式返回单表达式闭包，即单表达式闭包可以省略return关键字
 3,参数名称缩写
 4,尾随（Trailing）闭包语法”
-*/</p>
+*/
+</code></pre>
 
 <!--more-->
 
 
-<pre><code></code></pre>
+<pre><code>//: Playground - noun: a place where people can play
 
-<p>//: Playground - noun: a place where people can play</p>
+import UIKit
 
-<p>import UIKit</p>
+var str = "Hello, playground"
 
-<p>var str = &ldquo;Hello, playground&rdquo;</p>
 
-<p>/**
+
+/**
 sorted函数
 1,接收两个参数:
-1>已知类型的数组
-2>闭包函数,</p>
+1&gt;已知类型的数组
+2&gt;闭包函数,
 
-<p>*/
+*/
 // sorted函数
-var strs = [&ldquo;dd&rdquo;, &ldquo;cc&rdquo;, &ldquo;aa&rdquo;, &ldquo;bb&rdquo;]</p>
+var strs = ["dd", "cc", "aa", "bb"]
 
-<p>func backwards(str1:String, str2:String)->Bool
+func backwards(str1:String, str2:String)-&gt;Bool
 {
-    return str1 > str2
-}</p>
+    return str1 &gt; str2
+}
 
-<p>var sortFun = sorted(strs, backwards)</p>
+var sortFun = sorted(strs, backwards)
 
-<p>/<em>*
+
+/**
  闭包表达式语法
 // 格式
-{ (parameters) -> returnType in
+{ (parameters) -&gt; returnType in
     statements
 }
 1, 函数和返回值都在大括号之内
 2, in:该关键字表示闭包的参数和返回值类型定义已经完成,闭包函数体即将开始
-</em>/
+*/
 // 使用
- sortFun = sorted(strs, { (str1:String, str2:String) -> Bool in
-    str1 > str2
-})</p>
+ sortFun = sorted(strs, { (str1:String, str2:String) -&gt; Bool in
+    str1 &gt; str2
+})
 
-<p>/**
+
+/**
 根据上下文推断类型:
-    通过内联闭包表达式构造的闭包作为参数传递给函数时,都可以推断出闭包的参数和返回值类型,所以几乎不需要利用完整格式构造任何内联闭包</p>
+    通过内联闭包表达式构造的闭包作为参数传递给函数时,都可以推断出闭包的参数和返回值类型,所以几乎不需要利用完整格式构造任何内联闭包
 
-<p>*/
-sortFun = sorted(strs, {str1, str2 in return str1 > str2})</p>
+*/
+sortFun = sorted(strs, {str1, str2 in return str1 &gt; str2})
 
-<p>/<em>*
+
+/**
 单表达式闭包隐式返回:
     通过隐藏return 关键字来隐式返回单行表达式的结果
-</em>/</p>
+*/
 
-<p>sortFun = sorted(strs, {s1, s2 in s1 > s2})</p>
+sortFun = sorted(strs, {s1, s2 in s1 &gt; s2})
 
-<p>/<em>*
+
+
+/**
 参数名称缩写:
     1,内联函数的参数名称可以缩写,使用比如:$0,$1顺序调用闭包参数
     2,如果使用了参数名称缩写,可以省略参数的定义,因为名称缩写的类型会根据函数类型进行推断
     3,in关键字也可以省略,闭包表达式完全由闭包函数体构成
-</em>/</p>
+*/
 
-<p>sortFun = sorted(strs, {$0 > $1})</p>
+sortFun = sorted(strs, {$0 &gt; $1})
 
-<p>/<em>*
+
+/**
 运算符函数:
-    1,Swift的String类型定义了关于大于号(>)的字符串实现
-    2,&ldquo;>"作为一个函数接收两个String类型的参数,并返回Bool类型
-</em>/
-// 此处刚好满足&rdquo;>&ldquo;运算符的条件
-sortFun = sorted(strs, >);</p>
+    1,Swift的String类型定义了关于大于号(&gt;)的字符串实现
+    2,"&gt;"作为一个函数接收两个String类型的参数,并返回Bool类型
+*/
+// 此处刚好满足"&gt;"运算符的条件
+sortFun = sorted(strs, &gt;);
 
-<p>/<em>*
+
+
+/**
 尾随闭包
     使用情况:如果需要将一个很长的闭包表达式作为最后一个参数传递给函数,可以使用尾随闭包来增强函数的可读性
-</em>/</p>
+*/
 
-<p>// 不使用尾随闭包
-func aFunc(closur:()->())
+// 不使用尾随闭包
+func aFunc(closur:()-&gt;())
 {
     // 函数体部分
-}</p>
+}
 
-<p>// 只有一个闭包参数的尾随闭包
+// 只有一个闭包参数的尾随闭包
 aFunc({
     // 闭包主体部分
-})</p>
+})
 
-<p>// 有多个参数,且最后一个参数为闭包的的尾随闭包
+// 有多个参数,且最后一个参数为闭包的的尾随闭包
 aFunc(){
     // 闭包主体部分
-}</p>
+}
 
-<p>// 如果函数只有闭包表达式一个参数,使用尾随闭包可以省略"()&ldquo;
-aFunc{</p>
+// 如果函数只有闭包表达式一个参数,使用尾随闭包可以省略"()"
+aFunc{
 
-<p>}</p>
+}
 
-<p>// 字符串数组的sorted排序可以简写
+// 字符串数组的sorted排序可以简写
 sortFun = sorted(strs){
-    $0 > $1
-}</p>
+    $0 &gt; $1
+}
 
-<p>/<em>*
+
+
+
+/**
 Swift的Array类型有一个map方法:
     0,获取一个闭包表达式作为其唯一参数,并返回该元素所映射的值(可以是不同类型的值)
     1,数组中的每一个值都会调用这个闭包
     2,具体的映射方法和返回值类型由闭包来指定
-    3,当提供给数组闭包函数后,map方法将返回一个新的数组,数组中包含了与原数组&ndash;对应映射后的值
-</em>/</p>
+    3,当提供给数组闭包函数后,map方法将返回一个新的数组,数组中包含了与原数组--对应映射后的值
+*/
 
-<p>/<em>*
-使用map的尾随闭包方法将Int型数组[123, 58, 79]转换为包含对应String类型的数组[&ldquo;OneTwoThree&rdquo;,&ldquo;ThreeFourTwo,"OneTwo&rdquo;&ldquo;]
-</em>/</p>
+/**
+使用map的尾随闭包方法将Int型数组[123, 58, 79]转换为包含对应String类型的数组["OneTwoThree","ThreeFourTwo,"OneTwo""]
+*/
 
-<p>let digitNames = [
-    0 : &ldquo;Zero&rdquo;, 1 : &ldquo;Two&rdquo;, 3 : &ldquo;Three&rdquo;,4 : &ldquo;Four&rdquo;,5 : &ldquo;Five&rdquo;,
-    6 : &ldquo;Six&rdquo;, 7 : &ldquo;Seven&rdquo;, 8 : &ldquo;Eight&rdquo;,9 : &ldquo;Nine&rdquo;
-]</p>
+let digitNames = [
+    0 : "Zero", 1 : "Two", 3 : "Three",4 : "Four",5 : "Five",
+    6 : "Six", 7 : "Seven", 8 : "Eight",9 : "Nine"
+]
 
-<p>let numbers = [123, 58, 79]</p>
+let numbers = [123, 58, 79]
 
-<p>let numbersToStrings = numbers.map{
-    (var number)-> String in</p>
+let numbersToStrings = numbers.map{
+    (var number)-&gt; String in
 
-<pre><code>var outPut = ""
+    var outPut = ""
 
-while(number &gt; 0)
-{
-    // 个位
-    var num1 = number % 10
-    outPut += digitNames[num1]!
-    number /= 10
+    while(number &gt; 0)
+    {
+        // 个位
+        var num1 = number % 10
+        outPut += digitNames[num1]!
+        number /= 10
+    }
+
+    return outPut
 }
 
-return outPut
-</code></pre>
+numbersToStrings
 
-<p>}</p>
 
-<p>numbersToStrings</p>
 
-<p>/<em>*
+
+
+/**
 闭包表达式(Closure Expressions)
-</em>/</p>
-
-<p>```</p>
+*/
+</code></pre>
 ]]></content>
   </entry>
   

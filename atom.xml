@@ -4,7 +4,7 @@
   <title><![CDATA[My World]]></title>
   <link href="http://xiaobenmao.github.io/atom.xml" rel="self"/>
   <link href="http://xiaobenmao.github.io/"/>
-  <updated>2015-09-08T11:05:03+08:00</updated>
+  <updated>2015-09-08T11:10:42+08:00</updated>
   <id>http://xiaobenmao.github.io/</id>
   <author>
     <name><![CDATA[嗷大喵]]></name>
@@ -184,8 +184,6 @@
 <span class='line-number'>13</span>
 <span class='line-number'>14</span>
 <span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
 </pre></td><td class='code'><pre><code class=''><span class='line'>/**
 </span><span class='line'>
 </span><span class='line'>闭包(Closures):
@@ -200,155 +198,330 @@
 </span><span class='line'>2,隐式返回单表达式闭包，即单表达式闭包可以省略return关键字
 </span><span class='line'>3,参数名称缩写
 </span><span class='line'>4,尾随（Trailing）闭包语法”
+</span><span class='line'>*/</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<!--more-->
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>//: Playground - noun: a place where people can play
+</span><span class='line'>
+</span><span class='line'>import UIKit
+</span><span class='line'>
+</span><span class='line'>var str = "Hello, playground"
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>/**
+</span><span class='line'>sorted函数
+</span><span class='line'>1,接收两个参数:
+</span><span class='line'>1&gt;已知类型的数组
+</span><span class='line'>2&gt;闭包函数,
+</span><span class='line'>
+</span><span class='line'>*/
+</span><span class='line'>// sorted函数
+</span><span class='line'>var strs = ["dd", "cc", "aa", "bb"]
+</span><span class='line'>
+</span><span class='line'>func backwards(str1:String, str2:String)-&gt;Bool
+</span><span class='line'>{
+</span><span class='line'>    return str1 &gt; str2
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>var sortFun = sorted(strs, backwards)
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>/**
+</span><span class='line'> 闭包表达式语法
+</span><span class='line'>// 格式
+</span><span class='line'>{ (parameters) -&gt; returnType in
+</span><span class='line'>    statements
+</span><span class='line'>}
+</span><span class='line'>1, 函数和返回值都在大括号之内
+</span><span class='line'>2, in:该关键字表示闭包的参数和返回值类型定义已经完成,闭包函数体即将开始
+</span><span class='line'>*/
+</span><span class='line'>// 使用
+</span><span class='line'> sortFun = sorted(strs, { (str1:String, str2:String) -&gt; Bool in
+</span><span class='line'>    str1 &gt; str2
+</span><span class='line'>})
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>/**
+</span><span class='line'>根据上下文推断类型:
+</span><span class='line'>    通过内联闭包表达式构造的闭包作为参数传递给函数时,都可以推断出闭包的参数和返回值类型,所以几乎不需要利用完整格式构造任何内联闭包
+</span><span class='line'>
+</span><span class='line'>*/
+</span><span class='line'>sortFun = sorted(strs, {str1, str2 in return str1 &gt; str2})
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>/**
+</span><span class='line'>单表达式闭包隐式返回:
+</span><span class='line'>    通过隐藏return 关键字来隐式返回单行表达式的结果
 </span><span class='line'>*/
 </span><span class='line'>
-</span><span class='line'>&lt;!--more--&gt;```
+</span><span class='line'>sortFun = sorted(strs, {s1, s2 in s1 &gt; s2})
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>/**
+</span><span class='line'>参数名称缩写:
+</span><span class='line'>    1,内联函数的参数名称可以缩写,使用比如:$0,$1顺序调用闭包参数
+</span><span class='line'>    2,如果使用了参数名称缩写,可以省略参数的定义,因为名称缩写的类型会根据函数类型进行推断
+</span><span class='line'>    3,in关键字也可以省略,闭包表达式完全由闭包函数体构成
+</span><span class='line'>*/
+</span><span class='line'>
+</span><span class='line'>sortFun = sorted(strs, {$0 &gt; $1})
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>/**
+</span><span class='line'>运算符函数:
+</span><span class='line'>    1,Swift的String类型定义了关于大于号(&gt;)的字符串实现
+</span><span class='line'>    2,"&gt;"作为一个函数接收两个String类型的参数,并返回Bool类型
+</span><span class='line'>*/
+</span><span class='line'>// 此处刚好满足"&gt;"运算符的条件
+</span><span class='line'>sortFun = sorted(strs, &gt;);
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>/**
+</span><span class='line'>尾随闭包
+</span><span class='line'>    使用情况:如果需要将一个很长的闭包表达式作为最后一个参数传递给函数,可以使用尾随闭包来增强函数的可读性
+</span><span class='line'>*/
+</span><span class='line'>
+</span><span class='line'>// 不使用尾随闭包
+</span><span class='line'>func aFunc(closur:()-&gt;())
+</span><span class='line'>{
+</span><span class='line'>    // 函数体部分
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>// 只有一个闭包参数的尾随闭包
+</span><span class='line'>aFunc({
+</span><span class='line'>    // 闭包主体部分
+</span><span class='line'>})
+</span><span class='line'>
+</span><span class='line'>// 有多个参数,且最后一个参数为闭包的的尾随闭包
+</span><span class='line'>aFunc(){
+</span><span class='line'>    // 闭包主体部分
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>// 如果函数只有闭包表达式一个参数,使用尾随闭包可以省略"()"
+</span><span class='line'>aFunc{
+</span><span class='line'>
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>// 字符串数组的sorted排序可以简写
+</span><span class='line'>sortFun = sorted(strs){
+</span><span class='line'>    $0 &gt; $1
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>/**
+</span><span class='line'>Swift的Array类型有一个map方法:
+</span><span class='line'>    0,获取一个闭包表达式作为其唯一参数,并返回该元素所映射的值(可以是不同类型的值)
+</span><span class='line'>    1,数组中的每一个值都会调用这个闭包
+</span><span class='line'>    2,具体的映射方法和返回值类型由闭包来指定
+</span><span class='line'>    3,当提供给数组闭包函数后,map方法将返回一个新的数组,数组中包含了与原数组--对应映射后的值
+</span><span class='line'>*/
+</span><span class='line'>
+</span><span class='line'>/**
+</span><span class='line'>使用map的尾随闭包方法将Int型数组[123, 58, 79]转换为包含对应String类型的数组["OneTwoThree","ThreeFourTwo,"OneTwo""]
+</span><span class='line'>*/
+</span><span class='line'>
+</span><span class='line'>let digitNames = [
+</span><span class='line'>    0 : "Zero", 1 : "Two", 3 : "Three",4 : "Four",5 : "Five",
+</span><span class='line'>    6 : "Six", 7 : "Seven", 8 : "Eight",9 : "Nine"
+</span><span class='line'>]
+</span><span class='line'>
+</span><span class='line'>let numbers = [123, 58, 79]
+</span><span class='line'>
+</span><span class='line'>let numbersToStrings = numbers.map{
+</span><span class='line'>    (var number)-&gt; String in
+</span><span class='line'>
+</span><span class='line'>    var outPut = ""
+</span><span class='line'>
+</span><span class='line'>    while(number &gt; 0)
+</span><span class='line'>    {
+</span><span class='line'>        // 个位
+</span><span class='line'>        var num1 = number % 10
+</span><span class='line'>        outPut += digitNames[num1]!
+</span><span class='line'>        number /= 10
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    return outPut
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>numbersToStrings
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>/**
+</span><span class='line'>闭包表达式(Closure Expressions)
+</span><span class='line'>*/
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>//: Playground - noun: a place where people can play</p>
-
-<p>import UIKit</p>
-
-<p>var str = &ldquo;Hello, playground&rdquo;</p>
-
-<p>/**
-sorted函数
-1,接收两个参数:
-1>已知类型的数组
-2>闭包函数,</p>
-
-<p>*/
-// sorted函数
-var strs = [&ldquo;dd&rdquo;, &ldquo;cc&rdquo;, &ldquo;aa&rdquo;, &ldquo;bb&rdquo;]</p>
-
-<p>func backwards(str1:String, str2:String)->Bool
-{
-    return str1 > str2
-}</p>
-
-<p>var sortFun = sorted(strs, backwards)</p>
-
-<p>/<em>*
- 闭包表达式语法
-// 格式
-{ (parameters) -> returnType in
-    statements
-}
-1, 函数和返回值都在大括号之内
-2, in:该关键字表示闭包的参数和返回值类型定义已经完成,闭包函数体即将开始
-</em>/
-// 使用
- sortFun = sorted(strs, { (str1:String, str2:String) -> Bool in
-    str1 > str2
-})</p>
-
-<p>/**
-根据上下文推断类型:
-    通过内联闭包表达式构造的闭包作为参数传递给函数时,都可以推断出闭包的参数和返回值类型,所以几乎不需要利用完整格式构造任何内联闭包</p>
-
-<p>*/
-sortFun = sorted(strs, {str1, str2 in return str1 > str2})</p>
-
-<p>/<em>*
-单表达式闭包隐式返回:
-    通过隐藏return 关键字来隐式返回单行表达式的结果
-</em>/</p>
-
-<p>sortFun = sorted(strs, {s1, s2 in s1 > s2})</p>
-
-<p>/<em>*
-参数名称缩写:
-    1,内联函数的参数名称可以缩写,使用比如:$0,$1顺序调用闭包参数
-    2,如果使用了参数名称缩写,可以省略参数的定义,因为名称缩写的类型会根据函数类型进行推断
-    3,in关键字也可以省略,闭包表达式完全由闭包函数体构成
-</em>/</p>
-
-<p>sortFun = sorted(strs, {$0 > $1})</p>
-
-<p>/<em>*
-运算符函数:
-    1,Swift的String类型定义了关于大于号(>)的字符串实现
-    2,&ldquo;>"作为一个函数接收两个String类型的参数,并返回Bool类型
-</em>/
-// 此处刚好满足&rdquo;>&ldquo;运算符的条件
-sortFun = sorted(strs, >);</p>
-
-<p>/<em>*
-尾随闭包
-    使用情况:如果需要将一个很长的闭包表达式作为最后一个参数传递给函数,可以使用尾随闭包来增强函数的可读性
-</em>/</p>
-
-<p>// 不使用尾随闭包
-func aFunc(closur:()->())
-{
-    // 函数体部分
-}</p>
-
-<p>// 只有一个闭包参数的尾随闭包
-aFunc({
-    // 闭包主体部分
-})</p>
-
-<p>// 有多个参数,且最后一个参数为闭包的的尾随闭包
-aFunc(){
-    // 闭包主体部分
-}</p>
-
-<p>// 如果函数只有闭包表达式一个参数,使用尾随闭包可以省略"()&ldquo;
-aFunc{</p>
-
-<p>}</p>
-
-<p>// 字符串数组的sorted排序可以简写
-sortFun = sorted(strs){
-    $0 > $1
-}</p>
-
-<p>/<em>*
-Swift的Array类型有一个map方法:
-    0,获取一个闭包表达式作为其唯一参数,并返回该元素所映射的值(可以是不同类型的值)
-    1,数组中的每一个值都会调用这个闭包
-    2,具体的映射方法和返回值类型由闭包来指定
-    3,当提供给数组闭包函数后,map方法将返回一个新的数组,数组中包含了与原数组&ndash;对应映射后的值
-</em>/</p>
-
-<p>/<em>*
-使用map的尾随闭包方法将Int型数组[123, 58, 79]转换为包含对应String类型的数组[&ldquo;OneTwoThree&rdquo;,&ldquo;ThreeFourTwo,"OneTwo&rdquo;&ldquo;]
-</em>/</p>
-
-<p>let digitNames = [
-    0 : &ldquo;Zero&rdquo;, 1 : &ldquo;Two&rdquo;, 3 : &ldquo;Three&rdquo;,4 : &ldquo;Four&rdquo;,5 : &ldquo;Five&rdquo;,
-    6 : &ldquo;Six&rdquo;, 7 : &ldquo;Seven&rdquo;, 8 : &ldquo;Eight&rdquo;,9 : &ldquo;Nine&rdquo;
-]</p>
-
-<p>let numbers = [123, 58, 79]</p>
-
-<p>let numbersToStrings = numbers.map{
-    (var number)-> String in</p>
-
-<pre><code>var outPut = ""
-
-while(number &gt; 0)
-{
-    // 个位
-    var num1 = number % 10
-    outPut += digitNames[num1]!
-    number /= 10
-}
-
-return outPut
-</code></pre>
-
-<p>}</p>
-
-<p>numbersToStrings</p>
-
-<p>/<em>*
-闭包表达式(Closure Expressions)
-</em>/</p>
-
-<p>```</p>
 ]]></content>
   </entry>
   
@@ -1537,6 +1710,9 @@ return outPut
 </span><span class='line'><span class="n">CFRunLoopTimerRef</span>   <span class="c1">// 定时器timer</span>
 </span><span class='line'><span class="n">CFRunLoopObserverRef</span>    <span class="c1">// 事件监听</span>
 </span></code></pre></td></tr></table></div></figure>
+
+
+<!--more-->
 
 
 <p><img src="http://xiaobenmao.github.io/images/RunLoop.png" alt="" />￼</p>

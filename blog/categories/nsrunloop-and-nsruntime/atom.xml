@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Nsrunloop&nsruntime | My World]]></title>
   <link href="http://xiaobenmao.github.io/blog/categories/nsrunloop-and-nsruntime/atom.xml" rel="self"/>
   <link href="http://xiaobenmao.github.io/"/>
-  <updated>2015-09-08T11:05:03+08:00</updated>
+  <updated>2015-09-08T11:10:42+08:00</updated>
   <id>http://xiaobenmao.github.io/</id>
   <author>
     <name><![CDATA[嗷大喵]]></name>
@@ -30,6 +30,9 @@ CFRunLoopSourceRef // 事件源
 CFRunLoopTimerRef   // 定时器timer
 CFRunLoopObserverRef    // 事件监听
 </code></pre>
+
+<!--more-->
+
 
 <p><img src="/images/RunLoop.png" alt="" />￼</p>
 
