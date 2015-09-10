@@ -4,7 +4,7 @@
   <title><![CDATA[My World]]></title>
   <link href="http://xiaobenmao.github.io/atom.xml" rel="self"/>
   <link href="http://xiaobenmao.github.io/"/>
-  <updated>2015-09-08T16:54:53+08:00</updated>
+  <updated>2015-09-10T18:39:31+08:00</updated>
   <id>http://xiaobenmao.github.io/</id>
   <author>
     <name><![CDATA[嗷大喵]]></name>
@@ -12,125 +12,6 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
-  
-  <entry>
-    <title type="html"><![CDATA[CocoaPod-安装第三方库]]></title>
-    <link href="http://xiaobenmao.github.io/blog/2015/09/08/cocoapodan-zhuang-di-san-fang-ku/"/>
-    <updated>2015-09-08T16:49:32+08:00</updated>
-    <id>http://xiaobenmao.github.io/blog/2015/09/08/cocoapodan-zhuang-di-san-fang-ku</id>
-    <content type="html"><![CDATA[<h3>更换源</h3>
-
-<ul>
-<li>Gem是一个管理Ruby库和程序的标准包,它通过Ruby,Gem(如<a href="http://rubygems.org">http://rubygems.org</a>)源来查找、安装、升级和卸载软件包</li>
-</ul>
-
-
-<h4>ruby的软件源rubygems.org因为使用的亚马逊的云服务，所以被墙了，需要更新一下ruby的源，如下代码将官方的ruby源替换成国内淘宝的源</h4>
-
-<ul>
-<li>gem sources &ndash;remove <a href="https://rubygems.org/">https://rubygems.org/</a></li>
-<li>gem sources -a <a href="http://ruby.taobao.org/">http://ruby.taobao.org/</a></li>
-<li>gem sources -l</li>
-</ul>
-
-
-<!--more-->
-
-
-<h3>更新升级gem(以后出现这个问题,尝试这个)</h3>
-
-<ul>
-<li>sudo gem update &ndash;system</li>
-</ul>
-
-
-<h3>安装,Mac下都自带ruby，使用ruby的gem命令即可下载安装</h3>
-
-<ul>
-<li>sudo gem install cocoapods</li>
-</ul>
-
-
-<h3>更换repo镜像为国内服务器</h3>
-
-<ul>
-<li>gem sources &ndash;remove <a href="https://rubygems.org/">https://rubygems.org/</a></li>
-<li>gem sources -a <a href="http://ruby.taobao.org/">http://ruby.taobao.org/</a></li>
-<li>gem sources -l</li>
-</ul>
-
-
-<h3>初始化第三方库信息,第一次操作初始化(以后出现问题,尝试这个)</h3>
-
-<ul>
-<li>pod setup</li>
-</ul>
-
-
-<h3>以后更新第三方库信息</h3>
-
-<ul>
-<li>pod repo update</li>
-</ul>
-
-
-<h3>搜索</h3>
-
-<ul>
-<li>pod search</li>
-</ul>
-
-
-<h3>新建Podfile</h3>
-
-<ul>
-<li>vim Podfile: 编辑该文件</li>
-<li>输入i进入编辑模式</li>
-<li>按Esc:退出编辑模式</li>
-<li>输入冒号:和wq保存退出</li>
-<li>cat 文件名查看文件</li>
-<li>Podfile文件的格式</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="nl">platform</span> <span class="p">:</span><span class="n">ios</span><span class="p">,</span> <span class="s">&quot;8.0&quot;</span>
-</span><span class='line'><span class="n">pod</span> <span class="s">&quot;框架名字&quot;</span>
-</span><span class='line'><span class="n">pod</span> <span class="s">&quot;框架名字&quot;</span><span class="p">,</span> <span class="s">&quot;~&gt; 版本号&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>解析Podfile,安装第三方框架</h3>
-
-<ul>
-<li>pod install</li>
-</ul>
-
-
-<h3>解析Podfile,升级第三方框架</h3>
-
-<h3>以后 使用CocoaPods过程中出现了莫名奇妙的问题</h3>
-
-<ul>
-<li>sudo gem update &ndash;system</li>
-<li>sudo gem install cocoapods</li>
-<li><p>pod setup</p></li>
-<li><p>查找支持cocopod的框架</p>
-
-<ul>
-<li>如果github上的项目存在spec文件</li>
-<li>在github搜索CocoaPods,找到CocoaPods/Specs,选择spec文件夹查看</li>
-<li>官网:<a href="https://cocoapods.org%E6%9F%A5%E6%89%BE">https://cocoapods.org%E6%9F%A5%E6%89%BE</a></li>
-</ul>
-</li>
-</ul>
-
-
-<p><a href="http://www.devtang.com/blog/2014/05/25/use-cocoapod-to-manage-ios-lib-dependency/">http://www.devtang.com/blog/2014/05/25/use-cocoapod-to-manage-ios-lib-dependency/</a></p>
-]]></content>
-  </entry>
   
   <entry>
     <title type="html"><![CDATA[Swift-闭包]]></title>
@@ -1652,6 +1533,209 @@
 
 
 
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CocoaPod-安装第三方框架(Swift)]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/08/08/cocoapod-an-zhuang-di-san-fang-kuang-jia-swift/"/>
+    <updated>2015-08-08T18:32:38+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/08/08/cocoapod-an-zhuang-di-san-fang-kuang-jia-swift</id>
+    <content type="html"><![CDATA[<h1>第三方框架</h1>
+
+<h2>比如:项目中使用到以下第三方框架</h2>
+
+<ul>
+<li><code>AFNetworking</code></li>
+<li><code>SDWebImage</code></li>
+<li><code>SVProgressHUD</code></li>
+</ul>
+
+
+<h2>Pod 安装</h2>
+
+<ul>
+<li>git 备份</li>
+<li>打开终端</li>
+<li><code>$ cd</code> 进入项目目录</li>
+<li>输入以下终端命令建立或编辑 <code>Podfile</code></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>vim Podfile
+</span></code></pre></td></tr></table></div></figure>
+
+
+<!--pod-->
+
+
+<ul>
+<li>输入以下内容</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>use_frameworks!
+</span><span class='line'>pod <span class="s1">&#39;AFNetworking&#39;</span>
+</span><span class='line'>pod <span class="s1">&#39;SDWebImage&#39;</span>
+</span><span class='line'>pod <span class="s1">&#39;SVProgressHUD&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><code>:wq</code> 保存退出</li>
+</ul>
+
+
+<blockquote><p>在 Swift 项目中，cocoapod 仅支持以 Framework 方式添加框架，因此需要在 Podfile 中添加 <code>use_frameworks!</code></p></blockquote>
+
+<h2>在终端提交添加的框架</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># 将修改添加至暂存区</span>
+</span><span class='line'><span class="nv">$ </span>git add .
+</span><span class='line'>
+</span><span class='line'><span class="c"># 提交修改并且添加备注信息</span>
+</span><span class='line'><span class="nv">$ </span>git commit -m <span class="s2">&quot;添加第三方框架&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># 将修改推送到远程服务器</span>
+</span><span class='line'><span class="nv">$ </span>git push
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>真机调试设置</h2>
+
+<p><img src="./images/%E4%BA%8C%E7%BB%B4%E7%A0%81/%E7%9C%9F%E6%9C%BA%E8%B0%83%E8%AF%95%E8%AE%BE%E7%BD%AE.png" alt="" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CocoaPod-安装第三方库]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/08/08/cocoapodan-zhuang-di-san-fang-ku/"/>
+    <updated>2015-08-08T16:49:32+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/08/08/cocoapodan-zhuang-di-san-fang-ku</id>
+    <content type="html"><![CDATA[<h3>更换源</h3>
+
+<ul>
+<li>Gem是一个管理Ruby库和程序的标准包,它通过Ruby,Gem(如<a href="http://rubygems.org">http://rubygems.org</a>)源来查找、安装、升级和卸载软件包</li>
+</ul>
+
+
+<h4>ruby的软件源rubygems.org因为使用的亚马逊的云服务，所以被墙了，需要更新一下ruby的源，如下代码将官方的ruby源替换成国内淘宝的源</h4>
+
+<ul>
+<li>gem sources &ndash;remove <a href="https://rubygems.org/">https://rubygems.org/</a></li>
+<li>gem sources -a <a href="http://ruby.taobao.org/">http://ruby.taobao.org/</a></li>
+<li>gem sources -l</li>
+</ul>
+
+
+<!--more-->
+
+
+<h3>更新升级gem(以后出现这个问题,尝试这个)</h3>
+
+<ul>
+<li>sudo gem update &ndash;system</li>
+</ul>
+
+
+<h3>安装,Mac下都自带ruby，使用ruby的gem命令即可下载安装</h3>
+
+<ul>
+<li>sudo gem install cocoapods</li>
+</ul>
+
+
+<h3>更换repo镜像为国内服务器</h3>
+
+<ul>
+<li>gem sources &ndash;remove <a href="https://rubygems.org/">https://rubygems.org/</a></li>
+<li>gem sources -a <a href="http://ruby.taobao.org/">http://ruby.taobao.org/</a></li>
+<li>gem sources -l</li>
+</ul>
+
+
+<h3>初始化第三方库信息,第一次操作初始化(以后出现问题,尝试这个)</h3>
+
+<ul>
+<li>pod setup</li>
+</ul>
+
+
+<h3>以后更新第三方库信息</h3>
+
+<ul>
+<li>pod repo update</li>
+</ul>
+
+
+<h3>搜索</h3>
+
+<ul>
+<li>pod search</li>
+</ul>
+
+
+<h3>新建Podfile</h3>
+
+<ul>
+<li>vim Podfile: 编辑该文件</li>
+<li>输入i进入编辑模式</li>
+<li>按Esc:退出编辑模式</li>
+<li>输入冒号:和wq保存退出</li>
+<li>cat 文件名查看文件</li>
+<li>Podfile文件的格式</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="nl">platform</span> <span class="p">:</span><span class="n">ios</span><span class="p">,</span> <span class="s">&quot;8.0&quot;</span>
+</span><span class='line'><span class="n">pod</span> <span class="s">&quot;框架名字&quot;</span>
+</span><span class='line'><span class="n">pod</span> <span class="s">&quot;框架名字&quot;</span><span class="p">,</span> <span class="s">&quot;~&gt; 版本号&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>解析Podfile,安装第三方框架</h3>
+
+<ul>
+<li>pod install</li>
+</ul>
+
+
+<h3>解析Podfile,升级第三方框架</h3>
+
+<h3>以后 使用CocoaPods过程中出现了莫名奇妙的问题</h3>
+
+<ul>
+<li>sudo gem update &ndash;system</li>
+<li>sudo gem install cocoapods</li>
+<li><p>pod setup</p></li>
+<li><p>查找支持cocopod的框架</p>
+
+<ul>
+<li>如果github上的项目存在spec文件</li>
+<li>在github搜索CocoaPods,找到CocoaPods/Specs,选择spec文件夹查看</li>
+<li>官网:<a href="https://cocoapods.org%E6%9F%A5%E6%89%BE">https://cocoapods.org%E6%9F%A5%E6%89%BE</a></li>
+</ul>
+</li>
+</ul>
+
+
+<p><a href="http://www.devtang.com/blog/2014/05/25/use-cocoapod-to-manage-ios-lib-dependency/">http://www.devtang.com/blog/2014/05/25/use-cocoapod-to-manage-ios-lib-dependency/</a></p>
 ]]></content>
   </entry>
   
@@ -5009,238 +5093,6 @@
 </ul>
 </li>
 </ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Quartz2d-手动截屏]]></title>
-    <link href="http://xiaobenmao.github.io/blog/2014/07/16/quartz2d-shou-dong-jie-ping/"/>
-    <updated>2014-07-16T15:39:00+08:00</updated>
-    <id>http://xiaobenmao.github.io/blog/2014/07/16/quartz2d-shou-dong-jie-ping</id>
-    <content type="html"><![CDATA[<!--more-->
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E6%89%8B%E5%8A%A8%E6%88%AA%E5%B1%8F.png" alt="" />
-<img src="http://xiaobenmao.github.io/images/%E6%89%8B%E5%8A%A8%E6%88%AA%E5%B1%8F1.png" alt="" /></p>
-
-<h3>图片截取</h3>
-
-<ul>
-<li>1,先用addClip根据path截取所要显示的区域</li>
-<li>2,然后将旧的即原来的所要截取的控件渲染到上下文
-
-<ul>
-<li>如果是图片和文字直接draw</li>
-<li>如果是控件,比如imageView等的层要用renderInContex渲染</li>
-</ul>
-</li>
-<li>3,先有了要截取的区域(1,),再添加控件(2,),然后根据上下文获取一张新的图片</li>
-<li>上下文跟原来控件大小相同</li>
-<li>上一笔记,图片剪裁(带有边框头像):有了剪裁区域后,直接draw的图片</li>
-<li>上一笔记,截屏(指定控件):没有剪裁区域,直接将控件本身层渲染到上下文</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-<span class='line-number'>93</span>
-<span class='line-number'>94</span>
-<span class='line-number'>95</span>
-<span class='line-number'>96</span>
-<span class='line-number'>97</span>
-<span class='line-number'>98</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">assign</span><span class="p">)</span> <span class="bp">CGPoint</span> <span class="n">startP</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">weak</span><span class="p">,</span> <span class="k">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="bp">UIImageView</span> <span class="o">*</span><span class="n">imageV</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">weak</span><span class="p">)</span> <span class="bp">UIView</span> <span class="o">*</span><span class="n">clipView</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nf">clipView</span><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_clipView</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="bp">UIView</span> <span class="o">*</span><span class="n">view</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIView</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">_clipView</span> <span class="o">=</span> <span class="n">view</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">view</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">blackColor</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">view</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">view</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="n">_clipView</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>    <span class="c1">// Do any additional setup after loading the view, typically from a nib.</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 给控制器的view添加一个pan手势</span>
-</span><span class='line'>    <span class="bp">UIPanGestureRecognizer</span> <span class="o">*</span><span class="n">pan</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIPanGestureRecognizer</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTarget</span><span class="p">:</span><span class="nb">self</span> <span class="nl">action</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">pan</span><span class="p">:)];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addGestureRecognizer</span><span class="p">:</span><span class="n">pan</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">pan:</span><span class="p">(</span><span class="bp">UIPanGestureRecognizer</span> <span class="o">*</span><span class="p">)</span><span class="nv">pan</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="bp">CGPoint</span> <span class="n">endA</span> <span class="o">=</span> <span class="n">CGPointZero</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">pan</span><span class="p">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">UIGestureRecognizerStateBegan</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// 一开始拖动的时候</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// 获取一开始触摸点</span>
-</span><span class='line'>      <span class="n">_startP</span> <span class="o">=</span> <span class="p">[</span><span class="n">pan</span> <span class="nl">locationInView</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">}</span><span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">pan</span><span class="p">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">UIGestureRecognizerStateChanged</span><span class="p">){</span> <span class="c1">// 一直拖动</span>
-</span><span class='line'>        <span class="c1">// 获取结束点</span>
-</span><span class='line'>         <span class="n">endA</span> <span class="o">=</span> <span class="p">[</span><span class="n">pan</span> <span class="nl">locationInView</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">CGFloat</span> <span class="n">w</span> <span class="o">=</span> <span class="n">endA</span><span class="p">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">_startP</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">CGFloat</span> <span class="n">h</span> <span class="o">=</span> <span class="n">endA</span><span class="p">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">_startP</span><span class="p">.</span><span class="n">y</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// 获取截取范围</span>
-</span><span class='line'>        <span class="bp">CGRect</span> <span class="n">clipRect</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="n">_startP</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">_startP</span><span class="p">.</span><span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// 生成截屏的view</span>
-</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">clipView</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">clipRect</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">}</span><span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">pan</span><span class="p">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">UIGestureRecognizerStateEnded</span><span class="p">){</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// 图片裁剪，生成一张新的图片</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// 开启上下文</span>
-</span><span class='line'>        <span class="c1">// 如果不透明，默认超出裁剪区域会变成黑色，通常都是透明</span>
-</span><span class='line'>        <span class="n">UIGraphicsBeginImageContextWithOptions</span><span class="p">(</span><span class="n">_imageV</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">,</span> <span class="nb">NO</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// 设置裁剪区域</span>
-</span><span class='line'>       <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span>  <span class="p">[</span><span class="bp">UIBezierPath</span> <span class="nl">bezierPathWithRect</span><span class="p">:</span><span class="n">_clipView</span><span class="p">.</span><span class="n">frame</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="p">[</span><span class="n">path</span> <span class="n">addClip</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// 获取上下文</span>
-</span><span class='line'>        <span class="n">CGContextRef</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">UIGraphicsGetCurrentContext</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// 把控件上的内容渲染到上下文</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">_imageV</span><span class="p">.</span><span class="n">layer</span> <span class="nl">renderInContext</span><span class="p">:</span><span class="n">ctx</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// 生成一张新的图片</span>
-</span><span class='line'>        <span class="n">_imageV</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">UIGraphicsGetImageFromCurrentImageContext</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// 关闭上下文</span>
-</span><span class='line'>        <span class="n">UIGraphicsEndImageContext</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// 先移除</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">_clipView</span> <span class="n">removeFromSuperview</span><span class="p">];</span>
-</span><span class='line'>        <span class="c1">// 截取的view设置为nil</span>
-</span><span class='line'>        <span class="n">_clipView</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
 
 ]]></content>
   </entry>

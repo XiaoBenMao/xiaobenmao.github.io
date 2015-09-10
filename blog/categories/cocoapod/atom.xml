@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Cocoapod | My World]]></title>
+  <link href="http://xiaobenmao.github.io/blog/categories/cocoapod/atom.xml" rel="self"/>
+  <link href="http://xiaobenmao.github.io/"/>
+  <updated>2015-09-10T18:39:31+08:00</updated>
+  <id>http://xiaobenmao.github.io/</id>
+  <author>
+    <name><![CDATA[嗷大喵]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[CocoaPod-安装第三方框架(Swift)]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/08/08/cocoapod-an-zhuang-di-san-fang-kuang-jia-swift/"/>
+    <updated>2015-08-08T18:32:38+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/08/08/cocoapod-an-zhuang-di-san-fang-kuang-jia-swift</id>
+    <content type="html"><![CDATA[<h1>第三方框架</h1>
+
+<h2>比如:项目中使用到以下第三方框架</h2>
+
+<ul>
+<li><code>AFNetworking</code></li>
+<li><code>SDWebImage</code></li>
+<li><code>SVProgressHUD</code></li>
+</ul>
+
+
+<h2>Pod 安装</h2>
+
+<ul>
+<li>git 备份</li>
+<li>打开终端</li>
+<li><code>$ cd</code> 进入项目目录</li>
+<li>输入以下终端命令建立或编辑 <code>Podfile</code></li>
+</ul>
+
+
+<pre><code class="bash">$ vim Podfile
+</code></pre>
+
+<!--pod-->
+
+
+<ul>
+<li>输入以下内容</li>
+</ul>
+
+
+<pre><code>use_frameworks!
+pod 'AFNetworking'
+pod 'SDWebImage'
+pod 'SVProgressHUD'
+</code></pre>
+
+<ul>
+<li><code>:wq</code> 保存退出</li>
+</ul>
+
+
+<blockquote><p>在 Swift 项目中，cocoapod 仅支持以 Framework 方式添加框架，因此需要在 Podfile 中添加 <code>use_frameworks!</code></p></blockquote>
+
+<h2>在终端提交添加的框架</h2>
+
+<pre><code class="bash"># 将修改添加至暂存区
+$ git add .
+
+# 提交修改并且添加备注信息
+$ git commit -m "添加第三方框架"
+
+# 将修改推送到远程服务器
+$ git push
+</code></pre>
+
+<h2>真机调试设置</h2>
+
+<p><img src="./images/%E4%BA%8C%E7%BB%B4%E7%A0%81/%E7%9C%9F%E6%9C%BA%E8%B0%83%E8%AF%95%E8%AE%BE%E7%BD%AE.png" alt="" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CocoaPod-安装第三方库]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/08/08/cocoapodan-zhuang-di-san-fang-ku/"/>
+    <updated>2015-08-08T16:49:32+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/08/08/cocoapodan-zhuang-di-san-fang-ku</id>
+    <content type="html"><![CDATA[<h3>更换源</h3>
+
+<ul>
+<li>Gem是一个管理Ruby库和程序的标准包,它通过Ruby,Gem(如<a href="http://rubygems.org">http://rubygems.org</a>)源来查找、安装、升级和卸载软件包</li>
+</ul>
+
+
+<h4>ruby的软件源rubygems.org因为使用的亚马逊的云服务，所以被墙了，需要更新一下ruby的源，如下代码将官方的ruby源替换成国内淘宝的源</h4>
+
+<ul>
+<li>gem sources &ndash;remove <a href="https://rubygems.org/">https://rubygems.org/</a></li>
+<li>gem sources -a <a href="http://ruby.taobao.org/">http://ruby.taobao.org/</a></li>
+<li>gem sources -l</li>
+</ul>
+
+
+<!--more-->
+
+
+<h3>更新升级gem(以后出现这个问题,尝试这个)</h3>
+
+<ul>
+<li>sudo gem update &ndash;system</li>
+</ul>
+
+
+<h3>安装,Mac下都自带ruby，使用ruby的gem命令即可下载安装</h3>
+
+<ul>
+<li>sudo gem install cocoapods</li>
+</ul>
+
+
+<h3>更换repo镜像为国内服务器</h3>
+
+<ul>
+<li>gem sources &ndash;remove <a href="https://rubygems.org/">https://rubygems.org/</a></li>
+<li>gem sources -a <a href="http://ruby.taobao.org/">http://ruby.taobao.org/</a></li>
+<li>gem sources -l</li>
+</ul>
+
+
+<h3>初始化第三方库信息,第一次操作初始化(以后出现问题,尝试这个)</h3>
+
+<ul>
+<li>pod setup</li>
+</ul>
+
+
+<h3>以后更新第三方库信息</h3>
+
+<ul>
+<li>pod repo update</li>
+</ul>
+
+
+<h3>搜索</h3>
+
+<ul>
+<li>pod search</li>
+</ul>
+
+
+<h3>新建Podfile</h3>
+
+<ul>
+<li>vim Podfile: 编辑该文件</li>
+<li>输入i进入编辑模式</li>
+<li>按Esc:退出编辑模式</li>
+<li>输入冒号:和wq保存退出</li>
+<li>cat 文件名查看文件</li>
+<li>Podfile文件的格式</li>
+</ul>
+
+
+<pre><code class="objc">platform :ios, "8.0"
+pod "框架名字"
+pod "框架名字", "~&gt; 版本号"
+</code></pre>
+
+<h3>解析Podfile,安装第三方框架</h3>
+
+<ul>
+<li>pod install</li>
+</ul>
+
+
+<h3>解析Podfile,升级第三方框架</h3>
+
+<h3>以后 使用CocoaPods过程中出现了莫名奇妙的问题</h3>
+
+<ul>
+<li>sudo gem update &ndash;system</li>
+<li>sudo gem install cocoapods</li>
+<li><p>pod setup</p></li>
+<li><p>查找支持cocopod的框架</p>
+
+<ul>
+<li>如果github上的项目存在spec文件</li>
+<li>在github搜索CocoaPods,找到CocoaPods/Specs,选择spec文件夹查看</li>
+<li>官网:<a href="https://cocoapods.org%E6%9F%A5%E6%89%BE">https://cocoapods.org%E6%9F%A5%E6%89%BE</a></li>
+</ul>
+</li>
+</ul>
+
+
+<p><a href="http://www.devtang.com/blog/2014/05/25/use-cocoapod-to-manage-ios-lib-dependency/">http://www.devtang.com/blog/2014/05/25/use-cocoapod-to-manage-ios-lib-dependency/</a></p>
+]]></content>
+  </entry>
+  
+</feed>

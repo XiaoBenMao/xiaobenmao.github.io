@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://xiaobenmao.github.io/blog/2015/09/08/cocoapodan-zhuang-di-san-fang-ku/</loc>
-    <lastmod>2015-09-08T16:49:32+08:00</lastmod>
-  </url>
-  <url>
     <loc>http://xiaobenmao.github.io/blog/2015/09/01/swift-bi-bao/</loc>
     <lastmod>2015-09-01T09:50:57+08:00</lastmod>
   </url>
@@ -31,6 +27,14 @@
   <url>
     <loc>http://xiaobenmao.github.io/blog/2015/09/01/swift-chu-ti-yan/</loc>
     <lastmod>2015-09-01T08:29:01+08:00</lastmod>
+  </url>
+  <url>
+    <loc>http://xiaobenmao.github.io/blog/2015/08/08/cocoapod-an-zhuang-di-san-fang-kuang-jia-swift/</loc>
+    <lastmod>2015-08-08T18:32:38+08:00</lastmod>
+  </url>
+  <url>
+    <loc>http://xiaobenmao.github.io/blog/2015/08/08/cocoapodan-zhuang-di-san-fang-ku/</loc>
+    <lastmod>2015-08-08T16:49:32+08:00</lastmod>
   </url>
   <url>
     <loc>http://xiaobenmao.github.io/blog/2015/08/02/nsrunloop-chang-zhu-xian-cheng/</loc>
@@ -350,27 +354,9 @@
     <loc>http://xiaobenmao.github.io/blog/categories/nsrunloop-and-nsruntime/</loc>
   </url>
   <url>
+    <loc>http://xiaobenmao.github.io/blog/categories/cocoapod/</loc>
+  </url>
+  <url>
     <loc>http://xiaobenmao.github.io/blog/categories/kuai-su-cong-ocdao-swift/</loc>
-  </url>
-  <url>
-    <loc>http://xiaobenmao.github.io/posts/2/</loc>
-  </url>
-  <url>
-    <loc>http://xiaobenmao.github.io/posts/3/</loc>
-  </url>
-  <url>
-    <loc>http://xiaobenmao.github.io/posts/4/</loc>
-  </url>
-  <url>
-    <loc>http://xiaobenmao.github.io/posts/5/</loc>
-  </url>
-  <url>
-    <loc>http://xiaobenmao.github.io/posts/6/</loc>
-  </url>
-  <url>
-    <loc>http://xiaobenmao.github.io/posts/7/</loc>
-  </url>
-  <url>
-    <loc>http://xiaobenmao.github.io/posts/8/</loc>
   </url>
 </urlset>

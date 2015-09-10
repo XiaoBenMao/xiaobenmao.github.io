@@ -9,8 +9,17 @@
   <meta name="author" content="嗷大喵">
 
   
-  <meta name="description" content="粒子动画 效果：随机绘制一条路径，点击开始按钮，粒子动画 实现思路 1.搞个画板绘制路径，自定义view
-2.给自定义view添加pan手势，和创建复制图层和圆形图层，只需要设置一次，在awakeFromNib方法中设置。 ">
+  <meta name="description" content="RunLoop相关类 1
+2
+3
+4
+5
+6
+Core Foundation中关于RunLoop的5个类
+CFRunLoopRef // 运行循环
+CFRunLoopModeRef // 运行模式
+CFRunLoopSourceRef // 事件源
+CFRunLoopTimerRef // &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,6 +75,58 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/08/01/nsrunloop-and-nsruntime/">NSRunLoop-运行逻辑</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-08-01T04:20:43+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2015</span></span> <span class='time'>4:20 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><ul>
+<li>RunLoop相关类</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">Core</span> <span class="n">Foundation</span><span class="err">中关于</span><span class="n">RunLoop</span><span class="err">的</span><span class="mi">5</span><span class="err">个类</span>
+</span><span class='line'><span class="n">CFRunLoopRef</span> <span class="c1">// 运行循环</span>
+</span><span class='line'><span class="n">CFRunLoopModeRef</span> <span class="c1">// 运行模式</span>
+</span><span class='line'><span class="n">CFRunLoopSourceRef</span> <span class="c1">// 事件源</span>
+</span><span class='line'><span class="n">CFRunLoopTimerRef</span>   <span class="c1">// 定时器timer</span>
+</span><span class='line'><span class="n">CFRunLoopObserverRef</span>    <span class="c1">// 事件监听</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2015/08/01/nsrunloop-and-nsruntime/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -412,38 +473,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/07/16/quartz2d-shou-dong-jie-ping/">Quartz2d-手动截屏</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-07-16T15:39:00+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>3:39 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"></div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/07/16/quartz2d-shou-dong-jie-ping/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/3">&larr; Older</a>
@@ -517,6 +546,10 @@
       </li>
     
       <li class="category">
+        <a class='category' href='/blog/categories/cocoapod/'>cocoapod</a> (2)
+      </li>
+    
+      <li class="category">
         <a class='category' href='/blog/categories/kuai-su-cong-ocdao-swift/'>快速从oc到swift</a> (7)
       </li>
     
@@ -524,10 +557,6 @@
 </section><section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2015/09/08/cocoapodan-zhuang-di-san-fang-ku/">CocoaPod-安装第三方库</a>
-      </li>
     
       <li class="post">
         <a href="/blog/2015/09/01/swift-bi-bao/">Swift-闭包</a>
@@ -543,6 +572,10 @@
     
       <li class="post">
         <a href="/blog/2015/09/01/swift-han-shu/">Swift-函数</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/01/swift-shu-zu/">Swift-数组</a>
       </li>
     
   </ul>

@@ -9,8 +9,7 @@
   <meta name="author" content="嗷大喵">
 
   
-  <meta name="description" content="
-图片擦除是将两张相似的图片重叠,当擦除上面图片的指定区域,显示下面相同区域所要的看到的图片效果 ">
+  <meta name="description" content="">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,6 +65,38 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/07/16/quartz2d-shou-dong-jie-ping/">Quartz2d-手动截屏</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-07-16T15:39:00+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>3:39 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"></div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/07/16/quartz2d-shou-dong-jie-ping/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -431,82 +462,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/07/08/quartz2d-mo-fang-xia-zai-jin-du/">Quartz2d-模仿下载进度</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-07-08T08:30:05+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>8:30 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><ul>
-<li>画下载进度</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'>   <span class="cm">/**</span>
-</span><span class='line'><span class="cm">重绘-下载进度条(setNeedsDisplay) 画图分析:</span>
-</span><span class='line'><span class="cm">    * 分析有几个控件：UISliderView,自定义view用来画图,UILabel</span>
-</span><span class='line'><span class="cm">    * 分析思路：滑动UISliderView的时候，把UISliderView的值传给自定义view,改变的显示。</span>
-</span><span class='line'><span class="cm">    * 怎么监听UISliderView，valueChange事件</span>
-</span><span class='line'><span class="cm">    * 自定义view搞一个属性接收滑动的值</span>
-</span><span class='line'><span class="cm">    * 接下来先搞label,因为他比较简单，做东西，先从简单的着手。</span>
-</span><span class='line'><span class="cm">    * 懒加载label,位置居中，文字居中</span>
-</span><span class='line'><span class="cm">    * label怎么显示?重写progress的set方法,有数据就展示在label上。</span>
-</span><span class='line'><span class="cm">    * 绘制圆弧，PPT分析，从哪开始画圆弧。</span>
-</span><span class='line'><span class="cm">    * 每次转多少°？ 角度 = 进度 * M_PI * 2</span>
-</span><span class='line'><span class="cm">    * startAngle = -M_PI_2</span>
-</span><span class='line'><span class="cm">    * endAngle = -M_PI_2 + 进度 * M_PI * 2</span>
-</span><span class='line'><span class="cm">    * 不会及时更新视图显示?为什么，因为drawRect只会在视图显示的时候调用一次。</span>
-</span><span class='line'><span class="cm">    * 怎么重绘？setNeedsDisplay</span>
-</span><span class='line'><span class="cm">    * 手动调用drawRect方法，不行，因为你自己不能创建上下文，必须系统调用来调用</span>
-</span><span class='line'><span class="cm">    * setNeedsDisplay：在view上做一个重绘的标记，在下一次绘图的周期来临，就会先创建好上下文，然后自动调用drawRect重绘。</span>
-</span><span class='line'><span class="cm">    */</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/07/08/quartz2d-mo-fang-xia-zai-jin-du/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/4">&larr; Older</a>
@@ -580,6 +535,10 @@
       </li>
     
       <li class="category">
+        <a class='category' href='/blog/categories/cocoapod/'>cocoapod</a> (2)
+      </li>
+    
+      <li class="category">
         <a class='category' href='/blog/categories/kuai-su-cong-ocdao-swift/'>快速从oc到swift</a> (7)
       </li>
     
@@ -587,10 +546,6 @@
 </section><section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2015/09/08/cocoapodan-zhuang-di-san-fang-ku/">CocoaPod-安装第三方库</a>
-      </li>
     
       <li class="post">
         <a href="/blog/2015/09/01/swift-bi-bao/">Swift-闭包</a>
@@ -606,6 +561,10 @@
     
       <li class="post">
         <a href="/blog/2015/09/01/swift-han-shu/">Swift-函数</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/01/swift-shu-zu/">Swift-数组</a>
       </li>
     
   </ul>

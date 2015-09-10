@@ -9,8 +9,8 @@
   <meta name="author" content="嗷大喵">
 
   
-  <meta name="description" content=" - tableView的tableFooterView的宽度是填充屏幕的, - 里面的子控件宽度会被拉伸,如果不想被拉伸,可以先添加view,再向view上加控件
-- 一般用来显示退出登录,或者加载更多 ">
+  <meta name="description" content="自定义选中效果 增加自定义选中图片,控制其显示和隐藏
+在数据模型中增加bool属性,默认为NO,判断是否隐藏 不能直接对cell操作,否则在cell重用的时候会错 监听didSelectRowAtIndexPath方法,然后对选中行的是否隐藏属性取反 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,6 +66,53 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/18/tableview-pi-liang-cao-zuo/">tableView-批量操作</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-02-18T17:34:26+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>18</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:34 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>自定义选中效果</h3>
+
+<ul>
+<li>增加自定义选中图片,控制其显示和隐藏</li>
+<li>在数据模型中增加bool属性,默认为NO,判断是否隐藏
+
+<ul>
+<li>不能直接对cell操作,否则在cell重用的时候会错</li>
+</ul>
+</li>
+<li><p>监听didSelectRowAtIndexPath方法,然后对选中行的是否隐藏属性取反</p></li>
+<li><p>还一种思路就是可以将选中的数据模型保存在一个可变数组中进行操作(不推荐)</p></li>
+</ul>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/02/18/tableview-pi-liang-cao-zuo/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -700,42 +747,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/01/04/u3d-xiao-qiu-gen-sui-shu-biao-zai-di-shang-gun-dong-(%5B%3F%5D/">U3D 小球跟随鼠标在地上滚动（一)</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-01-04T17:38:20+08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>4</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:38 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>新建一个plane作为地面Land，一个小球。给小球增加Rigidbody组件，设置一个阻力值Drag，此处我们设为1。</p>
-
-<p>然后给小球增加一个script，此处为moveController.cs</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/01/04/u3d-xiao-qiu-gen-sui-shu-biao-zai-di-shang-gun-dong-(%5B%3F%5D/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/8">&larr; Older</a>
@@ -809,6 +820,10 @@
       </li>
     
       <li class="category">
+        <a class='category' href='/blog/categories/cocoapod/'>cocoapod</a> (2)
+      </li>
+    
+      <li class="category">
         <a class='category' href='/blog/categories/kuai-su-cong-ocdao-swift/'>快速从oc到swift</a> (7)
       </li>
     
@@ -816,10 +831,6 @@
 </section><section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2015/09/08/cocoapodan-zhuang-di-san-fang-ku/">CocoaPod-安装第三方库</a>
-      </li>
     
       <li class="post">
         <a href="/blog/2015/09/01/swift-bi-bao/">Swift-闭包</a>
@@ -835,6 +846,10 @@
     
       <li class="post">
         <a href="/blog/2015/09/01/swift-han-shu/">Swift-函数</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/09/01/swift-shu-zu/">Swift-数组</a>
       </li>
     
   </ul>
