@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 快速从oc到swift | My World]]></title>
   <link href="http://xiaobenmao.github.io/blog/categories/kuai-su-cong-ocdao-swift/atom.xml" rel="self"/>
   <link href="http://xiaobenmao.github.io/"/>
-  <updated>2015-09-10T19:27:48+08:00</updated>
+  <updated>2015-09-10T19:47:29+08:00</updated>
   <id>http://xiaobenmao.github.io/</id>
   <author>
     <name><![CDATA[嗷大喵]]></name>
@@ -14,518 +14,415 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Swift-闭包]]></title>
-    <link href="http://xiaobenmao.github.io/blog/2015/09/01/swift-bi-bao/"/>
-    <updated>2015-09-01T09:50:57+08:00</updated>
-    <id>http://xiaobenmao.github.io/blog/2015/09/01/swift-bi-bao</id>
-    <content type="html"><![CDATA[<pre><code>/**
+    <title type="html"><![CDATA[Swift-体验tableView]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/09/03/swift-ti-yan-tableview/"/>
+    <updated>2015-09-03T21:25:01+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/09/03/swift-ti-yan-tableview</id>
+    <content type="html"><![CDATA[<ul>
+<li>遵守协议的写法: 直接在类名后通过逗号分隔</li>
+<li>可以为协议单独写个<code>extension</code>,在类扩展中实现代理方法,是代码结构更加清晰</li>
+</ul>
 
-闭包(Closures):
-闭包:是自包含的代码块,可以在代码中被传递和使用
-闭包可以捕获和存储其所在上下文中任意常量和变量的引用,这就是所谓的闭包并包裹着这些常量和变量,俗称闭包.
-闭包的几种形式:
-1,“全局函数是一个有名字但不会捕获任何值的闭包
-2,嵌套函数是一个有名字并可以捕获其封闭函数域内值的闭包
-3,闭包表达式是一个利用轻量级语法所写的可以捕获其上下文中变量或常量值的匿名闭包”
-闭包的常见优化场景:
-1,“利用上下文推断参数和返回值类型
-2,隐式返回单表达式闭包，即单表达式闭包可以省略return关键字
-3,参数名称缩写
-4,尾随（Trailing）闭包语法”
-*/
-</code></pre>
 
 <!--more-->
 
 
-<pre><code>//: Playground - noun: a place where people can play
+<pre><code class="Swift">import UIKit
 
-import UIKit
+// Swift中遵守协议直接在后面通过逗号分隔即可
+class ViewController: UIViewController{
 
-var str = "Hello, playground"
+    override func loadView() {
+        let tv = UITableView()
+        tv.frame = UIScreen.mainScreen().bounds
+        tv.dataSource = self
+        tv.delegate = self
 
-
-
-/**
-sorted函数
-1,接收两个参数:
-1&gt;已知类型的数组
-2&gt;闭包函数,
-
-*/
-// sorted函数
-var strs = ["dd", "cc", "aa", "bb"]
-
-func backwards(str1:String, str2:String)-&gt;Bool
-{
-    return str1 &gt; str2
-}
-
-var sortFun = sorted(strs, backwards)
-
-
-/**
- 闭包表达式语法
-// 格式
-{ (parameters) -&gt; returnType in
-    statements
-}
-1, 函数和返回值都在大括号之内
-2, in:该关键字表示闭包的参数和返回值类型定义已经完成,闭包函数体即将开始
-*/
-// 使用
- sortFun = sorted(strs, { (str1:String, str2:String) -&gt; Bool in
-    str1 &gt; str2
-})
-
-
-/**
-根据上下文推断类型:
-    通过内联闭包表达式构造的闭包作为参数传递给函数时,都可以推断出闭包的参数和返回值类型,所以几乎不需要利用完整格式构造任何内联闭包
-
-*/
-sortFun = sorted(strs, {str1, str2 in return str1 &gt; str2})
-
-
-/**
-单表达式闭包隐式返回:
-    通过隐藏return 关键字来隐式返回单行表达式的结果
-*/
-
-sortFun = sorted(strs, {s1, s2 in s1 &gt; s2})
-
-
-
-/**
-参数名称缩写:
-    1,内联函数的参数名称可以缩写,使用比如:$0,$1顺序调用闭包参数
-    2,如果使用了参数名称缩写,可以省略参数的定义,因为名称缩写的类型会根据函数类型进行推断
-    3,in关键字也可以省略,闭包表达式完全由闭包函数体构成
-*/
-
-sortFun = sorted(strs, {$0 &gt; $1})
-
-
-/**
-运算符函数:
-    1,Swift的String类型定义了关于大于号(&gt;)的字符串实现
-    2,"&gt;"作为一个函数接收两个String类型的参数,并返回Bool类型
-*/
-// 此处刚好满足"&gt;"运算符的条件
-sortFun = sorted(strs, &gt;);
-
-
-
-/**
-尾随闭包
-    使用情况:如果需要将一个很长的闭包表达式作为最后一个参数传递给函数,可以使用尾随闭包来增强函数的可读性
-*/
-
-// 不使用尾随闭包
-func aFunc(closur:()-&gt;())
-{
-    // 函数体部分
-}
-
-// 只有一个闭包参数的尾随闭包
-aFunc({
-    // 闭包主体部分
-})
-
-// 有多个参数,且最后一个参数为闭包的的尾随闭包
-aFunc(){
-    // 闭包主体部分
-}
-
-// 如果函数只有闭包表达式一个参数,使用尾随闭包可以省略"()"
-aFunc{
-
-}
-
-// 字符串数组的sorted排序可以简写
-sortFun = sorted(strs){
-    $0 &gt; $1
-}
-
-
-
-
-/**
-Swift的Array类型有一个map方法:
-    0,获取一个闭包表达式作为其唯一参数,并返回该元素所映射的值(可以是不同类型的值)
-    1,数组中的每一个值都会调用这个闭包
-    2,具体的映射方法和返回值类型由闭包来指定
-    3,当提供给数组闭包函数后,map方法将返回一个新的数组,数组中包含了与原数组--对应映射后的值
-*/
-
-/**
-使用map的尾随闭包方法将Int型数组[123, 58, 79]转换为包含对应String类型的数组["OneTwoThree","ThreeFourTwo,"OneTwo""]
-*/
-
-let digitNames = [
-    0 : "Zero", 1 : "Two", 3 : "Three",4 : "Four",5 : "Five",
-    6 : "Six", 7 : "Seven", 8 : "Eight",9 : "Nine"
-]
-
-let numbers = [123, 58, 79]
-
-let numbersToStrings = numbers.map{
-    (var number)-&gt; String in
-
-    var outPut = ""
-
-    while(number &gt; 0)
-    {
-        // 个位
-        var num1 = number % 10
-        outPut += digitNames[num1]!
-        number /= 10
+        view = tv
     }
 
-    return outPut
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
+
+    // MARK: - 懒加载数据
+    lazy var dataList:[String] = {
+        return ["lnj", "lmj", "zs", "ls", "ww"]
+    }()
 }
 
-numbersToStrings
-
-
-
-
-
-/**
-闭包表达式(Closure Expressions)
-*/
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Swift-字符串]]></title>
-    <link href="http://xiaobenmao.github.io/blog/2015/09/01/swift-zi-fu-chuan/"/>
-    <updated>2015-09-01T09:40:24+08:00</updated>
-    <id>http://xiaobenmao.github.io/blog/2015/09/01/swift-zi-fu-chuan</id>
-    <content type="html"><![CDATA[<!--more-->
-
-
-<pre><code class="Swift">
-//: Playground - noun: a place where people can play
-
-import UIKit
-// 在OC中定义字符串用 @"". Swift中用""
-// 注意点: OC中的字符串是NSString, Swift中的字符串是String
-//        OC中的字符串是一个对象, 继承于NSObjcte
-//        Swift中的字符串是一个结构体
-//        Swift中的字符串的性能比OC中的高
-var str: String = "wq "
-
-// 拼接
-var str2 = "cool"
-
-str += str2
-
-// 格式化
-let num = 30
-let name = "wq"
-// 目标:  name = lnj , age = 30
-// 在Swift中可以使用 \()来拼接其它值
-var str3 = "name = \(name), age = \(num)"
-
-// 09: 08: 13
-// 注意: 所有的值都必须放到数组中, 哪怕只有一个值也需要放到数组中
-var str4 = String(format: "%02d: %02d: %02d", arguments: [9, 8, 13])
-
-
-// 截取
-// 注意: 在Swift中, 如果需要截取字符串, 建议使用OC的字符串来截取, 因为Swift中String的字符串截取方法使用起来非常复杂和蛋疼
-// Swift中的字符串可以和OC中的字符串非常非常方便的进行转换
-var str5: NSString = "wq nb"
-var str6 = "wq fc nb" as NSString
-
-var subStr = str5.substringWithRange(NSMakeRange(1, 3))
-
-
-// Swift中的字符串是支持直接遍历的
-var str7 = "www.baidu.com"
-for c in str7.characters
+// 苹果官方建议, 可以将数据源代理方法单独写到一个扩展中, 以便于提高代码的可读性
+// extension 相当于OC中的 catogory
+extension ViewController: UITableViewDataSource, UITableViewDelegate
 {
-    print(c)
+    // MARK: - UITableViewDataSource
+    // 一共有多少行
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -&gt; Int {
+        return dataList.count
+    }
+    // 每行显示什么内容
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -&gt; UITableViewCell {
+        // 1.取出cell
+        var cell = tableView.dequeueReusableCellWithIdentifier("customCell")
+
+        if cell == nil
+        {
+            cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "customCell")
+        }
+        // 2.设置数据
+        cell?.textLabel?.text = dataList[indexPath.row]
+
+        // 3.返回cell
+        return cell!
+    }
+
 }
 </code></pre>
 ]]></content>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Swift-字典]]></title>
-    <link href="http://xiaobenmao.github.io/blog/2015/09/01/swift-zi-dian/"/>
-    <updated>2015-09-01T09:30:16+08:00</updated>
-    <id>http://xiaobenmao.github.io/blog/2015/09/01/swift-zi-dian</id>
-    <content type="html"><![CDATA[<!--more-->
+    <title type="html"><![CDATA[Swift-setter&amp;getter]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/09/02/swift-setter-and-getter/"/>
+    <updated>2015-09-02T21:01:41+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/09/02/swift-setter-and-getter</id>
+    <content type="html"><![CDATA[<ul>
+<li><p>Swift中建议使用<code>didSet</code>来给属性设置值</p>
 
+<ul>
+<li>调用时机: 调用完set方法后,调用didSet方法</li>
+</ul>
+</li>
+<li><p>Swift中的<code>命名空间</code></p>
 
-<pre><code class="swift">//: Playground - noun: a place where people can play
+<ul>
+<li>在Swift中, 如果想使用某一个类, 是不用import头文件的</li>
+<li>因为Swift中新增了一个OC中以前没有的概念 &ldquo;命名空间&rdquo;</li>
+<li>只要是在同一个命名空间中的资源都是共享的</li>
+<li>默认情况下, 项目名称就是命名空间</li>
+<li>正是因为这样, 所以在做Swift开发时有多了很多坑
 
-import UIKit
+<ul>
+<li>如果是Swift项目要使用第三方框架, 那么建议使用cocoapods来集成框架</li>
+<li>因为如果是通过cocoapods集成的框架, 在另外一个项目中, 那么命名空间就不一样</li>
+<li>这样可以有效的避免 三方框架中的类名 和 我们自己的 冲突</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 
-// 创建字典
-// @{@"key": "value"};
-// Swift中创建字典和创建数组一样, 用[]
-// [String : NSObject] 类型是以后做iOS开发中最常见的一种格式
-let dict = ["name": "ls", "age": 30]
-
-
-// 获取value
-dict["name"]
-
-// 遍历字典
-for key in dict.keys
-{
-    print(dict[key])
-}
-
-// 利用元祖类型遍历字典, 会自动将字典中的key赋值给元祖中的第一个变量, 将value赋值给元祖中的第二个变量
-// 注意: 第一个是key, 第二个value
-for (kk, vv) in dict
-{
-    print(kk)
-    print(vv)
-}
-// 新增key / value
-// 如果对应的key在字典中没有, 那么就会新增
-var dict2 = ["name": "ls", "age": 30]
-dict2["gender"] = "man"
-dict2
-
-
-// 更新key / value
-// 如果对应的key在字典中有, 那么就会更新
-dict2["name"] = "zs"
-dict2
-
-// 删除
-dict2.removeValueForKey("name")
-dict2
-
-// 更新字典
-dict2.updateValue("20", forKey: "age")
-dict2
-
-// 合并字典
-var dict3 = ["score": 99]
-
-for (key, value) in dict3
-{
-    dict2[key] = value
-}
-dict2
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Swift-函数]]></title>
-    <link href="http://xiaobenmao.github.io/blog/2015/09/01/swift-han-shu/"/>
-    <updated>2015-09-01T09:20:31+08:00</updated>
-    <id>http://xiaobenmao.github.io/blog/2015/09/01/swift-han-shu</id>
-    <content type="html"><![CDATA[<!--more-->
-
-
-<pre><code class="Swift">
-//: Playground - noun: a place where people can play
-
-import UIKit
-
-/*
-Swift定义函数的格式:
-
-语义: 将前面计算的结果返回给  -&gt; 返回值
-func 函数名称(参数列表) -&gt; 返回值
-{
-    执行代码
-}
-*/
-
-// 没有返回值没有参数
-// 如果函数没有返回值, 就写Void
-// 如果函数没有返回值还可以简写
-// 1. () 替代 Void
-// 2. 可以省略 -&gt; ()  -&gt;Void
-func say() -&gt; Void
-{
-    print("hello")
-}
-say()
-
-
-func say2() -&gt; ()
-{
-    print("hello")
-}
-say2()
-
-
-func say3()
-{
-    print("hello")
-}
-say3()
-
-// 有返回值没有参数
-
-func getNumber() -&gt; Int
-{
-    return 998
-}
-print(getNumber())
-
-// 有参数没有返回值
-
-//- (void)sum:(int)a b:(int)b
-// Swift2.0中, 会自动将形参列表中的第二个参数开始的参数名称作为便签, 以便于提高阅读性
-// Swift2.0之前, 不会这样
-func sum(a: Int, b: Int)
-{
-    print(a + b)
-}
-sum(10, b: 20)
-
-
-// 添加标签, 添加外部参数
-// x/y称之为外部参数, a/b称之为内部参数
-func sum2(x a: Int,y b: Int)
-{
-    print(a + b)
-}
-sum2(x: 10, y: 20)
-
-// Swift2.0之前的写法, 只要加上#那么a/b既是外部参数, 也是内部参数
-//func sum2(#a: Int,#b: Int)
-//{
-//    print(a + b)
-//}
-//sum2(a: 10, b: 20)
-
-// 有参数有返回值
-func sum4(a: Int, b: Int) -&gt; Int
-{
-    return a + b
-}
-print(sum4(10, b: 30))
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Swift-数组]]></title>
-    <link href="http://xiaobenmao.github.io/blog/2015/09/01/swift-shu-zu/"/>
-    <updated>2015-09-01T08:44:08+08:00</updated>
-    <id>http://xiaobenmao.github.io/blog/2015/09/01/swift-shu-zu</id>
-    <content type="html"><![CDATA[<h1>数组</h1>
-
-<h2>简单体验</h2>
-
-<pre><code class="swift">let arr = ["zhangsan", "lisi"]
-print(arr)
-
-// 遍历每一个元素
-for a in arr {
-    print(a)
-}
-
-// 像 OC 一样打印
-print(arr as NSArray)
-</code></pre>
 
 <!--more-->
 
 
-<h2>数组中保存的对象类型</h2>
-
-<pre><code class="swift">// 数组中保存的都是字符串
-let arr = ["zhangsan", "lisi"]
-
-// 数组中保存的是 NSObject
-let arr1 = ["zhangsan", 1]
-</code></pre>
-
 <ul>
-<li>阶段性小结
-
-<ul>
-<li>数组使用 [] 定义，这一点与 OC 相同</li>
-<li>如果初始化时，所有内容类型一致，则数组中保存的是该类型的内容</li>
-<li>如果初始化时，所有内容类型不一致，则数组中保存的是 <code>NSObject</code></li>
-</ul>
-</li>
+<li>自定义Person类</li>
 </ul>
 
 
-<h2>常见数组操作</h2>
+<pre><code class="swift">import UIKit
 
-<pre><code class="swift">// 定义只能保存字符串类型数组
-var array: [String]
+class Person: NSObject {
 
-// 初始化数组
-array = ["zhangsan"]
+    // 在开发中, 不建议这样写
+    // 定义属性
+    var _name:String?
+    // getter和setter方法
+    var name:String?{
+        get{
+            return _name
+        }
+        set{
+            // newValue为系统生成
+            // 只要外界给通过对象.name给name赋值, 那么值就会保存在newValue
+            _name = newValue
+        }
+    }
 
-// 添加元素
-array.append("lisi")
+    var gender:String?{
+        // 设置完值之后调用
+        // Swift中使用didSet来替代OC中重写setter方法
+        didSet{
+            print(self)
+            print(gender)
+        }
+    }
 
-print(array)
+    // 如果只重写了get方法, 那么这个属性我们称之为 计算型 属性
+    // 也就是对应OC中的只读属性
+    // 注意点: 计算型属性是不占用内存空间的
+    var age:Int{
+        get{
+            return 30
+        }
+    }
 
-// 删除元素
-array.removeAtIndex(1)
-print(array)
-
-// 删除所有元素
-// 删除所有, 如果传入true代表删除之后需要保持数组现有的容量, 如果传入false代表不保持当前容量
-array.removeAll(keepCapacity: true)
-print(array.capacity)
-
-/**
-1,注意数组容量的变化
-    1&gt;如果数组容量不够,则在当前基础上乘2
-    2&gt;如果容量足够,继续添加数据,不足则重复那步骤:1&gt;
-*/
-for i in 0..&lt;10 {
-    array.append("\(i)")
-    print("\(array) --- \(array.capacity)")
 }
-
-/**
- 实例化新的数组
- 1,Swift中, 如果一个变量没有初始化是不能被使用的
- 2, [[xx alloc]initWithXXX:]  &lt;==&gt;  (XXX:)
-      [[XX alloc]init] &lt;==&gt; ()
- */ 
-
-var array2 = [String]()
-array2.append("1")
-
-var array3:[String] = ["a","b"]
-array3.append("2")
-
-// 拼接数组
-// 注意点: 只有相同类型的数组才能进行合并
-// Swift是强语言, 不同数据类型不能进行运算
-array += array2
-
-print(array)
-
-// 打印数组的长度
-array2.count
 </code></pre>
 
 <ul>
-<li>阶段性小结
+<li>使用</li>
+</ul>
+
+
+<pre><code class="`Swift">
+ import UIKit
+
+class ViewController: UIViewController {
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        let p = Person()
+        p.name = "lnj"
+        print(p.name)
+
+        p.gender = "man"
+
+            // p.age = 99
+        print(p.age)
+
+        print(self)
+
+    }
+
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Swift-构造方法]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/09/02/swift-gou-zao-fang-fa/"/>
+    <updated>2015-09-02T20:14:16+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/09/02/swift-gou-zao-fang-fa</id>
+    <content type="html"><![CDATA[<ul>
+<li><p>Swift中定义属性</p>
 
 <ul>
-<li>如果定义数组时指定了保存对象的类型，择不能向数组中添加其他类型的内容</li>
-<li>可以使用 <code>[String]()</code></li>
-<li><code>let</code> 定义的数组是<code>不可变的</code></li>
-<li><code>var</code> 定义的数组是<code>可变的</code></li>
+<li>如果定义属性的时候没有初始化, 那么必须在后面写上一个?</li>
+<li>Swift要求, 属性是必须有初始值的</li>
+<li>只要在构造方法中对属性进行了初始化, 那么就不用写?</li>
+</ul>
+</li>
+<li><p>Swift中对定义基本属性和对象属性<code>内存处理</code>不同</p>
+
+<ul>
+<li>如果是定义一个 &ldquo;对象属性&rdquo; 那么后面可以写上 ?
+
+<ul>
+<li>因为super.init()方法在分配存储空间的时候, 如果发现属性是一个对象, 并且是一个可选类型, 那么会给这个属性分配存储空间</li>
+</ul>
+</li>
+<li>如果是定义一个 &ldquo;基本数据类型属性&rdquo;, 那么建议直接赋值为0
+
+<ul>
+<li>但是如果属性是一个基本数据类型, 并且是可选类型, 那么super.init()不会给该属性分配存储空间</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 
+
+<p> <!--more--></p>
+
+<ul>
+<li>定义Person类</li>
+</ul>
+
+
+<pre><code class="Swift">import UIKit
+
+class Person: NSObject {
+
+    // 定义name属性
+    var name:String?
+
+
+    // var age:Int?
+    var age:Int = 0
+
+    // 注意: 如果自定义了构造方法, 并且没有重写父类默认的构造方法
+    // 那么默认的构造方法就会失效
+
+    override init() {
+        self.name = "lnj"
+        self.age = 30
+    }
+
+
+    // 自定义构造方法
+    // Swift中有方法重载的概念
+    // 允许有同名的方法, 只要形参或返回值不一样即可
+    init(name:String, age:Int)
+    {
+        self.name = name
+        self.age = age
+    }
+
+    init(dict:[String: NSObject])
+    {
+        super.init()
+        // 注意点: Swift中如果想在构造方法中使用KVC给属性赋值
+        // 那么在使用KVC之前必须调用super.init()
+        // 调用super.init()的目的就是为了能在在KVC赋值之前给属性分配存储空间
+        setValuesForKeysWithDictionary(dict)
+    }
+
+}
+</code></pre>
+
+<ul>
+<li>使用</li>
+</ul>
+
+
+<pre><code class="Swift">import UIKit
+
+class ViewController: UIViewController {
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view, typically from a nib.
+
+
+        let p = Person()
+        print("\(p.name), \(p.age) ")
+
+        let p2 = Person(name: "zs", age: 88)
+        print("\(p2.name), \(p2.age) ")
+
+
+        //let p3 = Person(dict: ["name":"lnj", "age": 998])
+        //print("\(p3.name), \(p3.age)")
+
+    }
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Swift-懒加载]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/09/02/swift-lan-jia-zai/"/>
+    <updated>2015-09-02T19:10:57+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/09/02/swift-lan-jia-zai</id>
+    <content type="html"><![CDATA[<ul>
+<li>懒加载的修饰词<code>lazy</code></li>
+<li>懒加载等号右边的闭包后面要加'()&lsquo;,表示调用</li>
+<li>懒加载等号右边的闭包写法有多种</li>
+</ul>
+
+
+<!--more-->
+
+
+<pre><code>import UIKit
+
+class ViewController: UIViewController {
+
+    // 格式: 定义变量时前面使用lazy来修饰变量, 后面通过等到赋值一个闭包
+    // 注意点: 1.必须是用var 2.闭包后面必须跟上()
+
+    lazy var dataList:[String] = {
+        ()-&gt;[String]
+        in
+        print("我被搞了")
+        return ["zs", "ls", "wl"]
+    }()
+
+    // 如果闭包是用于懒加载, 那么in之前的代码都可以删除包括in在内
+    lazy var dataList2:[String] = {
+
+        print("我被搞了")
+        return ["zs", "ls", "wl"]
+    }()
+
+    // 懒加载
+    let demoFunc = {
+        ()-&gt;[String]
+        in
+        print("我被搞了")
+        return ["123", "456", "789"]
+    }
+
+    lazy var dataList3:[String] = self.demoFunc()
+
+    // 如果懒加载内的操作只有一句,则可以直接写在等号后面
+
+    lazy var dataList2:[String] =  [String]()
+
+
+    override func touchesBegan(touches: Set&lt;UITouch&gt;, withEvent event: UIEvent?) {
+
+        print(dataList3)
+        print(dataList3)
+        print(dataList3)
+
+        print(demoFunc())
+
+    }
+
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Swift-闭包的循环引用]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/09/01/swift-bi-bao-de-xun-huan-yin-yong/"/>
+    <updated>2015-09-01T19:05:00+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/09/01/swift-bi-bao-de-xun-huan-yin-yong</id>
+    <content type="html"><![CDATA[<ul>
+<li>在Swift的闭包中,会对对象进行引用,类比OC中的Block,如果实例对象内对闭包进行了强引用,就会造成循环引用,造成内存泄露.</li>
+</ul>
+
+
+<!--more-->
+
+
+<pre><code class="Swift">import UIKit
+
+class ViewController: UIViewController {
+
+    // 在Swift中, 如果在某个类中定义一个属性, 那么这个属性必须要初始化, 否则就会报错
+    // 如果占时不想初始化, 那么可以在后面写上一个?号
+
+    // 注意: 这个是错误的写法, 当前写法代表闭包的返回值可以是nil
+    // var finished: ()-&gt;()?
+    var finished: (()-&gt;())?
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view, typically from a nib.
+        // OC中的解决方案
+        // __weak typeof(self) weakSelf = self
+
+        weak var weakSelf = self
+        loadData { () -&gt; () in
+            print("回到主线程更新UI")
+            // 在Swift开发中, 能不写self就不写self, 但是在闭包中必须写上self
+            // 所以以后看到self基本上都和闭包有关系
+            weakSelf!.view.backgroundColor = UIColor.redColor()
+        }
+    }
+
+    func loadData(finished: ()-&gt;())
+    {
+        print("执行耗时操作")
+        self.finished = finished
+        finished()
+    }
+
+    // 析构函数,相当于OC中的dealloc
+    deinit
+    {
+        print("滚")
+    }
+
+}
+</code></pre>
 ]]></content>
   </entry>
   
