@@ -4,7 +4,7 @@
   <title><![CDATA[My World]]></title>
   <link href="http://xiaobenmao.github.io/atom.xml" rel="self"/>
   <link href="http://xiaobenmao.github.io/"/>
-  <updated>2015-09-10T18:53:07+08:00</updated>
+  <updated>2015-09-10T19:27:48+08:00</updated>
   <id>http://xiaobenmao.github.io/</id>
   <author>
     <name><![CDATA[嗷大喵]]></name>
@@ -12,6 +12,671 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Swift-体验tableView]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/09/03/swift-ti-yan-tableview/"/>
+    <updated>2015-09-03T21:25:01+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/09/03/swift-ti-yan-tableview</id>
+    <content type="html"><![CDATA[<ul>
+<li>遵守协议的写法: 直接在类名后通过逗号分隔</li>
+<li>可以为协议单独写个<code>extension</code>,在类扩展中实现代理方法,是代码结构更加清晰</li>
+</ul>
+
+
+<!--more-->
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+</pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="k">import</span> <span class="n">UIKit</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Swift中遵守协议直接在后面通过逗号分隔即可</span>
+</span><span class='line'><span class="k">class</span> <span class="nl">ViewController</span><span class="p">:</span> <span class="bp">UIViewController</span><span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kr">override</span> <span class="k">func</span> <span class="n">loadView</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">let</span> <span class="n">tv</span> <span class="o">=</span> <span class="bp">UITableView</span><span class="p">()</span>
+</span><span class='line'>        <span class="n">tv</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="bp">UIScreen</span><span class="p">.</span><span class="n">mainScreen</span><span class="p">().</span><span class="n">bounds</span>
+</span><span class='line'>        <span class="n">tv</span><span class="p">.</span><span class="n">dataSource</span> <span class="o">=</span> <span class="nb">self</span>
+</span><span class='line'>        <span class="n">tv</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="nb">self</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">view</span> <span class="o">=</span> <span class="n">tv</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kr">override</span> <span class="k">func</span> <span class="n">viewDidLoad</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nb">super</span><span class="p">.</span><span class="n">viewDidLoad</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// MARK: - 懒加载数据</span>
+</span><span class='line'>    <span class="n">lazy</span> <span class="k">var</span> <span class="nl">dataList</span><span class="p">:[</span><span class="n">String</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">[</span><span class="s">&quot;lnj&quot;</span><span class="p">,</span> <span class="s">&quot;lmj&quot;</span><span class="p">,</span> <span class="s">&quot;zs&quot;</span><span class="p">,</span> <span class="s">&quot;ls&quot;</span><span class="p">,</span> <span class="s">&quot;ww&quot;</span><span class="p">]</span>
+</span><span class='line'>    <span class="p">}()</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 苹果官方建议, 可以将数据源代理方法单独写到一个扩展中, 以便于提高代码的可读性</span>
+</span><span class='line'><span class="c1">// extension 相当于OC中的 catogory</span>
+</span><span class='line'><span class="k">extension</span> <span class="nl">ViewController</span><span class="p">:</span> <span class="bp">UITableViewDataSource</span><span class="p">,</span> <span class="bp">UITableViewDelegate</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// MARK: - UITableViewDataSource</span>
+</span><span class='line'>    <span class="c1">// 一共有多少行</span>
+</span><span class='line'>    <span class="k">func</span> <span class="n">tableView</span><span class="p">(</span><span class="nl">tableView</span><span class="p">:</span> <span class="bp">UITableView</span><span class="p">,</span> <span class="n">numberOfRowsInSection</span> <span class="nl">section</span><span class="p">:</span> <span class="n">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Int</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">dataList</span><span class="p">.</span><span class="n">count</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="c1">// 每行显示什么内容</span>
+</span><span class='line'>    <span class="k">func</span> <span class="n">tableView</span><span class="p">(</span><span class="nl">tableView</span><span class="p">:</span> <span class="bp">UITableView</span><span class="p">,</span> <span class="n">cellForRowAtIndexPath</span> <span class="nl">indexPath</span><span class="p">:</span> <span class="bp">NSIndexPath</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">UITableViewCell</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// 1.取出cell</span>
+</span><span class='line'>        <span class="k">var</span> <span class="n">cell</span> <span class="o">=</span> <span class="n">tableView</span><span class="p">.</span><span class="n">dequeueReusableCellWithIdentifier</span><span class="p">(</span><span class="s">&quot;customCell&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="n">cell</span> <span class="o">==</span> <span class="nb">nil</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">cell</span> <span class="o">=</span> <span class="bp">UITableViewCell</span><span class="p">(</span><span class="nl">style</span><span class="p">:</span> <span class="n">UITableViewCellStyle</span><span class="p">.</span><span class="n">Default</span><span class="p">,</span> <span class="nl">reuseIdentifier</span><span class="p">:</span> <span class="s">&quot;customCell&quot;</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="c1">// 2.设置数据</span>
+</span><span class='line'>        <span class="n">cell</span><span class="o">?</span><span class="p">.</span><span class="n">textLabel</span><span class="o">?</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">dataList</span><span class="p">[</span><span class="n">indexPath</span><span class="p">.</span><span class="n">row</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// 3.返回cell</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">cell</span><span class="o">!</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Swift-setter&amp;getter]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/09/02/swift-setter-and-getter/"/>
+    <updated>2015-09-02T21:01:41+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/09/02/swift-setter-and-getter</id>
+    <content type="html"><![CDATA[<ul>
+<li><p>Swift中建议使用<code>didSet</code>来给属性设置值</p>
+
+<ul>
+<li>调用时机: 调用完set方法后,调用didSet方法</li>
+</ul>
+</li>
+<li><p>Swift中的<code>命名空间</code></p>
+
+<ul>
+<li>在Swift中, 如果想使用某一个类, 是不用import头文件的</li>
+<li>因为Swift中新增了一个OC中以前没有的概念 &ldquo;命名空间&rdquo;</li>
+<li>只要是在同一个命名空间中的资源都是共享的</li>
+<li>默认情况下, 项目名称就是命名空间</li>
+<li>正是因为这样, 所以在做Swift开发时有多了很多坑
+
+<ul>
+<li>如果是Swift项目要使用第三方框架, 那么建议使用cocoapods来集成框架</li>
+<li>因为如果是通过cocoapods集成的框架, 在另外一个项目中, 那么命名空间就不一样</li>
+<li>这样可以有效的避免 三方框架中的类名 和 我们自己的 冲突</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<!--more-->
+
+
+<ul>
+<li>自定义Person类</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+</pre></td><td class='code'><pre><code class='swift'><span class='line'><span class="k">import</span> <span class="n">UIKit</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nl">Person</span><span class="p">:</span> <span class="bp">NSObject</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 在开发中, 不建议这样写</span>
+</span><span class='line'>    <span class="c1">// 定义属性</span>
+</span><span class='line'>    <span class="k">var</span> <span class="nl">_name</span><span class="p">:</span><span class="n">String</span><span class="o">?</span>
+</span><span class='line'>    <span class="c1">// getter和setter方法</span>
+</span><span class='line'>    <span class="k">var</span> <span class="nl">name</span><span class="p">:</span><span class="n">String</span><span class="o">?</span><span class="p">{</span>
+</span><span class='line'>        <span class="kr">get</span><span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">_name</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="kr">set</span><span class="p">{</span>
+</span><span class='line'>            <span class="c1">// newValue为系统生成</span>
+</span><span class='line'>            <span class="c1">// 只要外界给通过对象.name给name赋值, 那么值就会保存在newValue</span>
+</span><span class='line'>            <span class="n">_name</span> <span class="o">=</span> <span class="n">newValue</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">var</span> <span class="nl">gender</span><span class="p">:</span><span class="n">String</span><span class="o">?</span><span class="p">{</span>
+</span><span class='line'>        <span class="c1">// 设置完值之后调用</span>
+</span><span class='line'>        <span class="c1">// Swift中使用didSet来替代OC中重写setter方法</span>
+</span><span class='line'>        <span class="kr">didSet</span><span class="p">{</span>
+</span><span class='line'>            <span class="n">print</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+</span><span class='line'>            <span class="n">print</span><span class="p">(</span><span class="n">gender</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 如果只重写了get方法, 那么这个属性我们称之为 计算型 属性</span>
+</span><span class='line'>    <span class="c1">// 也就是对应OC中的只读属性</span>
+</span><span class='line'>    <span class="c1">// 注意点: 计算型属性是不占用内存空间的</span>
+</span><span class='line'>    <span class="k">var</span> <span class="nl">age</span><span class="p">:</span><span class="n">Int</span><span class="p">{</span>
+</span><span class='line'>        <span class="kr">get</span><span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="mi">30</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>使用</li>
+</ul>
+
+
+<pre><code class="`Swift">
+ import UIKit
+
+class ViewController: UIViewController {
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        let p = Person()
+        p.name = "lnj"
+        print(p.name)
+
+        p.gender = "man"
+
+            // p.age = 99
+        print(p.age)
+
+        print(self)
+
+    }
+
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Swift-构造方法]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/09/02/swift-gou-zao-fang-fa/"/>
+    <updated>2015-09-02T20:14:16+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/09/02/swift-gou-zao-fang-fa</id>
+    <content type="html"><![CDATA[<ul>
+<li><p>Swift中定义属性</p>
+
+<ul>
+<li>如果定义属性的时候没有初始化, 那么必须在后面写上一个?</li>
+<li>Swift要求, 属性是必须有初始值的</li>
+<li>只要在构造方法中对属性进行了初始化, 那么就不用写?</li>
+</ul>
+</li>
+<li><p>Swift中对定义基本属性和对象属性<code>内存处理</code>不同</p>
+
+<ul>
+<li>如果是定义一个 &ldquo;对象属性&rdquo; 那么后面可以写上 ?
+
+<ul>
+<li>因为super.init()方法在分配存储空间的时候, 如果发现属性是一个对象, 并且是一个可选类型, 那么会给这个属性分配存储空间</li>
+</ul>
+</li>
+<li>如果是定义一个 &ldquo;基本数据类型属性&rdquo;, 那么建议直接赋值为0
+
+<ul>
+<li>但是如果属性是一个基本数据类型, 并且是可选类型, 那么super.init()不会给该属性分配存储空间</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<p> <!--more--></p>
+
+<ul>
+<li>定义Person类</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+</pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="k">import</span> <span class="n">UIKit</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nl">Person</span><span class="p">:</span> <span class="bp">NSObject</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 定义name属性</span>
+</span><span class='line'>    <span class="k">var</span> <span class="nl">name</span><span class="p">:</span><span class="n">String</span><span class="o">?</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// var age:Int?</span>
+</span><span class='line'>    <span class="k">var</span> <span class="nl">age</span><span class="p">:</span><span class="n">Int</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 注意: 如果自定义了构造方法, 并且没有重写父类默认的构造方法</span>
+</span><span class='line'>    <span class="c1">// 那么默认的构造方法就会失效</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kr">override</span> <span class="k">init</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;lnj&quot;</span>
+</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">age</span> <span class="o">=</span> <span class="mi">30</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 自定义构造方法</span>
+</span><span class='line'>    <span class="c1">// Swift中有方法重载的概念</span>
+</span><span class='line'>    <span class="c1">// 允许有同名的方法, 只要形参或返回值不一样即可</span>
+</span><span class='line'>    <span class="k">init</span><span class="p">(</span><span class="nl">name</span><span class="p">:</span><span class="n">String</span><span class="p">,</span> <span class="nl">age</span><span class="p">:</span><span class="n">Int</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">age</span> <span class="o">=</span> <span class="n">age</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">init</span><span class="p">(</span><span class="nl">dict</span><span class="p">:[</span><span class="nl">String</span><span class="p">:</span> <span class="bp">NSObject</span><span class="p">])</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="nb">super</span><span class="p">.</span><span class="k">init</span><span class="p">()</span>
+</span><span class='line'>        <span class="c1">// 注意点: Swift中如果想在构造方法中使用KVC给属性赋值</span>
+</span><span class='line'>        <span class="c1">// 那么在使用KVC之前必须调用super.init()</span>
+</span><span class='line'>        <span class="c1">// 调用super.init()的目的就是为了能在在KVC赋值之前给属性分配存储空间</span>
+</span><span class='line'>        <span class="n">setValuesForKeysWithDictionary</span><span class="p">(</span><span class="n">dict</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>使用</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="k">import</span> <span class="n">UIKit</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nl">ViewController</span><span class="p">:</span> <span class="bp">UIViewController</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kr">override</span> <span class="k">func</span> <span class="n">viewDidLoad</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nb">super</span><span class="p">.</span><span class="n">viewDidLoad</span><span class="p">()</span>
+</span><span class='line'>        <span class="c1">// Do any additional setup after loading the view, typically from a nib.</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">let</span> <span class="n">p</span> <span class="o">=</span> <span class="n">Person</span><span class="p">()</span>
+</span><span class='line'>        <span class="n">print</span><span class="p">(</span><span class="s">&quot;\(p.name), \(p.age) &quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">let</span> <span class="n">p2</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="nl">name</span><span class="p">:</span> <span class="s">&quot;zs&quot;</span><span class="p">,</span> <span class="nl">age</span><span class="p">:</span> <span class="mi">88</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">print</span><span class="p">(</span><span class="s">&quot;\(p2.name), \(p2.age) &quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">//let p3 = Person(dict: [&quot;name&quot;:&quot;lnj&quot;, &quot;age&quot;: 998])</span>
+</span><span class='line'>        <span class="c1">//print(&quot;\(p3.name), \(p3.age)&quot;)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Swift-懒加载]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/09/02/swift-lan-jia-zai/"/>
+    <updated>2015-09-02T19:10:57+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/09/02/swift-lan-jia-zai</id>
+    <content type="html"><![CDATA[<ul>
+<li>懒加载的修饰词<code>lazy</code></li>
+<li>懒加载等号右边的闭包后面要加'()&lsquo;,表示调用</li>
+<li>懒加载等号右边的闭包写法有多种</li>
+</ul>
+
+
+<!--more-->
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>import UIKit
+</span><span class='line'>
+</span><span class='line'>class ViewController: UIViewController {
+</span><span class='line'>
+</span><span class='line'>    // 格式: 定义变量时前面使用lazy来修饰变量, 后面通过等到赋值一个闭包
+</span><span class='line'>    // 注意点: 1.必须是用var 2.闭包后面必须跟上()
+</span><span class='line'>    
+</span><span class='line'>    lazy var dataList:[String] = {
+</span><span class='line'>        ()-&gt;[String]
+</span><span class='line'>        in
+</span><span class='line'>        print("我被搞了")
+</span><span class='line'>        return ["zs", "ls", "wl"]
+</span><span class='line'>    }()
+</span><span class='line'>    
+</span><span class='line'>    // 如果闭包是用于懒加载, 那么in之前的代码都可以删除包括in在内
+</span><span class='line'>    lazy var dataList2:[String] = {
+</span><span class='line'>       
+</span><span class='line'>        print("我被搞了")
+</span><span class='line'>        return ["zs", "ls", "wl"]
+</span><span class='line'>    }()
+</span><span class='line'>    
+</span><span class='line'>    // 懒加载
+</span><span class='line'>    let demoFunc = {
+</span><span class='line'>        ()-&gt;[String]
+</span><span class='line'>        in
+</span><span class='line'>        print("我被搞了")
+</span><span class='line'>        return ["123", "456", "789"]
+</span><span class='line'>    }
+</span><span class='line'>    
+</span><span class='line'>    lazy var dataList3:[String] = self.demoFunc()
+</span><span class='line'>    
+</span><span class='line'>    // 如果懒加载内的操作只有一句,则可以直接写在等号后面
+</span><span class='line'>    
+</span><span class='line'>    lazy var dataList2:[String] =  [String]()
+</span><span class='line'>    
+</span><span class='line'>    
+</span><span class='line'>    override func touchesBegan(touches: Set&lt;UITouch&gt;, withEvent event: UIEvent?) {
+</span><span class='line'>
+</span><span class='line'>        print(dataList3)
+</span><span class='line'>        print(dataList3)
+</span><span class='line'>        print(dataList3)
+</span><span class='line'>        
+</span><span class='line'>        print(demoFunc())
+</span><span class='line'>        
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Swift-闭包的循环引用]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/09/01/swift-bi-bao-de-xun-huan-yin-yong/"/>
+    <updated>2015-09-01T19:05:00+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/09/01/swift-bi-bao-de-xun-huan-yin-yong</id>
+    <content type="html"><![CDATA[<ul>
+<li>在Swift的闭包中,会对对象进行引用,类比OC中的Block,如果实例对象内对闭包进行了强引用,就会造成循环引用,造成内存泄露.</li>
+</ul>
+
+
+<!--more-->
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+</pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="k">import</span> <span class="n">UIKit</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nl">ViewController</span><span class="p">:</span> <span class="bp">UIViewController</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 在Swift中, 如果在某个类中定义一个属性, 那么这个属性必须要初始化, 否则就会报错</span>
+</span><span class='line'>    <span class="c1">// 如果占时不想初始化, 那么可以在后面写上一个?号</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 注意: 这个是错误的写法, 当前写法代表闭包的返回值可以是nil</span>
+</span><span class='line'>    <span class="c1">// var finished: ()-&gt;()?</span>
+</span><span class='line'>    <span class="k">var</span> <span class="nl">finished</span><span class="p">:</span> <span class="p">(()</span><span class="o">-&gt;</span><span class="p">())</span><span class="o">?</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kr">override</span> <span class="k">func</span> <span class="n">viewDidLoad</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nb">super</span><span class="p">.</span><span class="n">viewDidLoad</span><span class="p">()</span>
+</span><span class='line'>        <span class="c1">// Do any additional setup after loading the view, typically from a nib.</span>
+</span><span class='line'>        <span class="c1">// OC中的解决方案</span>
+</span><span class='line'>        <span class="c1">// __weak typeof(self) weakSelf = self</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">weak</span> <span class="k">var</span> <span class="n">weakSelf</span> <span class="o">=</span> <span class="nb">self</span>
+</span><span class='line'>        <span class="n">loadData</span> <span class="p">{</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="p">()</span> <span class="k">in</span>
+</span><span class='line'>            <span class="n">print</span><span class="p">(</span><span class="s">&quot;回到主线程更新UI&quot;</span><span class="p">)</span>
+</span><span class='line'>            <span class="c1">// 在Swift开发中, 能不写self就不写self, 但是在闭包中必须写上self</span>
+</span><span class='line'>            <span class="c1">// 所以以后看到self基本上都和闭包有关系</span>
+</span><span class='line'>            <span class="n">weakSelf</span><span class="o">!</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="bp">UIColor</span><span class="p">.</span><span class="n">redColor</span><span class="p">()</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">func</span> <span class="n">loadData</span><span class="p">(</span><span class="nl">finished</span><span class="p">:</span> <span class="p">()</span><span class="o">-&gt;</span><span class="p">())</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">print</span><span class="p">(</span><span class="s">&quot;执行耗时操作&quot;</span><span class="p">)</span>
+</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">finished</span> <span class="o">=</span> <span class="n">finished</span>
+</span><span class='line'>        <span class="n">finished</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 析构函数,相当于OC中的dealloc</span>
+</span><span class='line'>    <span class="k">deinit</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">print</span><span class="p">(</span><span class="s">&quot;滚&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Swift-闭包]]></title>
@@ -3537,977 +4202,6 @@
 </span><span class='line'>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[CALayer-时钟]]></title>
-    <link href="http://xiaobenmao.github.io/blog/2014/08/02/calayer-shi-zhong/"/>
-    <updated>2014-08-02T18:29:04+08:00</updated>
-    <id>http://xiaobenmao.github.io/blog/2014/08/02/calayer-shi-zhong</id>
-    <content type="html"><![CDATA[<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm">时钟-自定义图层</span>
-</span><span class='line'><span class="cm">程序思路：</span>
-</span><span class='line'><span class="cm">* 了解时钟由什么组成的，使用哪些控件。(UIImgeView,CALayer)</span>
-</span><span class='line'><span class="cm">* 为什么不使用UIView，而使用CALayer,需要监听事件吗？</span>
-</span><span class='line'><span class="cm">* 现实生活中秒针是怎么旋转的，绕着时钟的中点转，PPT演示，拖一根秒针线条</span>
-</span><span class='line'><span class="cm">* 在ios中默认是绕着中心点旋转的，因为锚点默认在图层的中点，要想绕着下边中心点转，需要改变图层锚点的位置。</span>
-</span><span class='line'><span class="cm">* 根据锚点，设置position坐标，为时钟的中点。</span>
-</span><span class='line'><span class="cm">* 思考秒针旋转的角度，怎么知道当前秒针旋转到哪，当前秒针旋转的角度 = 当前秒数 * 每秒转多少°。</span>
-</span><span class='line'><span class="cm">1&gt; 计算一秒转多少° 360 * 60 = 6</span>
-</span><span class='line'><span class="cm">2&gt; 获取当前秒数，通过日历对象，获取日期组成成分 NSCalendar -&gt; NSDateComponents -&gt; 获取当前秒数</span>
-</span><span class='line'><span class="cm">* 每隔一秒，获取最新秒数，更新时钟。</span>
-</span><span class='line'><span class="cm">* 分钟一样的做法</span>
-</span><span class='line'><span class="cm">* 时钟也一样</span>
-</span><span class='line'><span class="cm">    1.每一分钟，时钟也需要旋转，60分钟 -&gt; 1小时 - &gt; 30°  ==》 每分钟 30 / 60.0  一分钟时针转0.5°</span>
-</span><span class='line'><span class="cm">* 把时针和秒针头尾变尖，设置圆角半径</span>
-</span><span class='line'><span class="cm">*/</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<!--more-->
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E6%97%B6%E9%92%9F.png" alt="" /></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-<span class='line-number'>93</span>
-<span class='line-number'>94</span>
-<span class='line-number'>95</span>
-<span class='line-number'>96</span>
-<span class='line-number'>97</span>
-<span class='line-number'>98</span>
-<span class='line-number'>99</span>
-<span class='line-number'>100</span>
-<span class='line-number'>101</span>
-<span class='line-number'>102</span>
-<span class='line-number'>103</span>
-<span class='line-number'>104</span>
-<span class='line-number'>105</span>
-<span class='line-number'>106</span>
-<span class='line-number'>107</span>
-<span class='line-number'>108</span>
-<span class='line-number'>109</span>
-<span class='line-number'>110</span>
-<span class='line-number'>111</span>
-<span class='line-number'>112</span>
-<span class='line-number'>113</span>
-<span class='line-number'>114</span>
-<span class='line-number'>115</span>
-<span class='line-number'>116</span>
-<span class='line-number'>117</span>
-<span class='line-number'>118</span>
-<span class='line-number'>119</span>
-<span class='line-number'>120</span>
-<span class='line-number'>121</span>
-<span class='line-number'>122</span>
-<span class='line-number'>123</span>
-<span class='line-number'>124</span>
-<span class='line-number'>125</span>
-<span class='line-number'>126</span>
-<span class='line-number'>127</span>
-<span class='line-number'>128</span>
-<span class='line-number'>129</span>
-<span class='line-number'>130</span>
-<span class='line-number'>131</span>
-<span class='line-number'>132</span>
-<span class='line-number'>133</span>
-<span class='line-number'>134</span>
-<span class='line-number'>135</span>
-<span class='line-number'>136</span>
-<span class='line-number'>137</span>
-<span class='line-number'>138</span>
-<span class='line-number'>139</span>
-<span class='line-number'>140</span>
-<span class='line-number'>141</span>
-<span class='line-number'>142</span>
-<span class='line-number'>143</span>
-<span class='line-number'>144</span>
-<span class='line-number'>145</span>
-<span class='line-number'>146</span>
-<span class='line-number'>147</span>
-<span class='line-number'>148</span>
-<span class='line-number'>149</span>
-<span class='line-number'>150</span>
-<span class='line-number'>151</span>
-<span class='line-number'>152</span>
-<span class='line-number'>153</span>
-<span class='line-number'>154</span>
-<span class='line-number'>155</span>
-<span class='line-number'>156</span>
-<span class='line-number'>157</span>
-<span class='line-number'>158</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
-</span><span class='line'><span class="c1">// 时钟背景的宽度</span>
-</span><span class='line'><span class="cp">#define kClockW _clockView.bounds.size.width</span>
-</span><span class='line'><span class="c1">// 将角度转为弧度</span>
-</span><span class='line'><span class="cp">#define angle2radian(angle) ((angle) / 180.0 * M_PI)</span>
-</span><span class='line'><span class="c1">// 一秒钟秒针转6°</span>
-</span><span class='line'><span class="cp">#define perSecondA 6</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 一分钟分针转6°</span>
-</span><span class='line'><span class="cp">#define perMinuteA 6</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 一小时时针转30°</span>
-</span><span class='line'><span class="cp">#define perHourA 30</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 每分钟时针转多少度</span>
-</span><span class='line'><span class="cp">#define perMinuteHourA 0.5</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">weak</span><span class="p">,</span> <span class="k">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="bp">UIImageView</span> <span class="o">*</span><span class="n">clockView</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">weak</span><span class="p">)</span> <span class="bp">CALayer</span> <span class="o">*</span><span class="n">secondLayer</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">weak</span><span class="p">)</span> <span class="bp">CALayer</span> <span class="o">*</span><span class="n">minuteLayer</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">weak</span><span class="p">)</span> <span class="bp">CALayer</span> <span class="o">*</span><span class="n">hourLayer</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 添加时针</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">setUpHourLayer</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 添加分针</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">setUpMinuteLayer</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 添加秒针</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">setUpSecondLayer</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 添加定时器</span>
-</span><span class='line'>    <span class="p">[</span><span class="bp">NSTimer</span> <span class="nl">scheduledTimerWithTimeInterval</span><span class="p">:</span><span class="mi">1</span> <span class="nl">target</span><span class="p">:</span><span class="nb">self</span> <span class="nl">selector</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="n">timeChange</span><span class="p">)</span> <span class="nl">userInfo</span><span class="p">:</span><span class="nb">nil</span> <span class="nl">repeats</span><span class="p">:</span><span class="nb">YES</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 开始就获取时间,否则会从初始添加状态,跳到当前时间</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">timeChange</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">timeChange</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// 获取当前的系统的时间</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 获取当前日历对象</span>
-</span><span class='line'>    <span class="bp">NSCalendar</span> <span class="o">*</span><span class="n">calendar</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSCalendar</span> <span class="n">currentCalendar</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 获取日期的组件：年月日小时分秒</span>
-</span><span class='line'>    <span class="c1">// components:需要获取的日期组件</span>
-</span><span class='line'>    <span class="c1">// fromDate：获取哪个日期的组件</span>
-</span><span class='line'>    <span class="c1">// 经验：以后枚举中有移位运算符，通常一般可以使用并运算（|）</span>
-</span><span class='line'>    <span class="bp">NSDateComponents</span>  <span class="o">*</span><span class="n">cmp</span> <span class="o">=</span> <span class="p">[</span><span class="n">calendar</span> <span class="nl">components</span><span class="p">:</span><span class="n">NSCalendarUnitSecond</span> <span class="o">|</span> <span class="n">NSCalendarUnitMinute</span> <span class="o">|</span> <span class="n">NSCalendarUnitHour</span> <span class="nl">fromDate</span><span class="p">:[</span><span class="bp">NSDate</span> <span class="n">date</span><span class="p">]];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 获取秒</span>
-</span><span class='line'>    <span class="bp">NSInteger</span> <span class="n">second</span> <span class="o">=</span> <span class="n">cmp</span><span class="p">.</span><span class="n">second</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 获取分</span>
-</span><span class='line'>    <span class="bp">NSInteger</span> <span class="n">minute</span> <span class="o">=</span> <span class="n">cmp</span><span class="p">.</span><span class="n">minute</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 获取小时</span>
-</span><span class='line'>    <span class="bp">NSInteger</span> <span class="n">hour</span> <span class="o">=</span> <span class="n">cmp</span><span class="p">.</span><span class="n">hour</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 计算秒针转多少度</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">secondA</span> <span class="o">=</span> <span class="n">second</span> <span class="o">*</span> <span class="n">perSecondA</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 计算分针转多少度</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">minuteA</span> <span class="o">=</span> <span class="n">minute</span> <span class="o">*</span> <span class="n">perMinuteA</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 计算时针转多少度</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">hourA</span> <span class="o">=</span> <span class="n">hour</span> <span class="o">*</span> <span class="n">perHourA</span> <span class="o">+</span> <span class="n">minute</span> <span class="o">*</span> <span class="n">perMinuteHourA</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 旋转秒针</span>
-</span><span class='line'>    <span class="n">_secondLayer</span><span class="p">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">CATransform3DMakeRotation</span><span class="p">(</span><span class="n">angle2radian</span><span class="p">(</span><span class="n">secondA</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 旋转分针</span>
-</span><span class='line'>    <span class="n">_minuteLayer</span><span class="p">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">CATransform3DMakeRotation</span><span class="p">(</span><span class="n">angle2radian</span><span class="p">(</span><span class="n">minuteA</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 旋转小时</span>
-</span><span class='line'>    <span class="n">_hourLayer</span><span class="p">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">CATransform3DMakeRotation</span><span class="p">(</span><span class="n">angle2radian</span><span class="p">(</span><span class="n">hourA</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="cp">#pragma mark - 添加秒针</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setUpSecondLayer</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>   <span class="bp">CALayer</span> <span class="o">*</span><span class="n">secondL</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CALayer</span> <span class="n">layer</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">secondL</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">].</span><span class="bp">CGColor</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 设置锚点</span>
-</span><span class='line'>    <span class="n">secondL</span><span class="p">.</span><span class="n">anchorPoint</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">secondL</span><span class="p">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">kClockW</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">kClockW</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">secondL</span><span class="p">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">kClockW</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">-</span> <span class="mi">20</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">_clockView</span><span class="p">.</span><span class="n">layer</span> <span class="nl">addSublayer</span><span class="p">:</span><span class="n">secondL</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">_secondLayer</span> <span class="o">=</span> <span class="n">secondL</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark - 添加分针</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setUpMinuteLayer</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="bp">CALayer</span> <span class="o">*</span><span class="n">layer</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CALayer</span> <span class="n">layer</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">layer</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">blackColor</span><span class="p">].</span><span class="bp">CGColor</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 设置锚点</span>
-</span><span class='line'>    <span class="n">layer</span><span class="p">.</span><span class="n">anchorPoint</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">layer</span><span class="p">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">kClockW</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">kClockW</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">layer</span><span class="p">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">kClockW</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">-</span> <span class="mi">20</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">layer</span><span class="p">.</span><span class="n">cornerRadius</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">_clockView</span><span class="p">.</span><span class="n">layer</span> <span class="nl">addSublayer</span><span class="p">:</span><span class="n">layer</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">_minuteLayer</span> <span class="o">=</span> <span class="n">layer</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark - 添加时针</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setUpHourLayer</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="bp">CALayer</span> <span class="o">*</span><span class="n">layer</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CALayer</span> <span class="n">layer</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">layer</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">blackColor</span><span class="p">].</span><span class="bp">CGColor</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 设置锚点</span>
-</span><span class='line'>    <span class="n">layer</span><span class="p">.</span><span class="n">anchorPoint</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">layer</span><span class="p">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">kClockW</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">kClockW</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">layer</span><span class="p">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">kClockW</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">-</span> <span class="mi">40</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">layer</span><span class="p">.</span><span class="n">cornerRadius</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">_clockView</span><span class="p">.</span><span class="n">layer</span> <span class="nl">addSublayer</span><span class="p">:</span><span class="n">layer</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">_hourLayer</span> <span class="o">=</span> <span class="n">layer</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E6%97%B6%E9%92%9Fstoryboard.png" alt="" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[CALayer-隐式动画]]></title>
-    <link href="http://xiaobenmao.github.io/blog/2014/08/02/calayer-yin-shi-dong-hua/"/>
-    <updated>2014-08-02T13:28:56+08:00</updated>
-    <id>http://xiaobenmao.github.io/blog/2014/08/02/calayer-yin-shi-dong-hua</id>
-    <content type="html"><![CDATA[<p><img src="http://xiaobenmao.github.io/images/%E9%9A%90%E5%BC%8F%E5%8A%A8%E7%94%BB0.png" alt="" /></p>
-
-<!--more-->
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E9%9A%90%E5%BC%8F%E5%8A%A8%E7%94%BB1.png" alt="" /></p>
-
-<ul>
-<li>对于手动创建的layer,即非控件的layer在一些属性修改    时会有默认的动画效果</li>
-</ul>
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E9%9A%90%E5%BC%8F%E5%8A%A8%E7%94%BB%E6%8F%90%E7%A4%BA.png" alt="" /></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
-</span><span class='line'><span class="c1">// 角度转弧度</span>
-</span><span class='line'><span class="cp">#define angle2radion(angle) ((angle) / 180.0 * M_PI)</span>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">weak</span><span class="p">)</span> <span class="bp">CALayer</span> <span class="o">*</span><span class="n">layer</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">weak</span><span class="p">,</span> <span class="k">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="bp">UIView</span> <span class="o">*</span><span class="n">blueView</span><span class="p">;</span>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="bp">CALayer</span> <span class="o">*</span><span class="n">layer</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CALayer</span> <span class="n">layer</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">layer</span><span class="p">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">150</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">layer</span><span class="p">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">layer</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">].</span><span class="bp">CGColor</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">layer</span> <span class="nl">addSublayer</span><span class="p">:</span><span class="n">layer</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">_layer</span> <span class="o">=</span> <span class="n">layer</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">touchesBegan:</span><span class="p">(</span><span class="bp">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="bp">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// 举例隐式动画属性:(有渐变的过程,不突兀)</span>
-</span><span class='line'>    <span class="c1">// 直接修改rootLayer的属性值,变化很快,没有动画效果</span>
-</span><span class='line'>    <span class="c1">// 随机旋转</span>
-</span><span class='line'>    <span class="n">_layer</span><span class="p">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">CATransform3DMakeRotation</span><span class="p">(</span><span class="n">angle2radion</span><span class="p">(</span><span class="n">arc4random_uniform</span><span class="p">(</span><span class="mi">360</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 随机设置位置</span>
-</span><span class='line'>    <span class="n">_layer</span><span class="p">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">arc4random_uniform</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span> <span class="o">+</span> <span class="mi">20</span><span class="p">,</span> <span class="n">arc4random_uniform</span><span class="p">(</span><span class="mi">400</span><span class="p">)</span> <span class="o">+</span> <span class="mi">50</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 圆角半径随机</span>
-</span><span class='line'>    <span class="n">_layer</span><span class="p">.</span><span class="n">cornerRadius</span> <span class="o">=</span> <span class="n">arc4random_uniform</span><span class="p">(</span><span class="mi">50</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 背景颜色随机</span>
-</span><span class='line'>    <span class="n">_layer</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="nb">self</span> <span class="n">randomColor</span><span class="p">].</span><span class="bp">CGColor</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 随机边框宽度</span>
-</span><span class='line'>    <span class="n">_layer</span><span class="p">.</span><span class="n">borderWidth</span> <span class="o">=</span> <span class="n">arc4random_uniform</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
-</span><span class='line'>    <span class="c1">// 随机边框颜色</span>
-</span><span class='line'>    <span class="n">_layer</span><span class="p">.</span><span class="n">borderColor</span> <span class="o">=</span> <span class="p">[</span><span class="nb">self</span> <span class="n">randomColor</span><span class="p">].</span><span class="bp">CGColor</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 返回随机的颜色</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">UIColor</span> <span class="o">*</span><span class="p">)</span><span class="nf">randomColor</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">r</span> <span class="o">=</span> <span class="n">arc4random_uniform</span><span class="p">(</span><span class="mi">256</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">b</span> <span class="o">=</span> <span class="n">arc4random_uniform</span><span class="p">(</span><span class="mi">256</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">g</span> <span class="o">=</span> <span class="n">arc4random_uniform</span><span class="p">(</span><span class="mi">256</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="nl">colorWithRed</span><span class="p">:</span><span class="n">r</span> <span class="nl">green</span><span class="p">:</span><span class="n">g</span> <span class="nl">blue</span><span class="p">:</span><span class="n">b</span> <span class="nl">alpha</span><span class="p">:</span><span class="mi">1</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="http://xiaobenmao.github.io/images/%E9%9A%90%E5%BC%8F%E5%8A%A8%E7%94%BB%E9%9A%8F%E6%9C%BA.png" alt="" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[CALayer-属性设置]]></title>
-    <link href="http://xiaobenmao.github.io/blog/2014/08/01/calayer-shu-xing-she-zhi/"/>
-    <updated>2014-08-01T15:28:44+08:00</updated>
-    <id>http://xiaobenmao.github.io/blog/2014/08/01/calayer-shu-xing-she-zhi</id>
-    <content type="html"><![CDATA[<p><img src="http://xiaobenmao.github.io/images/CALayer%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8.png" alt="" /></p>
-
-<!--more-->
-
-
-<p><img src="http://xiaobenmao.github.io/images/CALayer.png" alt="" /></p>
-
-<p><img src="http://xiaobenmao.github.io/images/CALyer%E7%9A%84%E5%B1%9E%E6%80%A71.png" alt="" /></p>
-
-<p><img src="http://xiaobenmao.github.io/images/CALyer%E7%9A%84%E5%B1%9E%E6%80%A72.png" alt="" /></p>
-
-<h4>通过CCLAyer可以调整View的一些外观属性</h4>
-
-<p><img src="http://xiaobenmao.github.io/images/CALayer%E5%AF%B9view%E7%9A%84%E5%B1%9E%E6%80%A7%E8%AE%BE%E7%BD%AE.png" alt="" /></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>    <span class="c1">// 可以通过CALyer,调整view的一些外观属性</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 圆角半径</span>
-</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">greenView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">cornerRadius</span> <span class="o">=</span> <span class="mi">20</span><span class="p">;</span>
-</span><span class='line'>    <span class="c1">// 边框</span>
-</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">greenView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">borderWidth</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
-</span><span class='line'>    <span class="c1">// 边框颜色</span>
-</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">greenView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">borderColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">grayColor</span><span class="p">].</span><span class="bp">CGColor</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 设置阴影</span>
-</span><span class='line'>    <span class="c1">//Opacity:不透明度,alpha:透明度</span>
-</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">greenView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">shadowOpacity</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">;</span>
-</span><span class='line'>    <span class="c1">// 注意：图层的颜色都是核心绘图框架，通常用.CGColor将UI类型转为CG类型</span>
-</span><span class='line'>    <span class="c1">// 阴影颜色</span>
-</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">greenView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">shadowColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">].</span><span class="bp">CGColor</span><span class="p">;</span>
-</span><span class='line'>    <span class="c1">// 阴影偏移量</span>
-</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">greenView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">shadowOffset</span> <span class="o">=</span> <span class="n">CGSizeMake</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
-</span><span class='line'>    <span class="c1">// 阴影的半径</span>
-</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">greenView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">shadowRadius</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>UIImageView在CALayer中的使用</h4>
-
-<p><img src="http://xiaobenmao.github.io/images/CALyer%E5%89%AA%E8%A3%81%E5%A4%B4%E5%83%8F.png" alt="" /></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>    <span class="c1">// cornerRadiu设置控件的主层边框(rootLayer)</span>
-</span><span class='line'>    <span class="c1">// 图片是加在主层的子控件contents内容层中</span>
-</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">myImageView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">cornerRadius</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span><span class="nb">self</span><span class="p">.</span><span class="n">myImageView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">contents</span><span class="p">);</span>
-</span><span class='line'>    <span class="c1">// 超出主层边框的内容全部裁剪掉</span>
-</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">myImageView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">masksToBounds</span> <span class="o">=</span> <span class="nb">YES</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 设置边框</span>
-</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">myImageView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">borderWidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
-</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">myImageView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">borderColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">].</span><span class="bp">CGColor</span><span class="p">;</span>
-</span><span class='line'>    <span class="cm">/**</span>
-</span><span class='line'><span class="cm">     *通过剪裁和上述方法都能获取原型头像</span>
-</span><span class='line'><span class="cm">     *如何判断以后是否需要裁剪图片，就判断下需要显示图层的控件是否是正方形。</span>
-</span><span class='line'><span class="cm">     *如果控件的宽高不相等,则使用CALyer会变形</span>
-</span><span class='line'><span class="cm">     */</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="http://xiaobenmao.github.io/images/CALayer%E5%89%AA%E8%A3%81%E5%A4%B4%E5%83%8F1.png" alt="" /></p>
-
-<h4>CALayer的形变属性</h4>
-
-<p><img src="http://xiaobenmao.github.io/images/xyz%E8%BD%B4.png" alt="" /></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'>        <span class="c1">// 旋转,不使用动画,会旋转过快,看不出效果</span>
-</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">greenView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">CATransform3DMakeRotation</span><span class="p">(</span><span class="n">M_PI</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">,</span><span class="mi">1</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// 缩放</span>
-</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">greenView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">CATransform3DMakeScale</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// 平移</span>
-</span><span class='line'>         <span class="nb">self</span><span class="p">.</span><span class="n">greenView</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">CATransform3DMakeTranslation</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// 快速进行图层缩放,KVC</span>
-</span><span class='line'>        <span class="c1">// [self.greenView.layer setValue:@0.5 forKeyPath:@&quot;transform.scale&quot;];</span>
-</span><span class='line'>        <span class="c1">// [self.greenView.layer setValue:@(M_PI) forKeyPath:@&quot;transform.rotation&quot;];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="http://xiaobenmao.github.io/images/CALayer%E4%B8%AD%E7%9A%84storyboard.png" alt="" /></p>
-
-<h4>创建CALayer</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>    <span class="c1">// 创建CALayer</span>
-</span><span class='line'>    <span class="bp">CALayer</span> <span class="o">*</span><span class="n">layer</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CALayer</span> <span class="n">layer</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">layer</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">layer</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">].</span><span class="bp">CGColor</span><span class="p">;</span>
-</span><span class='line'>    <span class="c1">// 图片设置在属性内容contents里;</span>
-</span><span class='line'>    <span class="c1">// 前面有中文,后面的.CGImage不提示, 要进行类型转换</span>
-</span><span class='line'>    <span class="n">layer</span><span class="p">.</span><span class="n">contents</span> <span class="o">=</span> <span class="p">(</span><span class="kt">id</span><span class="p">)([</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="s">@&quot;阿狸头像&quot;</span><span class="p">].</span><span class="bp">CGImage</span><span class="p">);</span>
-</span><span class='line'>    <span class="c1">// 添加层</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">layer</span> <span class="nl">addSublayer</span><span class="p">:</span><span class="n">layer</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><p><code>CGColor和CGImage需要在UIKit框架和CoreGraphic之间转换</code>
-<img src="http://xiaobenmao.github.io/images/CGColor%E5%92%8CCGImage.png" alt="" /></p></li>
-<li><p><code>UIView和CALayer最大区别是是否能处理点击事件</code>
-<img src="http://xiaobenmao.github.io/images/UIView%E5%92%8CCALayer%E7%9A%84%E9%80%89%E6%8B%A9.png" alt="" /></p></li>
-</ul>
-
-
-<p><img src="http://xiaobenmao.github.io/images/UIView%E5%92%8CCALayer.png" alt="" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Quartz2d-绘图中的定时器(CADisplayLink和NSTimer)]]></title>
-    <link href="http://xiaobenmao.github.io/blog/2014/07/22/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer/"/>
-    <updated>2014-07-22T18:32:01+08:00</updated>
-    <id>http://xiaobenmao.github.io/blog/2014/07/22/quartz2d-hui-tu-zhong-de-ding-shi-qi-cadisplaylinkhe-nstimer</id>
-    <content type="html"><![CDATA[<!--more-->
-
-
-<p><img src="images/Quartz2d%E7%9A%84%E5%AE%9A%E6%97%B6%E5%99%A8.png" alt="" /></p>
-
-<ul>
-<li>NSSTimer</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm"> *(NSTimeInterval)ti:多少秒调用一次,单位秒</span>
-</span><span class='line'><span class="cm"> *(id)aTarget:给谁添加定时器</span>
-</span><span class='line'><span class="cm"> *(SEL)aSelector:回调函数,每次调用所要做的事情</span>
-</span><span class='line'><span class="cm"> *(id)userInfo:此参数可以为nil，当定时器失效时，由你指定的对象保留和释放该定时器。</span>
-</span><span class='line'><span class="cm"> *(BOOL)yesOrNo:是否循环</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="p">+</span> <span class="p">(</span><span class="bp">NSTimer</span> <span class="o">*</span><span class="p">)</span><span class="nf">scheduledTimerWithTimeInterval:</span><span class="p">(</span><span class="n">NSTimeInterval</span><span class="p">)</span><span class="nv">ti</span> <span class="nf">target:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">aTarget</span> <span class="nf">selector:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">aSelector</span> <span class="nf">userInfo:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">userInfo</span> <span class="nf">repeats:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">yesOrNo</span><span class="p">;</span>
-</span><span class='line'><span class="c1">//启动 Timer</span>
-</span><span class='line'><span class="err">–</span> <span class="n">fire</span>
-</span><span class='line'><span class="c1">//停止 Timer</span>
-</span><span class='line'><span class="err">–</span> <span class="n">invalidate</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><p>NSTimer初始化器接受调用方法逻辑之间的间隔作为它的其中一个参数，预设一秒执行30次。CADisplayLink默认每秒运行60次，通过它的frameInterval属性改变每秒运行帧数，如设置为2，意味CADisplayLink每隔一帧运行一次，有效的逻辑每秒运行30次。</p></li>
-<li><p>NSTimer接受另一个参数是否重复，而把CADisplayLink设置为重复（默认重复？）直到它失效。</p></li>
-<li><p>还有一个区别在于，NSTimer一旦初始化它就开始运行，而CADisplayLink需要将显示链接添加到一个运行循环中，即用于处理系统事件的一个Cocoa Touch结构。</p></li>
-<li><p>NSTimer 我们通常会用在背景计算，更新一些数值资料，而如果牵涉到画面的更新，动画过程的演变，我们通常会用CADisplayLink。</p></li>
-<li><p>但是要使用CADisplayLink，需要加入QuartzCore.framework及#import &lt;QuartzCore/CADisplayLink.h></p></li>
-<li><p>CADisplayLink在Quartz2d中的使用</p></li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DrawView.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="k">static</span> <span class="n">CGFloat</span> <span class="n">_snowY</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">DrawView</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 如果以后想绘制东西到view上面，必须在drawRect方法里面，不管有没有手动获取到上下文</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 修改雪花y值</span>
-</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span>  <span class="p">[</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="s">@&quot;雪花&quot;</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 画图</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">image</span> <span class="nl">drawAtPoint</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">_snowY</span><span class="p">)];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">_snowY</span> <span class="o">+=</span> <span class="mi">10</span><span class="p">;</span>
-</span><span class='line'>    <span class="c1">// 当掉出屏幕底部时,修改y值,重新在顶部画出来</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_snowY</span> <span class="o">&gt;</span> <span class="n">rect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">_snowY</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 如果在绘图的时候需要用到定时器，通常</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// NSTimer很少用于绘图，因为调度优先级比较低，并不会准时调用</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">awakeFromNib</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// 创建定时器</span>
-</span><span class='line'>    <span class="c1">//[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(timeChange) userInfo:nil repeats:YES];</span>
-</span><span class='line'>    <span class="bp">CADisplayLink</span> <span class="o">*</span><span class="n">link</span> <span class="o">=</span> <span class="p">[</span><span class="bp">CADisplayLink</span> <span class="nl">displayLinkWithTarget</span><span class="p">:</span><span class="nb">self</span> <span class="nl">selector</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="n">timeChange</span><span class="p">)];</span>
-</span><span class='line'>    <span class="c1">// 设定每隔几帧调用一次</span>
-</span><span class='line'>    <span class="n">link</span><span class="p">.</span><span class="n">frameInterval</span> <span class="o">=</span> <span class="mi">30</span><span class="p">;</span>
-</span><span class='line'>    <span class="c1">// 添加主运行循环</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">link</span> <span class="nl">addToRunLoop</span><span class="p">:[</span><span class="bp">NSRunLoop</span> <span class="n">mainRunLoop</span><span class="p">]</span> <span class="nl">forMode</span><span class="p">:</span><span class="n">NSDefaultRunLoopMode</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// CADisplayLink:每次屏幕刷新的时候就会调用，屏幕一般一秒刷新60次</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">timeChange</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// 注意：这个方法并不会马上调用drawRect,其实这个方法只是给当前控件添加刷新的标记，等下一次屏幕刷新的时候才会调用drawRect</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">setNeedsDisplay</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Quartz2d-画板]]></title>
-    <link href="http://xiaobenmao.github.io/blog/2014/07/17/quartz2d-hua-ban/"/>
-    <updated>2014-07-17T18:39:13+08:00</updated>
-    <id>http://xiaobenmao.github.io/blog/2014/07/17/quartz2d-hua-ban</id>
-    <content type="html"><![CDATA[<!--more-->
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm">5&gt; 画板</span>
-</span><span class='line'><span class="cm">    演示程序：</span>
-</span><span class='line'><span class="cm">    分析控件：ToolBar(不需要管里面子控件的frame)，画板view,自定义工具条（方便屏幕适配，能迅速固定里面子控件的位置）</span>
-</span><span class='line'><span class="cm">    自动布局，四个约束确定一个控件</span>
-</span><span class='line'><span class="cm">    蓝色按钮：左，右，下，高固定</span>
-</span><span class='line'><span class="cm">    橘色按钮：右，下固定，宽度和高度和蓝色按钮相等。</span>
-</span><span class='line'><span class="cm">    绿色按钮：右，下，宽度和高度和橘色按钮相等</span>
-</span><span class='line'><span class="cm">    绘图思路：先描述路径，在渲染，需要画很多线条，最好每个线条保存到一个路径里面。</span>
-</span><span class='line'><span class="cm">    绘图功能：</span>
-</span><span class='line'><span class="cm">        * touchBegin设置画线起点：开始触摸的点</span>
-</span><span class='line'><span class="cm">        * 怎么设置起点？创建UIBezierPath，贝塞尔路径才能设置起点</span>
-</span><span class='line'><span class="cm">        * touchMove:手指移动到哪就画哪，addLine到移动的点</span>
-</span><span class='line'><span class="cm">        * setNeedDisplay,路径描述完了，就渲染到视图就好了。</span>
-</span><span class='line'><span class="cm">        * 只能画一条线？drawRect方法每次都会把之前的清掉，重新绘制</span>
-</span><span class='line'><span class="cm">        * 怎么绘制多条路径？搞个数组保存上一次的</span>
-</span><span class='line'><span class="cm">        * 设置线宽:每次滑动滑块，就改变下一次路径的宽度</span>
-</span><span class='line'><span class="cm">        * 监听滑块的值，把值传递给paintView,设置路径的线宽。</span>
-</span><span class='line'><span class="cm">        * 不能在drawRect写，会导致所有路径都是一个线宽，应该是每个路径都记录自己的线宽，而且线宽只需要设置一次，在路径一创建的时候就设置。</span>
-</span><span class='line'><span class="cm">        * 设置颜色：</span>
-</span><span class='line'><span class="cm">        * 自定义UIBezierPath，保存颜色，实现一条路径对应一个颜色</span>
-</span><span class='line'><span class="cm">    辅助功能：</span>
-</span><span class='line'><span class="cm">    * 清屏：清空所有路径数组</span>
-</span><span class='line'><span class="cm">    * 撤销：移除最后一条路径</span>
-</span><span class='line'><span class="cm">    * 橡皮擦:设置画笔为白色</span>
-</span><span class='line'><span class="cm">    * 保存:</span>
-</span><span class='line'><span class="cm">        1&gt; 把画板内容截屏</span>
-</span><span class='line'><span class="cm">        2&gt; 把图片保存到相册 UIImageWriteToSavedPhotosAlbum</span>
-</span><span class='line'><span class="cm">        3&gt; 保存相册的回调方法不能乱写，必须按照规定 image:didFinishSavingWithError:contextInfo:</span>
-</span><span class='line'><span class="cm">    * 照片选择</span>
-</span><span class='line'><span class="cm">        1&gt; 通常都是去相册里去照片</span>
-</span><span class='line'><span class="cm">        2&gt; UIImagePickerController,就可以去手机相册了</span>
-</span><span class='line'><span class="cm">        3&gt; 用Modal，没有导航控制器,不能push</span>
-</span><span class='line'><span class="cm">        4&gt; 设置代理，获取图片</span>
-</span><span class='line'><span class="cm">        5&gt; 把图片传递给paintView</span>
-</span><span class='line'><span class="cm">        6&gt; 添加到路径，然后重绘。:画图片也需要顺序的</span>
-</span><span class='line'><span class="cm">    * 照片处理</span>
-</span><span class='line'><span class="cm">        1&gt; PPT画思路：搞一个和画板一样的透明view，里面搞个UIImageView来显示我们从照片库选择的图片，然后对UIImageView进行旋转，缩放等操作</span>
-</span><span class='line'><span class="cm">        2&gt; UImageView不能放在layoutSubViews里面设置尺寸，因为要设置他的形变，默认会调用他父类的layoutSubViews,导致一些莫名其妙的原因</span>
-</span><span class='line'><span class="cm">        3&gt; 在传图片的时候设置他的尺寸，和位置,让他和图片一样的尺寸，显示在中间</span>
-</span><span class='line'><span class="cm">        4&gt; 长按操作：在长按结束的时候，做操作</span>
-</span><span class='line'><span class="cm">            1.默认高亮状态，先变浅在恢复，设置alpha</span>
-</span><span class='line'><span class="cm">            2.动画结束后，把自己截屏，传给控制器里，在交给paintView显示</span>
-</span><span class='line'><span class="cm">            3.需要移除父视图，使命完成了，而且不移除，不能绘制东西，永远添加到paintView上面</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm">*/</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>当自定义类设置了接口,从外面传值,一定要重写setter方法</li>
-<li>当绘制多条路径path的时候,为了每条路径的颜色不同,可以自定义贝瑟尔路径,继承自UIBezierPath保存每条路径的颜色,增加一个pathColor属性,在drawRect方法中,就可以设置每条路径的颜色,否则修改颜色后所有,颜色都是一样的</li>
-<li>stroke时,必须放在最后,属性设置放在之前,比如颜色放在后面,第一根线的颜色是错误的</li>
-</ul>
 
 ]]></content>
   </entry>

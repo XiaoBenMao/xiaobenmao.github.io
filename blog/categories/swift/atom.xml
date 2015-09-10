@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Swift | My World]]></title>
+  <link href="http://xiaobenmao.github.io/blog/categories/swift/atom.xml" rel="self"/>
+  <link href="http://xiaobenmao.github.io/"/>
+  <updated>2015-09-10T19:27:48+08:00</updated>
+  <id>http://xiaobenmao.github.io/</id>
+  <author>
+    <name><![CDATA[嗷大喵]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Swift-体验tableView]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/09/03/swift-ti-yan-tableview/"/>
+    <updated>2015-09-03T21:25:01+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/09/03/swift-ti-yan-tableview</id>
+    <content type="html"><![CDATA[<ul>
+<li>遵守协议的写法: 直接在类名后通过逗号分隔</li>
+<li>可以为协议单独写个<code>extension</code>,在类扩展中实现代理方法,是代码结构更加清晰</li>
+</ul>
+
+
+<!--more-->
+
+
+<pre><code class="Swift">import UIKit
+
+// Swift中遵守协议直接在后面通过逗号分隔即可
+class ViewController: UIViewController{
+
+    override func loadView() {
+        let tv = UITableView()
+        tv.frame = UIScreen.mainScreen().bounds
+        tv.dataSource = self
+        tv.delegate = self
+
+        view = tv
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
+
+    // MARK: - 懒加载数据
+    lazy var dataList:[String] = {
+        return ["lnj", "lmj", "zs", "ls", "ww"]
+    }()
+}
+
+// 苹果官方建议, 可以将数据源代理方法单独写到一个扩展中, 以便于提高代码的可读性
+// extension 相当于OC中的 catogory
+extension ViewController: UITableViewDataSource, UITableViewDelegate
+{
+    // MARK: - UITableViewDataSource
+    // 一共有多少行
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -&gt; Int {
+        return dataList.count
+    }
+    // 每行显示什么内容
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -&gt; UITableViewCell {
+        // 1.取出cell
+        var cell = tableView.dequeueReusableCellWithIdentifier("customCell")
+
+        if cell == nil
+        {
+            cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "customCell")
+        }
+        // 2.设置数据
+        cell?.textLabel?.text = dataList[indexPath.row]
+
+        // 3.返回cell
+        return cell!
+    }
+
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Swift-setter&amp;getter]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/09/02/swift-setter-and-getter/"/>
+    <updated>2015-09-02T21:01:41+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/09/02/swift-setter-and-getter</id>
+    <content type="html"><![CDATA[<ul>
+<li><p>Swift中建议使用<code>didSet</code>来给属性设置值</p>
+
+<ul>
+<li>调用时机: 调用完set方法后,调用didSet方法</li>
+</ul>
+</li>
+<li><p>Swift中的<code>命名空间</code></p>
+
+<ul>
+<li>在Swift中, 如果想使用某一个类, 是不用import头文件的</li>
+<li>因为Swift中新增了一个OC中以前没有的概念 &ldquo;命名空间&rdquo;</li>
+<li>只要是在同一个命名空间中的资源都是共享的</li>
+<li>默认情况下, 项目名称就是命名空间</li>
+<li>正是因为这样, 所以在做Swift开发时有多了很多坑
+
+<ul>
+<li>如果是Swift项目要使用第三方框架, 那么建议使用cocoapods来集成框架</li>
+<li>因为如果是通过cocoapods集成的框架, 在另外一个项目中, 那么命名空间就不一样</li>
+<li>这样可以有效的避免 三方框架中的类名 和 我们自己的 冲突</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<!--more-->
+
+
+<ul>
+<li>自定义Person类</li>
+</ul>
+
+
+<pre><code class="swift">import UIKit
+
+class Person: NSObject {
+
+    // 在开发中, 不建议这样写
+    // 定义属性
+    var _name:String?
+    // getter和setter方法
+    var name:String?{
+        get{
+            return _name
+        }
+        set{
+            // newValue为系统生成
+            // 只要外界给通过对象.name给name赋值, 那么值就会保存在newValue
+            _name = newValue
+        }
+    }
+
+    var gender:String?{
+        // 设置完值之后调用
+        // Swift中使用didSet来替代OC中重写setter方法
+        didSet{
+            print(self)
+            print(gender)
+        }
+    }
+
+    // 如果只重写了get方法, 那么这个属性我们称之为 计算型 属性
+    // 也就是对应OC中的只读属性
+    // 注意点: 计算型属性是不占用内存空间的
+    var age:Int{
+        get{
+            return 30
+        }
+    }
+
+}
+</code></pre>
+
+<ul>
+<li>使用</li>
+</ul>
+
+
+<pre><code class="`Swift">
+ import UIKit
+
+class ViewController: UIViewController {
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        let p = Person()
+        p.name = "lnj"
+        print(p.name)
+
+        p.gender = "man"
+
+            // p.age = 99
+        print(p.age)
+
+        print(self)
+
+    }
+
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Swift-构造方法]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/09/02/swift-gou-zao-fang-fa/"/>
+    <updated>2015-09-02T20:14:16+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/09/02/swift-gou-zao-fang-fa</id>
+    <content type="html"><![CDATA[<ul>
+<li><p>Swift中定义属性</p>
+
+<ul>
+<li>如果定义属性的时候没有初始化, 那么必须在后面写上一个?</li>
+<li>Swift要求, 属性是必须有初始值的</li>
+<li>只要在构造方法中对属性进行了初始化, 那么就不用写?</li>
+</ul>
+</li>
+<li><p>Swift中对定义基本属性和对象属性<code>内存处理</code>不同</p>
+
+<ul>
+<li>如果是定义一个 &ldquo;对象属性&rdquo; 那么后面可以写上 ?
+
+<ul>
+<li>因为super.init()方法在分配存储空间的时候, 如果发现属性是一个对象, 并且是一个可选类型, 那么会给这个属性分配存储空间</li>
+</ul>
+</li>
+<li>如果是定义一个 &ldquo;基本数据类型属性&rdquo;, 那么建议直接赋值为0
+
+<ul>
+<li>但是如果属性是一个基本数据类型, 并且是可选类型, 那么super.init()不会给该属性分配存储空间</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<p> <!--more--></p>
+
+<ul>
+<li>定义Person类</li>
+</ul>
+
+
+<pre><code class="Swift">import UIKit
+
+class Person: NSObject {
+
+    // 定义name属性
+    var name:String?
+
+
+    // var age:Int?
+    var age:Int = 0
+
+    // 注意: 如果自定义了构造方法, 并且没有重写父类默认的构造方法
+    // 那么默认的构造方法就会失效
+
+    override init() {
+        self.name = "lnj"
+        self.age = 30
+    }
+
+
+    // 自定义构造方法
+    // Swift中有方法重载的概念
+    // 允许有同名的方法, 只要形参或返回值不一样即可
+    init(name:String, age:Int)
+    {
+        self.name = name
+        self.age = age
+    }
+
+    init(dict:[String: NSObject])
+    {
+        super.init()
+        // 注意点: Swift中如果想在构造方法中使用KVC给属性赋值
+        // 那么在使用KVC之前必须调用super.init()
+        // 调用super.init()的目的就是为了能在在KVC赋值之前给属性分配存储空间
+        setValuesForKeysWithDictionary(dict)
+    }
+
+}
+</code></pre>
+
+<ul>
+<li>使用</li>
+</ul>
+
+
+<pre><code class="Swift">import UIKit
+
+class ViewController: UIViewController {
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view, typically from a nib.
+
+
+        let p = Person()
+        print("\(p.name), \(p.age) ")
+
+        let p2 = Person(name: "zs", age: 88)
+        print("\(p2.name), \(p2.age) ")
+
+
+        //let p3 = Person(dict: ["name":"lnj", "age": 998])
+        //print("\(p3.name), \(p3.age)")
+
+    }
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Swift-懒加载]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/09/02/swift-lan-jia-zai/"/>
+    <updated>2015-09-02T19:10:57+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/09/02/swift-lan-jia-zai</id>
+    <content type="html"><![CDATA[<ul>
+<li>懒加载的修饰词<code>lazy</code></li>
+<li>懒加载等号右边的闭包后面要加'()&lsquo;,表示调用</li>
+<li>懒加载等号右边的闭包写法有多种</li>
+</ul>
+
+
+<!--more-->
+
+
+<pre><code>import UIKit
+
+class ViewController: UIViewController {
+
+    // 格式: 定义变量时前面使用lazy来修饰变量, 后面通过等到赋值一个闭包
+    // 注意点: 1.必须是用var 2.闭包后面必须跟上()
+
+    lazy var dataList:[String] = {
+        ()-&gt;[String]
+        in
+        print("我被搞了")
+        return ["zs", "ls", "wl"]
+    }()
+
+    // 如果闭包是用于懒加载, 那么in之前的代码都可以删除包括in在内
+    lazy var dataList2:[String] = {
+
+        print("我被搞了")
+        return ["zs", "ls", "wl"]
+    }()
+
+    // 懒加载
+    let demoFunc = {
+        ()-&gt;[String]
+        in
+        print("我被搞了")
+        return ["123", "456", "789"]
+    }
+
+    lazy var dataList3:[String] = self.demoFunc()
+
+    // 如果懒加载内的操作只有一句,则可以直接写在等号后面
+
+    lazy var dataList2:[String] =  [String]()
+
+
+    override func touchesBegan(touches: Set&lt;UITouch&gt;, withEvent event: UIEvent?) {
+
+        print(dataList3)
+        print(dataList3)
+        print(dataList3)
+
+        print(demoFunc())
+
+    }
+
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Swift-闭包的循环引用]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/09/01/swift-bi-bao-de-xun-huan-yin-yong/"/>
+    <updated>2015-09-01T19:05:00+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/09/01/swift-bi-bao-de-xun-huan-yin-yong</id>
+    <content type="html"><![CDATA[<ul>
+<li>在Swift的闭包中,会对对象进行引用,类比OC中的Block,如果实例对象内对闭包进行了强引用,就会造成循环引用,造成内存泄露.</li>
+</ul>
+
+
+<!--more-->
+
+
+<pre><code class="Swift">import UIKit
+
+class ViewController: UIViewController {
+
+    // 在Swift中, 如果在某个类中定义一个属性, 那么这个属性必须要初始化, 否则就会报错
+    // 如果占时不想初始化, 那么可以在后面写上一个?号
+
+    // 注意: 这个是错误的写法, 当前写法代表闭包的返回值可以是nil
+    // var finished: ()-&gt;()?
+    var finished: (()-&gt;())?
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view, typically from a nib.
+        // OC中的解决方案
+        // __weak typeof(self) weakSelf = self
+
+        weak var weakSelf = self
+        loadData { () -&gt; () in
+            print("回到主线程更新UI")
+            // 在Swift开发中, 能不写self就不写self, 但是在闭包中必须写上self
+            // 所以以后看到self基本上都和闭包有关系
+            weakSelf!.view.backgroundColor = UIColor.redColor()
+        }
+    }
+
+    func loadData(finished: ()-&gt;())
+    {
+        print("执行耗时操作")
+        self.finished = finished
+        finished()
+    }
+
+    // 析构函数,相当于OC中的dealloc
+    deinit
+    {
+        print("滚")
+    }
+
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+</feed>

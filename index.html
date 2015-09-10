@@ -9,26 +9,9 @@
   <meta name="author" content="嗷大喵">
 
   
-  <meta name="description" content="1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-/** 闭包(Closures):
-闭包:是自包含的代码块,可以在代码中被传递和使用
-闭包可以捕获和存储其所在上下文中任意常量和变量的引用,这就是所谓的闭包并包裹着这些常量和变量,俗称闭包.
-闭包的几种形式:
-1,“ &hellip;">
+  <meta name="description" content="
+遵守协议的写法: 直接在类名后通过逗号分隔
+可以为协议单独写个extension,在类扩展中实现代理方法,是代码结构更加清晰 ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -84,6 +67,240 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/09/03/swift-ti-yan-tableview/">Swift-体验tableView</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-09-03T21:25:01+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2015</span></span> <span class='time'>9:25 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><ul>
+<li>遵守协议的写法: 直接在类名后通过逗号分隔</li>
+<li>可以为协议单独写个<code>extension</code>,在类扩展中实现代理方法,是代码结构更加清晰</li>
+</ul>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2015/09/03/swift-ti-yan-tableview/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/09/02/swift-setter-and-getter/">Swift-setter&amp;getter</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-09-02T21:01:41+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>2</span><span class='date-suffix'>nd</span>, <span class='date-year'>2015</span></span> <span class='time'>9:01 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><ul>
+<li><p>Swift中建议使用<code>didSet</code>来给属性设置值</p>
+
+<ul>
+<li>调用时机: 调用完set方法后,调用didSet方法</li>
+</ul>
+</li>
+<li><p>Swift中的<code>命名空间</code></p>
+
+<ul>
+<li>在Swift中, 如果想使用某一个类, 是不用import头文件的</li>
+<li>因为Swift中新增了一个OC中以前没有的概念 &ldquo;命名空间&rdquo;</li>
+<li>只要是在同一个命名空间中的资源都是共享的</li>
+<li>默认情况下, 项目名称就是命名空间</li>
+<li>正是因为这样, 所以在做Swift开发时有多了很多坑
+
+<ul>
+<li>如果是Swift项目要使用第三方框架, 那么建议使用cocoapods来集成框架</li>
+<li>因为如果是通过cocoapods集成的框架, 在另外一个项目中, 那么命名空间就不一样</li>
+<li>这样可以有效的避免 三方框架中的类名 和 我们自己的 冲突</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2015/09/02/swift-setter-and-getter/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/09/02/swift-gou-zao-fang-fa/">Swift-构造方法</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-09-02T20:14:16+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>2</span><span class='date-suffix'>nd</span>, <span class='date-year'>2015</span></span> <span class='time'>8:14 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><ul>
+<li><p>Swift中定义属性</p>
+
+<ul>
+<li>如果定义属性的时候没有初始化, 那么必须在后面写上一个?</li>
+<li>Swift要求, 属性是必须有初始值的</li>
+<li>只要在构造方法中对属性进行了初始化, 那么就不用写?</li>
+</ul>
+</li>
+<li><p>Swift中对定义基本属性和对象属性<code>内存处理</code>不同</p>
+
+<ul>
+<li>如果是定义一个 &ldquo;对象属性&rdquo; 那么后面可以写上 ?
+
+<ul>
+<li>因为super.init()方法在分配存储空间的时候, 如果发现属性是一个对象, 并且是一个可选类型, 那么会给这个属性分配存储空间</li>
+</ul>
+</li>
+<li>如果是定义一个 &ldquo;基本数据类型属性&rdquo;, 那么建议直接赋值为0
+
+<ul>
+<li>但是如果属性是一个基本数据类型, 并且是可选类型, 那么super.init()不会给该属性分配存储空间</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<p> </div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2015/09/02/swift-gou-zao-fang-fa/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/09/02/swift-lan-jia-zai/">Swift-懒加载</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-09-02T19:10:57+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>2</span><span class='date-suffix'>nd</span>, <span class='date-year'>2015</span></span> <span class='time'>7:10 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><ul>
+<li>懒加载的修饰词<code>lazy</code></li>
+<li>懒加载等号右边的闭包后面要加'()&lsquo;,表示调用</li>
+<li>懒加载等号右边的闭包写法有多种</li>
+</ul>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2015/09/02/swift-lan-jia-zai/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/09/01/swift-bi-bao-de-xun-huan-yin-yong/">Swift-闭包的循环引用</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-09-01T19:05:00+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2015</span></span> <span class='time'>7:05 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><ul>
+<li>在Swift的闭包中,会对对象进行引用,类比OC中的Block,如果实例对象内对闭包进行了强引用,就会造成循环引用,造成内存泄露.</li>
+</ul>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2015/09/01/swift-bi-bao-de-xun-huan-yin-yong/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -306,502 +523,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/09/01/swift-luo-ji-fen-zhi/">Swift-逻辑分支</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-09-01T08:33:55+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2015</span></span> <span class='time'>8:33 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h3>if语句</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='swift'><span class='line'><span class="k">let</span> <span class="n">num</span> <span class="o">=</span> <span class="mi">10</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">if</span> <span class="n">num</span> <span class="o">==</span> <span class="mi">10</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">print</span><span class="p">(</span><span class="s">&quot;OK&quot;</span><span class="p">)</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//if num {</span>
-</span><span class='line'><span class="c1">//    print(&quot;OK&quot;)</span>
-</span><span class='line'><span class="c1">//}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>Swift中的if的使用方式"基本上"和OC一致
-
-<ul>
-<li><code>Swift</code> 中没有 C 语言中的<code>非零即真</code>概念,在Swift中, 条件只能放bool值, 取值只有两个ture/false,在C和OC中, 有一个概念非0即真</li>
-<li>在逻辑判断时必须显示地指明具体的判断条件</li>
-<li><code>if</code> 语句条件的 <code>()</code> 可以省略</li>
-<li>但是 <code>{}</code> 不能省略</li>
-</ul>
-</li>
-</ul>
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2015/09/01/swift-luo-ji-fen-zhi/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/09/01/swift-chu-ti-yan/">Swift-初体验</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-09-01T08:29:01+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2015</span></span> <span class='time'>8:29 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h3>初体验</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-</pre></td><td class='code'><pre><code class='swift'><span class='line'><span class="k">import</span> <span class="n">UIKit</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm">/*</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm">    创建对象：</span>
-</span><span class='line'><span class="cm">    OC： alloc / initWithXXX</span>
-</span><span class='line'><span class="cm">    Swift： （XXX：）</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm">    调方法</span>
-</span><span class='line'><span class="cm">    OC [UIColor redColor];</span>
-</span><span class='line'><span class="cm">    Swift: UIColor.redColor()</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm">    枚举：</span>
-</span><span class='line'><span class="cm">    OC： UIButtonTypeContactAdd</span>
-</span><span class='line'><span class="cm">    Swift: UIButtonType.ContactAdd</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm">    创建结构体:</span>
-</span><span class='line'><span class="cm">    OC CGPointMake()</span>
-</span><span class='line'><span class="cm">    Swift : CGPoint()</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm">*/</span>
-</span><span class='line'><span class="k">let</span> <span class="n">view</span> <span class="o">=</span> <span class="bp">UIView</span><span class="p">(</span><span class="nl">frame</span><span class="p">:</span> <span class="bp">CGRect</span><span class="p">(</span><span class="nl">x</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nl">y</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nl">width</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="nl">height</span><span class="p">:</span> <span class="mi">100</span><span class="p">))</span>
-</span><span class='line'><span class="n">view</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="bp">UIColor</span><span class="p">.</span><span class="n">redColor</span><span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 枚举前面的枚举名称是可以省略的， 开发中一般不会省略</span>
-</span><span class='line'><span class="k">let</span>  <span class="n">btn</span> <span class="o">=</span> <span class="bp">UIButton</span><span class="p">(</span><span class="nl">type</span><span class="p">:</span> <span class="n">UIButtonType</span><span class="p">.</span><span class="n">ContactAdd</span><span class="p">)</span>
-</span><span class='line'><span class="n">btn</span><span class="p">.</span><span class="n">center</span> <span class="o">=</span> <span class="bp">CGPoint</span><span class="p">(</span><span class="nl">x</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="nl">y</span><span class="p">:</span> <span class="mi">50</span><span class="p">)</span>
-</span><span class='line'><span class="n">view</span><span class="p">.</span><span class="n">addSubview</span><span class="p">(</span><span class="n">btn</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2015/09/01/swift-chu-ti-yan/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/08/11/cocoapod-li-yong-pod-trunkfa-bu-cheng-xu/">Cocoapod-利用pod Trunk发布程序</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-08-11T19:21:53+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:21 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h3>利用pod trunk发布程序</h3>
-
-<hr />
-
-<h5>注册</h5>
-
-<ul>
-<li><code>pod trunk register  邮箱 '用户名' --description='电脑描述'</code></li>
-</ul>
-
-
-<h5>查收邮件</h5>
-
-<ul>
-<li>如果是QQ邮箱，可能会被放到“垃圾箱”中，并不一定是“收件箱”</li>
-<li>点击邮件中的链接：
-<a href="https://trunk.cocoapods.org/sessions/verify/xxxx">https://trunk.cocoapods.org/sessions/verify/xxxx</a></li>
-</ul>
-
-
-<!--pod-->
-
-
-<h5>接下来查看个人信息</h5>
-
-<ul>
-<li><code>pod trunk me</code></li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>  - Name:     MJ Lee
-</span><span class='line'>  - Email:    xxxxxx@qq.com
-</span><span class='line'>  - Since:    January 28th, 03:53
-</span><span class='line'>  - Pods:     None
-</span><span class='line'>  - Sessions:
-</span><span class='line'>    - January 28th, 04:28 - June 5th, 04:34. IP: xxx.xxx.xxx.xxx Description: Macbook Pro</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>中间可能遇到这种错误</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>NoMethodError - undefined method 'last' for #&lt;Netrc::Entry:0x007fc59c246378&gt;</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>这时候需要尝试更新gem源或者pod
-
-<ul>
-<li><code>sudo gem update --system</code></li>
-<li><code>sudo gem install cocoapods</code></li>
-<li><code>sudo gem install cocospods-trunk</code></li>
-</ul>
-</li>
-</ul>
-
-
-<h5>创建podspec文件</h5>
-
-<ul>
-<li>接下来需要在项目根路径创建一个podspec文件来描述你的项目信息
-
-<ul>
-<li><code>pod spec cretae 文件名</code></li>
-<li>比如pod spec cretae MJExtension就会生成一个MJExtension.podspec</li>
-</ul>
-</li>
-</ul>
-
-
-<h5>填写podspec内容</h5>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Pod::Spec.new do |s|
-</span><span class='line'>  s.name         = "MJExtension"
-</span><span class='line'>  s.version      = "0.0.1"
-</span><span class='line'>  s.summary      = "The fastest and most convenient conversion between JSON and model"
-</span><span class='line'>  s.homepage     = "https://github.com/CoderMJLee/MJExtension"
-</span><span class='line'>  s.license      = "MIT"
-</span><span class='line'>  s.author             = { "MJLee" =&gt; "xxxxx@qq.com" }
-</span><span class='line'>  s.social_media_url   = "http://weibo.com/exceptions"
-</span><span class='line'>  s.source       = { :git =&gt; "https://github.com/CoderMJLee/MJExtension.git", :tag =&gt; s.version }
-</span><span class='line'>  s.source_files  = "MJExtensionExample/MJExtensionExample/MJExtension"
-</span><span class='line'>  s.requires_arc = true
-</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>值得注意的是，现在的podspec必须有tag，所以最好先打个tag，传到github
-
-<ul>
-<li><code>git tag 0.0.1</code></li>
-<li><code>git push --tags</code></li>
-</ul>
-</li>
-</ul>
-
-
-<h5>检测podspec语法</h5>
-
-<ul>
-<li><code>pod spec lint MJExtension.podspec</code></li>
-</ul>
-
-
-<h5>发布podspec</h5>
-
-<ul>
-<li><code>pod trunk push MJExtension.podspec</code></li>
-<li>如果是第一次发布pod，需要去<a href="https://trunk.cocoapods.org/claims/new%E8%AE%A4%E9%A2%86pod">https://trunk.cocoapods.org/claims/new%E8%AE%A4%E9%A2%86pod</a></li>
-</ul>
-
-
-<h5>检测</h5>
-
-<ul>
-<li><code>pod setup</code> : 初始化</li>
-<li><code>pod repo update</code> : 更新仓库</li>
-<li><code>pod search MJExtension</code></li>
-</ul>
-
-
-<h5>仓库更新</h5>
-
-<ul>
-<li>如果仓库更新慢，可以考虑更换仓库镜像
-
-<ul>
-<li><code>pod repo remove master</code></li>
-<li><code>pod repo add master http://git.oschina.net/akuandev/Specs.git</code></li>
-</ul>
-</li>
-</ul>
-
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/08/08/cocoapod-an-zhuang-di-san-fang-kuang-jia-swift/">CocoaPod-安装第三方框架(Swift)</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-08-08T18:32:38+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>6:32 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h1>第三方框架</h1>
-
-<h2>比如:项目中使用到以下第三方框架</h2>
-
-<ul>
-<li><code>AFNetworking</code></li>
-<li><code>SDWebImage</code></li>
-<li><code>SVProgressHUD</code></li>
-</ul>
-
-
-<h2>Pod 安装</h2>
-
-<ul>
-<li>git 备份</li>
-<li>打开终端</li>
-<li><code>$ cd</code> 进入项目目录</li>
-<li>输入以下终端命令建立或编辑 <code>Podfile</code></li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>vim Podfile
-</span></code></pre></td></tr></table></div></figure>
-
-
-<!--pod-->
-
-
-<ul>
-<li>输入以下内容</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>use_frameworks!
-</span><span class='line'>pod <span class="s1">&#39;AFNetworking&#39;</span>
-</span><span class='line'>pod <span class="s1">&#39;SDWebImage&#39;</span>
-</span><span class='line'>pod <span class="s1">&#39;SVProgressHUD&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><code>:wq</code> 保存退出</li>
-</ul>
-
-
-<blockquote><p>在 Swift 项目中，cocoapod 仅支持以 Framework 方式添加框架，因此需要在 Podfile 中添加 <code>use_frameworks!</code></p></blockquote>
-
-<h2>在终端提交添加的框架</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># 将修改添加至暂存区</span>
-</span><span class='line'><span class="nv">$ </span>git add .
-</span><span class='line'>
-</span><span class='line'><span class="c"># 提交修改并且添加备注信息</span>
-</span><span class='line'><span class="nv">$ </span>git commit -m <span class="s2">&quot;添加第三方框架&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># 将修改推送到远程服务器</span>
-</span><span class='line'><span class="nv">$ </span>git push
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>真机调试设置</h2>
-
-<p><img src="./images/%E4%BA%8C%E7%BB%B4%E7%A0%81/%E7%9C%9F%E6%9C%BA%E8%B0%83%E8%AF%95%E8%AE%BE%E7%BD%AE.png" alt="" /></p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/08/08/cocoapodan-zhuang-di-san-fang-ku/">CocoaPod-安装第三方库</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-08-08T16:49:32+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:49 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h3>更换源</h3>
-
-<ul>
-<li>Gem是一个管理Ruby库和程序的标准包,它通过Ruby,Gem(如<a href="http://rubygems.org">http://rubygems.org</a>)源来查找、安装、升级和卸载软件包</li>
-</ul>
-
-
-<h4>ruby的软件源rubygems.org因为使用的亚马逊的云服务，所以被墙了，需要更新一下ruby的源，如下代码将官方的ruby源替换成国内淘宝的源</h4>
-
-<ul>
-<li>gem sources &ndash;remove <a href="https://rubygems.org/">https://rubygems.org/</a></li>
-<li>gem sources -a <a href="http://ruby.taobao.org/">http://ruby.taobao.org/</a></li>
-<li>gem sources -l</li>
-</ul>
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2015/08/08/cocoapodan-zhuang-di-san-fang-ku/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -880,29 +601,33 @@
         <a class='category' href='/blog/categories/kuai-su-cong-ocdao-swift/'>快速从oc到swift</a> (7)
       </li>
     
+      <li class="category">
+        <a class='category' href='/blog/categories/swift/'>swift</a> (5)
+      </li>
+    
   </ul>
 </section><section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2015/09/01/swift-bi-bao/">Swift-闭包</a>
+        <a href="/blog/2015/09/03/swift-ti-yan-tableview/">Swift-体验tableView</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2015/09/01/swift-zi-fu-chuan/">Swift-字符串</a>
+        <a href="/blog/2015/09/02/swift-setter-and-getter/">Swift-setter&amp;getter</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2015/09/01/swift-zi-dian/">Swift-字典</a>
+        <a href="/blog/2015/09/02/swift-gou-zao-fang-fa/">Swift-构造方法</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2015/09/01/swift-han-shu/">Swift-函数</a>
+        <a href="/blog/2015/09/02/swift-lan-jia-zai/">Swift-懒加载</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2015/09/01/swift-shu-zu/">Swift-数组</a>
+        <a href="/blog/2015/09/01/swift-bi-bao-de-xun-huan-yin-yong/">Swift-闭包的循环引用</a>
       </li>
     
   </ul>
