@@ -9,17 +9,11 @@
   <meta name="author" content="嗷大喵">
 
   
-  <meta name="description" content="RunLoop相关类 1
-2
-3
-4
-5
-6
-Core Foundation中关于RunLoop的5个类
-CFRunLoopRef // 运行循环
-CFRunLoopModeRef // 运行模式
-CFRunLoopSourceRef // 事件源
-CFRunLoopTimerRef // &hellip;">
+  <meta name="description" content="
+线程一结束就会进入消亡状态,如果定义为属性进行强引用,在进程结束也会处在消亡状态
+保持线程不消亡: 如果经常做一些耗时操作,可以保持线程不死
+或者需要一个线程一直在后天进行扫描等监听操作,也可以线程不消亡
+可以通过自定义线程,重写dealloc方法,测验线程是否消亡 ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -75,6 +69,51 @@ CFRunLoopTimerRef // &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/08/02/nsrunloop-chang-zhu-xian-cheng/">NSRunLoop-常驻线程</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-08-02T12:06:26+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>2</span><span class='date-suffix'>nd</span>, <span class='date-year'>2015</span></span> <span class='time'>12:06 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><ul>
+<li>线程一结束就会进入消亡状态,如果定义为属性进行强引用,在进程结束也会处在消亡状态</li>
+<li>保持线程不消亡:
+
+<ul>
+<li>如果经常做一些耗时操作,可以保持线程不死</li>
+<li>或者需要一个线程一直在后天进行扫描等监听操作,也可以线程不消亡</li>
+<li>可以通过自定义线程,重写dealloc方法,测验线程是否消亡</li>
+</ul>
+</li>
+</ul>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2015/08/02/nsrunloop-chang-zhu-xian-cheng/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -441,38 +480,6 @@ CFRunLoopTimerRef // &hellip;">
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/07/17/quartz2d-shou-shi-jie-suo/">Quartz2d-手势解锁</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-07-17T11:39:07+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>11:39 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"></div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/07/17/quartz2d-shou-shi-jie-suo/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/3">&larr; Older</a>
@@ -546,7 +553,7 @@ CFRunLoopTimerRef // &hellip;">
       </li>
     
       <li class="category">
-        <a class='category' href='/blog/categories/cocoapod/'>cocoapod</a> (2)
+        <a class='category' href='/blog/categories/cocoapod/'>cocoapod</a> (3)
       </li>
     
       <li class="category">

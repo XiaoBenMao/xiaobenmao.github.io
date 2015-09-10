@@ -474,6 +474,187 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2015/08/11/cocoapod-li-yong-pod-trunkfa-bu-cheng-xu/">Cocoapod-利用pod Trunk发布程序</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-08-11T19:21:53+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:21 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>利用pod trunk发布程序</h3>
+
+<hr />
+
+<h5>注册</h5>
+
+<ul>
+<li><code>pod trunk register  邮箱 '用户名' --description='电脑描述'</code></li>
+</ul>
+
+
+<h5>查收邮件</h5>
+
+<ul>
+<li>如果是QQ邮箱，可能会被放到“垃圾箱”中，并不一定是“收件箱”</li>
+<li>点击邮件中的链接：
+<a href="https://trunk.cocoapods.org/sessions/verify/xxxx">https://trunk.cocoapods.org/sessions/verify/xxxx</a></li>
+</ul>
+
+
+<!--pod-->
+
+
+<h5>接下来查看个人信息</h5>
+
+<ul>
+<li><code>pod trunk me</code></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>  - Name:     MJ Lee
+</span><span class='line'>  - Email:    xxxxxx@qq.com
+</span><span class='line'>  - Since:    January 28th, 03:53
+</span><span class='line'>  - Pods:     None
+</span><span class='line'>  - Sessions:
+</span><span class='line'>    - January 28th, 04:28 - June 5th, 04:34. IP: xxx.xxx.xxx.xxx Description: Macbook Pro</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>中间可能遇到这种错误</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>NoMethodError - undefined method 'last' for #&lt;Netrc::Entry:0x007fc59c246378&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>这时候需要尝试更新gem源或者pod
+
+<ul>
+<li><code>sudo gem update --system</code></li>
+<li><code>sudo gem install cocoapods</code></li>
+<li><code>sudo gem install cocospods-trunk</code></li>
+</ul>
+</li>
+</ul>
+
+
+<h5>创建podspec文件</h5>
+
+<ul>
+<li>接下来需要在项目根路径创建一个podspec文件来描述你的项目信息
+
+<ul>
+<li><code>pod spec cretae 文件名</code></li>
+<li>比如pod spec cretae MJExtension就会生成一个MJExtension.podspec</li>
+</ul>
+</li>
+</ul>
+
+
+<h5>填写podspec内容</h5>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Pod::Spec.new do |s|
+</span><span class='line'>  s.name         = "MJExtension"
+</span><span class='line'>  s.version      = "0.0.1"
+</span><span class='line'>  s.summary      = "The fastest and most convenient conversion between JSON and model"
+</span><span class='line'>  s.homepage     = "https://github.com/CoderMJLee/MJExtension"
+</span><span class='line'>  s.license      = "MIT"
+</span><span class='line'>  s.author             = { "MJLee" =&gt; "xxxxx@qq.com" }
+</span><span class='line'>  s.social_media_url   = "http://weibo.com/exceptions"
+</span><span class='line'>  s.source       = { :git =&gt; "https://github.com/CoderMJLee/MJExtension.git", :tag =&gt; s.version }
+</span><span class='line'>  s.source_files  = "MJExtensionExample/MJExtensionExample/MJExtension"
+</span><span class='line'>  s.requires_arc = true
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>值得注意的是，现在的podspec必须有tag，所以最好先打个tag，传到github
+
+<ul>
+<li><code>git tag 0.0.1</code></li>
+<li><code>git push --tags</code></li>
+</ul>
+</li>
+</ul>
+
+
+<h5>检测podspec语法</h5>
+
+<ul>
+<li><code>pod spec lint MJExtension.podspec</code></li>
+</ul>
+
+
+<h5>发布podspec</h5>
+
+<ul>
+<li><code>pod trunk push MJExtension.podspec</code></li>
+<li>如果是第一次发布pod，需要去<a href="https://trunk.cocoapods.org/claims/new%E8%AE%A4%E9%A2%86pod">https://trunk.cocoapods.org/claims/new%E8%AE%A4%E9%A2%86pod</a></li>
+</ul>
+
+
+<h5>检测</h5>
+
+<ul>
+<li><code>pod setup</code> : 初始化</li>
+<li><code>pod repo update</code> : 更新仓库</li>
+<li><code>pod search MJExtension</code></li>
+</ul>
+
+
+<h5>仓库更新</h5>
+
+<ul>
+<li>如果仓库更新慢，可以考虑更换仓库镜像
+
+<ul>
+<li><code>pod repo remove master</code></li>
+<li><code>pod repo add master http://git.oschina.net/akuandev/Specs.git</code></li>
+</ul>
+</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2015/08/08/cocoapod-an-zhuang-di-san-fang-kuang-jia-swift/">CocoaPod-安装第三方框架(Swift)</a></h1>
     
     
@@ -621,51 +802,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/08/02/nsrunloop-chang-zhu-xian-cheng/">NSRunLoop-常驻线程</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-08-02T12:06:26+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>2</span><span class='date-suffix'>nd</span>, <span class='date-year'>2015</span></span> <span class='time'>12:06 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><ul>
-<li>线程一结束就会进入消亡状态,如果定义为属性进行强引用,在进程结束也会处在消亡状态</li>
-<li>保持线程不消亡:
-
-<ul>
-<li>如果经常做一些耗时操作,可以保持线程不死</li>
-<li>或者需要一个线程一直在后天进行扫描等监听操作,也可以线程不消亡</li>
-<li>可以通过自定义线程,重写dealloc方法,测验线程是否消亡</li>
-</ul>
-</li>
-</ul>
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2015/08/02/nsrunloop-chang-zhu-xian-cheng/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -737,7 +873,7 @@
       </li>
     
       <li class="category">
-        <a class='category' href='/blog/categories/cocoapod/'>cocoapod</a> (2)
+        <a class='category' href='/blog/categories/cocoapod/'>cocoapod</a> (3)
       </li>
     
       <li class="category">

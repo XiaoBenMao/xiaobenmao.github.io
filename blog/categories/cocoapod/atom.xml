@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Cocoapod | My World]]></title>
   <link href="http://xiaobenmao.github.io/blog/categories/cocoapod/atom.xml" rel="self"/>
   <link href="http://xiaobenmao.github.io/"/>
-  <updated>2015-09-10T18:39:31+08:00</updated>
+  <updated>2015-09-10T18:53:07+08:00</updated>
   <id>http://xiaobenmao.github.io/</id>
   <author>
     <name><![CDATA[嗷大喵]]></name>
@@ -12,6 +12,148 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Cocoapod-利用pod Trunk发布程序]]></title>
+    <link href="http://xiaobenmao.github.io/blog/2015/08/11/cocoapod-li-yong-pod-trunkfa-bu-cheng-xu/"/>
+    <updated>2015-08-11T19:21:53+08:00</updated>
+    <id>http://xiaobenmao.github.io/blog/2015/08/11/cocoapod-li-yong-pod-trunkfa-bu-cheng-xu</id>
+    <content type="html"><![CDATA[<h3>利用pod trunk发布程序</h3>
+
+<hr />
+
+<h5>注册</h5>
+
+<ul>
+<li><code>pod trunk register  邮箱 '用户名' --description='电脑描述'</code></li>
+</ul>
+
+
+<h5>查收邮件</h5>
+
+<ul>
+<li>如果是QQ邮箱，可能会被放到“垃圾箱”中，并不一定是“收件箱”</li>
+<li>点击邮件中的链接：
+<a href="https://trunk.cocoapods.org/sessions/verify/xxxx">https://trunk.cocoapods.org/sessions/verify/xxxx</a></li>
+</ul>
+
+
+<!--pod-->
+
+
+<h5>接下来查看个人信息</h5>
+
+<ul>
+<li><code>pod trunk me</code></li>
+</ul>
+
+
+<pre><code>  - Name:     MJ Lee
+  - Email:    xxxxxx@qq.com
+  - Since:    January 28th, 03:53
+  - Pods:     None
+  - Sessions:
+    - January 28th, 04:28 - June 5th, 04:34. IP: xxx.xxx.xxx.xxx Description: Macbook Pro
+</code></pre>
+
+<ul>
+<li>中间可能遇到这种错误</li>
+</ul>
+
+
+<pre><code>NoMethodError - undefined method 'last' for #&lt;Netrc::Entry:0x007fc59c246378&gt;
+</code></pre>
+
+<ul>
+<li>这时候需要尝试更新gem源或者pod
+
+<ul>
+<li><code>sudo gem update --system</code></li>
+<li><code>sudo gem install cocoapods</code></li>
+<li><code>sudo gem install cocospods-trunk</code></li>
+</ul>
+</li>
+</ul>
+
+
+<h5>创建podspec文件</h5>
+
+<ul>
+<li>接下来需要在项目根路径创建一个podspec文件来描述你的项目信息
+
+<ul>
+<li><code>pod spec cretae 文件名</code></li>
+<li>比如pod spec cretae MJExtension就会生成一个MJExtension.podspec</li>
+</ul>
+</li>
+</ul>
+
+
+<h5>填写podspec内容</h5>
+
+<pre><code>Pod::Spec.new do |s|
+  s.name         = "MJExtension"
+  s.version      = "0.0.1"
+  s.summary      = "The fastest and most convenient conversion between JSON and model"
+  s.homepage     = "https://github.com/CoderMJLee/MJExtension"
+  s.license      = "MIT"
+  s.author             = { "MJLee" =&gt; "xxxxx@qq.com" }
+  s.social_media_url   = "http://weibo.com/exceptions"
+  s.source       = { :git =&gt; "https://github.com/CoderMJLee/MJExtension.git", :tag =&gt; s.version }
+  s.source_files  = "MJExtensionExample/MJExtensionExample/MJExtension"
+  s.requires_arc = true
+end
+</code></pre>
+
+<ul>
+<li>值得注意的是，现在的podspec必须有tag，所以最好先打个tag，传到github
+
+<ul>
+<li><code>git tag 0.0.1</code></li>
+<li><code>git push --tags</code></li>
+</ul>
+</li>
+</ul>
+
+
+<h5>检测podspec语法</h5>
+
+<ul>
+<li><code>pod spec lint MJExtension.podspec</code></li>
+</ul>
+
+
+<h5>发布podspec</h5>
+
+<ul>
+<li><code>pod trunk push MJExtension.podspec</code></li>
+<li>如果是第一次发布pod，需要去<a href="https://trunk.cocoapods.org/claims/new%E8%AE%A4%E9%A2%86pod">https://trunk.cocoapods.org/claims/new%E8%AE%A4%E9%A2%86pod</a></li>
+</ul>
+
+
+<h5>检测</h5>
+
+<ul>
+<li><code>pod setup</code> : 初始化</li>
+<li><code>pod repo update</code> : 更新仓库</li>
+<li><code>pod search MJExtension</code></li>
+</ul>
+
+
+<h5>仓库更新</h5>
+
+<ul>
+<li>如果仓库更新慢，可以考虑更换仓库镜像
+
+<ul>
+<li><code>pod repo remove master</code></li>
+<li><code>pod repo add master http://git.oschina.net/akuandev/Specs.git</code></li>
+</ul>
+</li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[CocoaPod-安装第三方框架(Swift)]]></title>
